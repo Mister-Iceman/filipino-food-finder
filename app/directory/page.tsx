@@ -18,7 +18,9 @@ export default async function DirectoryPage({
     .order('name')
 
   if (searchQuery) {
-    query = query.or(`name.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%,state.ilike.%${searchQuery}%,zip.ilike.%${searchQuery}%`)
+    // Trim whitespace and make search more flexible
+    const cleanQuery = searchQuery.trim()
+    query = query.or(`name.ilike.%${cleanQuery}%,city.ilike.%${cleanQuery}%,state.ilike.%${cleanQuery}%,zip.ilike.%${cleanQuery}%,address_street.ilike.%${cleanQuery}%`)
   }
 
   if (categoryFilter) {
