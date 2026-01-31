@@ -84,38 +84,65 @@ export default function AddBusinessPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Submit Your Business</h2>
           
           <form className="space-y-6">
+            <div>
+              <label htmlFor="business-name" className="block text-sm font-medium text-gray-700 mb-2">
+                Business Name *
+              </label>
+              <input
+                type="text"
+                id="business-name"
+                name="business-name"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                placeholder="e.g., Jollibee, Goldilocks"
+              />
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="business-name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Name *
-                </label>
-                <input
-                  type="text"
-                  id="business-name"
-                  name="business-name"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  placeholder="e.g., Jollibee, Goldilocks"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Type *
+                <label htmlFor="category-primary" className="block text-sm font-medium text-gray-700 mb-2">
+                  Primary Category *
                 </label>
                 <select
-                  id="category"
-                  name="category"
+                  id="category-primary"
+                  name="category-primary"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                 >
-                  <option value="">Select category</option>
-                  <option value="restaurant">Restaurant</option>
-                  <option value="grocery">Grocery & Market</option>
-                  <option value="bakery">Bakery & Cafe</option>
-                  <option value="quick-bites">Quick Bites & Turo-Turo</option>
-                  <option value="food-truck">Food Truck & Pop-Up</option>
+                  <option value="">Select primary category</option>
+                  <option value="Restaurant">Restaurant</option>
+                  <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                  <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                  <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                  <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
                 </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Choose the main type of business
+                </p>
+              </div>
+
+              <div>
+                <label htmlFor="category-secondary" className="block text-sm font-medium text-gray-700 mb-2">
+                  Secondary Category (Optional)
+                </label>
+                <select
+                  id="category-secondary"
+                  name="category-secondary"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                >
+                  <option value="">None</option>
+                  <option value="Restaurant">Restaurant</option>
+                  <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                  <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                  <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                  <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
+                  <option value="Filipino bakery">Filipino bakery</option>
+                  <option value="Filipino grocery">Filipino grocery</option>
+                  <option value="Catering">Catering</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  If your business fits multiple categories
+                </p>
               </div>
             </div>
 
