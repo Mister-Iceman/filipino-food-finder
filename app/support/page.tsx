@@ -104,18 +104,40 @@ export default function SupportPage() {
               
               <div className="space-y-4">
                 {/* Placeholder for payment buttons - you'll add these after setting up accounts */}
-                <div className="bg-white p-6 rounded-lg border-2 border-dashed border-gray-300">
-                  <p className="text-sm text-gray-600 mb-2">
-                    <strong>Coming Soon:</strong> We're setting up secure payment options including:
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <p className="text-gray-700 mb-6 text-lg">
+                    Support our mission with a one-time contribution:
                   </p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm ml-4">
-                    <li>Buy Me A Coffee</li>
-                    <li>PayPal</li>
-                    <li>Venmo</li>
-                  </ul>
-                  <p className="text-sm text-gray-500 mt-4">
-                    In the meantime, you can support us by sharing this directory with your community!
+                  
+                  <a 
+                    href="https://buymeacoffee.com/filipinofoodnearme" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block"
+                  >
+                    <img 
+                      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+                      alt="Buy Me A Coffee" 
+                      className="h-16 hover:scale-105 transition-transform"
+                    />
+                  </a>
+
+                  <p className="text-sm text-gray-500 mt-6">
+                    Or visit: <a 
+                      href="https://buymeacoffee.com/filipinofoodnearme" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      buymeacoffee.com/filipinofoodnearme
+                    </a>
                   </p>
+
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <p className="text-xs text-gray-500">
+                      💡 <strong>Suggested amounts:</strong> $3 (coffee) • $10 (lunch) • $25 (monthly hosting) • Custom amount
+                    </p>
+                  </div>
                 </div>
                 
                 {/* Uncomment when you have Buy Me A Coffee set up:
