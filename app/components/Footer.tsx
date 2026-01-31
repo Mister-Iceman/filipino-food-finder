@@ -91,10 +91,26 @@ export default function Footer() {
             </div>
             <a 
               href="mailto:info@filipinofoodnearme.org" 
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors block mb-4"
             >
               info@filipinofoodnearme.org
             </a>
+            
+            {/* Buy Me A Coffee Button */}
+            <div className="mt-4">
+              <a 
+                href="https://buymeacoffee.com/filipinofoodnearme" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <img 
+                  src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+                  alt="Buy Me A Coffee" 
+                  className="h-10 hover:scale-105 transition-transform"
+                />
+              </a>
+            </div>
           </div>
         </div>
 
