@@ -200,7 +200,7 @@ export default function AdminPage() {
               {editingId ? 'Edit Restaurant' : 'Add New Restaurant'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-1 gap-4">
                 <input
                   type="text"
                   placeholder="Restaurant Name *"
@@ -209,17 +209,46 @@ export default function AdminPage() {
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <select
-                  value={formData.category_primary}
-                  onChange={(e) => setFormData({...formData, category_primary: e.target.value})}
-                  className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="Restaurant">Restaurant</option>
-                  <option value="Supermarket & Grocery">Supermarket & Grocery</option>
-                  <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
-                  <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
-                  <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
-                </select>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Primary Category *
+                  </label>
+                  <select
+                    value={formData.category_primary}
+                    onChange={(e) => setFormData({...formData, category_primary: e.target.value})}
+                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                    <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                    <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                    <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Secondary Category (Optional)
+                  </label>
+                  <select
+                    value={formData.category_secondary}
+                    onChange={(e) => setFormData({...formData, category_secondary: e.target.value})}
+                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">None</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                    <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                    <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                    <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
+                    <option value="Filipino bakery">Filipino bakery</option>
+                    <option value="Filipino grocery">Filipino grocery</option>
+                    <option value="Catering">Catering</option>
+                  </select>
+                </div>
               </div>
 
               <input
