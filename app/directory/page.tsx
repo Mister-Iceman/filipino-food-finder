@@ -27,16 +27,24 @@ export default function DirectoryPage() {
 
   const loadListings = async () => {
     setLoading(true)
-    let query = supabase
+    
+    // CRITICAL: Must include 'slug' in the select
+    const { data, error } = await supabase
       .from('listings')
-      .select('*')
+      .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, slug')
       .order('name', { ascending: true })
-
-    const { data, error } = await query
 
     if (data) {
       setListings(data)
+      // Debug: Check if first item has slug
+      console.log('✅ Loaded listings:', data.length)
+      console.log('✅ First listing slug:', data[0]?.slug)
     }
+    
+    if (error) {
+      console.error('❌ Error loading listings:', error)
+    }
+    
     setLoading(false)
   }
 
@@ -165,39 +173,40 @@ export default function DirectoryPage() {
             {filteredListings.map((listing) => (
               <div key={listing.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow">
                 <div className="mb-4">
+                  {/* RESTAURANT NAME - CLICKABLE LINK */}
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     {listing.slug ? (
                       <Link 
                         href={`/restaurant/${listing.slug}`}
-                        className="hover:text-blue-600 transition-colors"
+                        className="hover:text-blue-600 hover:underline transition-colors"
                       >
                         {listing.name}
                       </Link>
                     ) : (
-                      listing.name
+                      <span>{listing.name}</span>
                     )}
                   </h2>
+                  
                   <p className="text-gray-600">
                     {listing.category_primary}
                     {listing.category_secondary && ` • ${listing.category_secondary}`}
                   </p>
                 </div>
 
+                {/* Rating */}
                 {listing.google_rating && (
                   <div className="bg-yellow-50 px-3 py-2 rounded-lg mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-yellow-500 text-xl" aria-hidden="true">★</span>
+                      <span className="text-yellow-500 text-xl">★</span>
                       <span className="font-bold text-lg">{listing.google_rating}</span>
                       <span className="text-gray-500 text-sm">
-                        ({listing.google_reviews_count} Google reviews)
+                        ({listing.google_reviews_count} reviews)
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Rating from Google Maps
-                    </p>
                   </div>
                 )}
 
+                {/* Address & Contact */}
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                   <p className="flex items-start gap-2">
                     <span className="text-gray-400">📍</span>
@@ -219,20 +228,21 @@ export default function DirectoryPage() {
                   {listing.hours && (
                     <p className="flex items-start gap-2">
                       <span className="text-gray-400">🕐</span>
-                      <span className="whitespace-pre-line">{listing.hours}</span>
+                      <span className="whitespace-pre-line text-xs">{listing.hours}</span>
                     </p>
                   )}
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex gap-2">
                   {listing.google_maps_url && (
                     
                       href={listing.google_maps_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors text-sm"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center font-medium text-sm"
                     >
-                      Google Maps
+                      Maps
                     </a>
                   )}
 
@@ -241,7 +251,7 @@ export default function DirectoryPage() {
                       href={listing.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors text-sm"
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium text-sm"
                     >
                       Website
                     </a>
@@ -250,9 +260,9 @@ export default function DirectoryPage() {
                   {listing.slug && (
                     <Link
                       href={`/restaurant/${listing.slug}`}
-                      className="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors text-sm"
+                      className="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-center font-medium text-sm"
                     >
-                      View Details
+                      Details
                     </Link>
                   )}
                 </div>
