@@ -84,7 +84,75 @@ export default function DirectoryPage() {
 
         {/* Search & Filters */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid md:grid-cols-4 gap-4">
+          <form onSubmit={(e) => { e.preventDefault(); filterListings(); }} className="space-y-4">
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
+                <label htmlFor="search-input" className="sr-only">Search restaurants</label>
+                <input
+                  id="search-input"
+                  type="search"
+                  placeholder="Search by name, city, state, or zip..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  aria-label="Search for Filipino restaurants by name, city, state, or zip code"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="category-filter" className="sr-only">Filter by category</label>
+                <select
+                  id="category-filter"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  aria-label="Filter restaurants by category"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="state-filter" className="sr-only">Filter by state</label>
+                <select
+                  id="state-filter"
+                  value={stateFilter}
+                  onChange={(e) => setStateFilter(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  aria-label="Filter restaurants by state"
+                >
+                  <option value="">All States</option>
+                  {states.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-center">
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                aria-label="Search restaurants"
+              >
+                Search
+              </button>
+              
+              {(searchQuery || categoryFilter || stateFilter) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('')
+                    setCategoryFilter('')
+                    setStateFilter('')
+                  }}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors"
+                  aria-label="Clear all filters"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          </form>
             <div className="md:col-span-2">
               <input
                 type="text"
