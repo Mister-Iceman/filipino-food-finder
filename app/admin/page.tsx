@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-// Simple password protection
-const ADMIN_PASSWORD = 'FilipinoDirect2026!' // Change this to your secure password
+const ADMIN_PASSWORD = 'FilipinoDirect2026!'
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -29,7 +28,11 @@ export default function AdminPage() {
     category_secondary: '',
     google_rating: '',
     google_reviews_count: '',
-    hours: ''
+    hours: '',
+    instagram_url: '',
+    facebook_url: '',
+    tiktok_url: '',
+    x_url: ''
   })
 
   const supabase = createClient(
@@ -104,7 +107,6 @@ export default function AdminPage() {
     }
 
     if (editingId) {
-      // Update existing
       const { error } = await supabase
         .from('listings')
         .update(dataToSubmit)
@@ -120,7 +122,6 @@ export default function AdminPage() {
         }
       }
     } else {
-      // Create new
       const { error } = await supabase
         .from('listings')
         .insert([dataToSubmit])
@@ -150,7 +151,11 @@ export default function AdminPage() {
       category_secondary: listing.category_secondary || '',
       google_rating: listing.google_rating?.toString() || '',
       google_reviews_count: listing.google_reviews_count?.toString() || '',
-      hours: listing.hours || ''
+      hours: listing.hours || '',
+      instagram_url: listing.instagram_url || '',
+      facebook_url: listing.facebook_url || '',
+      tiktok_url: listing.tiktok_url || '',
+      x_url: listing.x_url || ''
     })
     setEditingId(listing.id)
     setShowForm(true)
@@ -190,13 +195,16 @@ export default function AdminPage() {
       category_secondary: '',
       google_rating: '',
       google_reviews_count: '',
-      hours: ''
+      hours: '',
+      instagram_url: '',
+      facebook_url: '',
+      tiktok_url: '',
+      x_url: ''
     })
     setEditingId(null)
     setShowForm(false)
   }
 
-  // Login screen
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -222,7 +230,6 @@ export default function AdminPage() {
     )
   }
 
-  // Admin dashboard
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -236,7 +243,6 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Search Bar */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Search Restaurants</h2>
           <form onSubmit={handleSearch} className="flex gap-4">
@@ -270,62 +276,49 @@ export default function AdminPage() {
           )}
         </div>
 
-        {/* Add/Edit Form */}
         {showForm && (
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
             <h2 className="text-2xl font-bold mb-6">
               {editingId ? 'Edit Restaurant' : 'Add New Restaurant'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Restaurant Name *"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Restaurant Name *"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+              />
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Primary Category *
-                  </label>
-                  <select
-                    value={formData.category_primary}
-                    onChange={(e) => setFormData({...formData, category_primary: e.target.value})}
-                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="Supermarket & Grocery">Supermarket & Grocery</option>
-                    <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
-                    <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
-                    <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
-                  </select>
-                </div>
+                <select
+                  value={formData.category_primary}
+                  onChange={(e) => setFormData({...formData, category_primary: e.target.value})}
+                  className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Restaurant">Restaurant</option>
+                  <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                  <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                  <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                  <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
+                </select>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Secondary Category (Optional)
-                  </label>
-                  <select
-                    value={formData.category_secondary}
-                    onChange={(e) => setFormData({...formData, category_secondary: e.target.value})}
-                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">None</option>
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="Supermarket & Grocery">Supermarket & Grocery</option>
-                    <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
-                    <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
-                    <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
-                    <option value="Filipino bakery">Filipino bakery</option>
-                    <option value="Filipino grocery">Filipino grocery</option>
-                    <option value="Catering">Catering</option>
-                  </select>
-                </div>
+                <select
+                  value={formData.category_secondary}
+                  onChange={(e) => setFormData({...formData, category_secondary: e.target.value})}
+                  className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Secondary Category (Optional)</option>
+                  <option value="Restaurant">Restaurant</option>
+                  <option value="Supermarket & Grocery">Supermarket & Grocery</option>
+                  <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
+                  <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
+                  <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
+                  <option value="Filipino bakery">Filipino bakery</option>
+                  <option value="Filipino grocery">Filipino grocery</option>
+                  <option value="Catering">Catering</option>
+                </select>
               </div>
 
               <input
@@ -368,7 +361,7 @@ export default function AdminPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <input
                   type="tel"
-                  placeholder="Phone (+1234567890)"
+                  placeholder="Phone"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
@@ -416,6 +409,40 @@ export default function AdminPage() {
                 className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
 
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Social Media (Optional)</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input
+                    type="url"
+                    placeholder="Instagram URL"
+                    value={formData.instagram_url}
+                    onChange={(e) => setFormData({...formData, instagram_url: e.target.value})}
+                    className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Facebook URL"
+                    value={formData.facebook_url}
+                    onChange={(e) => setFormData({...formData, facebook_url: e.target.value})}
+                    className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    type="url"
+                    placeholder="TikTok URL"
+                    value={formData.tiktok_url}
+                    onChange={(e) => setFormData({...formData, tiktok_url: e.target.value})}
+                    className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    type="url"
+                    placeholder="X (Twitter) URL"
+                    value={formData.x_url}
+                    onChange={(e) => setFormData({...formData, x_url: e.target.value})}
+                    className="px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
               <div className="flex gap-4">
                 <button
                   type="submit"
@@ -435,7 +462,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Listings Table */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-6 bg-gray-50 border-b">
             <h2 className="text-2xl font-bold">

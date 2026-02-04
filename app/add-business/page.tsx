@@ -235,6 +235,66 @@ export default function AddBusinessPage() {
               </div>
             </div>
 
+            {/* SOCIAL MEDIA SECTION - NEW! */}
+            <div className="border-t pt-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media (Optional)</h3>
+              <p className="text-sm text-gray-600 mb-4">Connect with customers on social platforms</p>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="instagram" className="block text-sm font-medium text-gray-700 mb-2">
+                    Instagram
+                  </label>
+                  <input
+                    type="url"
+                    id="instagram"
+                    name="instagram_url"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="https://instagram.com/yourrestaurant"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="facebook" className="block text-sm font-medium text-gray-700 mb-2">
+                    Facebook
+                  </label>
+                  <input
+                    type="url"
+                    id="facebook"
+                    name="facebook_url"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="https://facebook.com/yourrestaurant"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="tiktok" className="block text-sm font-medium text-gray-700 mb-2">
+                    TikTok
+                  </label>
+                  <input
+                    type="url"
+                    id="tiktok"
+                    name="tiktok_url"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="https://tiktok.com/@yourrestaurant"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="x" className="block text-sm font-medium text-gray-700 mb-2">
+                    X (Twitter)
+                  </label>
+                  <input
+                    type="url"
+                    id="x"
+                    name="x_url"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="https://x.com/yourrestaurant"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="google-maps" className="block text-sm font-medium text-gray-700 mb-2">
                 Google Maps URL (Optional)

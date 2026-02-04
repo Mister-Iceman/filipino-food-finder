@@ -1,22 +1,8 @@
 import { MetadataRoute } from 'next'
-import { createClient } from '@/lib/supabase/server'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabase = await createClient()
-  
-  const { data: listings } = await supabase
-    .from('listings')
-    .select('id, name, city, state, updated_at')
-  
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://filipinofoodnearme.org'
   
-  const listingUrls = listings?.map((listing) => ({
-    url: `${baseUrl}/directory`,
-    lastModified: listing.updated_at || new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  })) || []
-
   return [
     {
       url: baseUrl,
@@ -29,6 +15,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/add-business`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/support`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
   ]
 }
