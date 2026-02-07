@@ -1,0 +1,12 @@
+{
+     "mcpServers": {
+       "supabase": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "@modelcontextprotocol/server-postgres",
+           "postgresql://postgres:R@ikkoPinoyfood1017@db.kjhufdervnyuayhiwqtc.supabase.co:5432/postgres"
+         ]
+       }
+     }
+   }
