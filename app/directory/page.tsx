@@ -25,15 +25,15 @@ export default function DirectoryPage() {
   }, [listings, searchQuery, categoryFilter, stateFilter])
 
   const loadListings = async () => {
-    setLoading(true)
-    const { data } = await supabase
-      .from('listings')
-      .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
-      .order('name', { ascending: true })
-      .limit(5000)
-    if (data) setListings(data)
-    setLoading(false)
-  }
+  setLoading(true)
+  const { data } = await supabase
+    .from('listings')
+    .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
+    .range(0, 4999)  // Load rows 0-4999 (5000 total)
+    .order('name', { ascending: true })
+  if (data) setListings(data)
+  setLoading(false)
+}
 
   const filterListings = () => {
     let filtered = [...listings]
