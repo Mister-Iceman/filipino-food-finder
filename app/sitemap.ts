@@ -1,8 +1,26 @@
 import { MetadataRoute } from 'next'
+import { createClient } from '@supabase/supabase-js'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://filipinofoodnearme.org'
-  
+
+  // Fetch all listings
+  const { data: listings } = await supabase
+    .from('listings')
+    .select('slug, updated_at')
+
+  const listingUrls = listings?.map((listing) => ({
+    url: `${baseUrl}/listings/${listing.slug}`,
+    lastModified: new Date(listing.updated_at),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  })) || []
+
   return [
     {
       url: baseUrl,
@@ -40,5 +58,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    ...listingUrls,
   ]
 }
