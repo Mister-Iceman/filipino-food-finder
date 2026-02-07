@@ -70,7 +70,7 @@ export default async function CityPage({ params }: PageProps) {
     .select('*')
     .ilike('city', cityName)
     .eq('state', stateCode)
-    .order('google_rating', { ascending: false, nullsLast: true })
+    .order('google_rating', { ascending: false, nullsFirst: false })
 
   if (!listings || listings.length === 0) {
     notFound()
