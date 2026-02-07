@@ -1,3 +1,4 @@
+import Link from 'next/link'
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -160,7 +161,11 @@ export default function DirectoryPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredListings.map((listing) => (
               <div key={listing.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{listing.name}</h2>
+                <Link href={`/listings/${listing.slug}`}>
+  <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer transition">
+    {listing.name}
+  </h2>
+</Link>
                 <p className="text-gray-600 mb-4">{listing.category_primary}{listing.category_secondary && ` • ${listing.category_secondary}`}</p>
                 
                 {listing.google_rating && (
