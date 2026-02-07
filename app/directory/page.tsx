@@ -26,12 +26,24 @@ export default function DirectoryPage() {
 
   const loadListings = async () => {
   setLoading(true)
-  const { data } = await supabase
-    .from('listings')
-    .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
-    .range(0, 4999)  // Load rows 0-4999 (5000 total)
-    .order('name', { ascending: true })
-  if (data) setListings(data)
+  let allData: any[] = []
+  let from = 0
+  const batchSize = 1000
+  
+  while (true) {
+    const { data } = await supabase
+      .from('listings')
+      .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
+      .range(from, from + batchSize - 1)
+      .order('name', { ascending: true })
+    
+    if (!data || data.length === 0) break
+    allData = [...allData, ...data]
+    if (data.length < batchSize) break
+    from += batchSize
+  }
+  
+  setListings(allData)
   setLoading(false)
 }
 
