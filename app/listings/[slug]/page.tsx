@@ -19,8 +19,38 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     notFound()
   }
 
+  // Generate JSON-LD schema for SEO
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Restaurant',
+    name: listing.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: listing.address_street,
+      addressLocality: listing.city,
+      addressRegion: listing.state,
+      postalCode: listing.zip,
+      addressCountry: 'US',
+    },
+    ...(listing.phone && { telephone: listing.phone }),
+    ...(listing.website && { url: listing.website }),
+    ...(listing.google_rating && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: listing.google_rating,
+        reviewCount: listing.google_reviews_count || 0,
+      },
+    }),
+    ...(listing.hours && { openingHours: listing.hours }),
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      
       <div className="max-w-4xl mx-auto px-4">
         <Link href="/directory" className="text-blue-600 hover:underline mb-4 inline-block">
           ← Back to Directory
