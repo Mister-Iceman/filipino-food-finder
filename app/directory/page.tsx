@@ -47,11 +47,13 @@ allData = [...allData, ...data]
     from += batchSize
   }
   
-  setListings(allData)
-  setLoading(false)
+setListings(allData)
+console.log('State set with items:', allData.slice(0, 2))
+setLoading(false)
 }
 
   const filterListings = () => {
+    console.log('Filtering. First listing:', listings[0])
     let filtered = [...listings]
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase()
