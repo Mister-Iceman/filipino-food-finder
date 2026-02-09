@@ -41,7 +41,8 @@ export default function DirectoryPage() {
       .order('name', { ascending: true })
     
     if (!data || data.length === 0) break
-    allData = [...allData, ...data]
+console.log('Fetched batch:', data.slice(0, 2)) // Log first 2 items
+allData = [...allData, ...data]
     if (data.length < batchSize) break
     from += batchSize
   }
