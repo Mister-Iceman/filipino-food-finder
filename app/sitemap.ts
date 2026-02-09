@@ -21,6 +21,46 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   })) || []
 
+  // Fetch all unique cities for city landing pages
+  const { data: cities } = await supabase
+    .from('listings')
+    .select('city, state')
+    .not('city', 'is', null)
+    .not('state', 'is', null)
+
+  // Create unique city combinations
+  const uniqueCities = [...new Set(cities?.map(c => 
+    `${c.city.toLowerCase().replace(/\s+/g, '-')},${c.state}`
+  ) || [])]
+
+  // Map state codes to full names
+  const stateNames: { [key: string]: string } = {
+    'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas',
+    'CA': 'california', 'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware',
+    'FL': 'florida', 'GA': 'georgia', 'HI': 'hawaii', 'ID': 'idaho',
+    'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa', 'KS': 'kansas',
+    'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
+    'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi',
+    'MO': 'missouri', 'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada',
+    'NH': 'new-hampshire', 'NJ': 'new-jersey', 'NM': 'new-mexico', 'NY': 'new-york',
+    'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio', 'OK': 'oklahoma',
+    'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
+    'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah',
+    'VT': 'vermont', 'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia',
+    'WI': 'wisconsin', 'WY': 'wyoming'
+  }
+
+  const cityUrls = uniqueCities.map(cityState => {
+    const [city, state] = cityState.split(',')
+    const stateName = stateNames[state] || state.toLowerCase()
+    return {
+      url: `${baseUrl}/${stateName}/${city}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }
+  })
+
   return [
     {
       url: baseUrl,
@@ -58,6 +98,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    ...cityUrls,
     ...listingUrls,
   ]
 }
