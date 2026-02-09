@@ -35,7 +35,7 @@ export default function DirectoryPage() {
   while (true) {
     const { data } = await supabase
       .from('listings')
-      .select('id, name, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
+      .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
       .range(from, from + batchSize - 1)
       .order('name', { ascending: true })
     
