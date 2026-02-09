@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import RatingForm from '../../components/RatingForm'
+import RatingSummary from '../../components/RatingSummary'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,10 +21,18 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     notFound()
   }
 
+  // Determine category (restaurant vs grocery)
+  const isGrocery = 
+    listing.category_primary?.toLowerCase().includes('supermarket') ||
+    listing.category_primary?.toLowerCase().includes('grocery') ||
+    listing.category_primary?.toLowerCase().includes('market')
+
+  const category = isGrocery ? 'grocery' : 'restaurant'
+
   // Generate JSON-LD schema for SEO
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Restaurant',
+    '@type': isGrocery ? 'GroceryStore' : 'Restaurant',
     name: listing.name,
     address: {
       '@type': 'PostalAddress',
@@ -68,13 +78,30 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-4 mb-8">
             <p className="text-gray-700">
               📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}
             </p>
             {listing.phone && <p className="text-gray-700">📞 {listing.phone}</p>}
             {listing.hours && <p className="text-gray-700">🕐 {listing.hours}</p>}
           </div>
+
+          {/* Community Ratings Summary */}
+          <div className="mb-8">
+            <RatingSummary 
+              listingId={listing.id}
+              category={category}
+            />
+          </div>
+        </div>
+
+        {/* Rating Form Section */}
+        <div className="mt-8">
+          <RatingForm 
+            listingId={listing.id} 
+            listingName={listing.name}
+            category={category}
+          />
         </div>
       </div>
     </div>
