@@ -60,13 +60,23 @@ export default async function EventsPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
-          <Link href="/" className="text-blue-600 hover:underline mb-4 inline-block">
-            ← Back to Home
-          </Link>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Filipino Food Events</h1>
-          <p className="text-xl text-gray-600">
-            Discover festivals, pop-ups, grand openings, and community gatherings celebrating Filipino cuisine across America.
-          </p>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+            <div className="flex-1">
+              <Link href="/" className="text-blue-600 hover:underline mb-4 inline-block">
+                ← Back to Home
+              </Link>
+              <h1 className="text-5xl font-bold text-gray-900 mb-4">Filipino Food Events</h1>
+              <p className="text-xl text-gray-600">
+                Discover festivals, pop-ups, grand openings, and community gatherings celebrating Filipino cuisine across America.
+              </p>
+            </div>
+            <Link
+              href="/submit-event"
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold whitespace-nowrap"
+            >
+              + Submit Event
+            </Link>
+          </div>
         </div>
 
         {/* Upcoming Events */}
@@ -76,7 +86,13 @@ export default async function EventsPage() {
           {!upcomingEvents || upcomingEvents.length === 0 ? (
             <div className="bg-white rounded-xl shadow-lg p-12 text-center">
               <p className="text-2xl text-gray-600 mb-4">No upcoming events yet!</p>
-              <p className="text-gray-500">Check back soon for Filipino food events in your area.</p>
+              <p className="text-gray-500 mb-6">Check back soon for Filipino food events in your area.</p>
+              <Link
+                href="/submit-event"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold"
+              >
+                Submit an Event
+              </Link>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
