@@ -1,235 +1,143 @@
-import type { Metadata } from 'next'
+import Link from 'next/link'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Support Us | Filipino Food Near Me',
-  description: 'Help us maintain and improve the first community Filipino food directory in America. Your support keeps this free resource available to everyone.',
+  description: 'Learn how to support Filipino Food Near Me and help us grow the community',
 }
 
 export default function SupportPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-16">
+    <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">Support Our Mission</h1>
+        <Link href="/" className="text-blue-600 hover:underline mb-4 inline-block">
+          ← Back to Home
+        </Link>
+
+        <h1 className="text-5xl font-bold text-gray-900 mb-4">Support Us</h1>
         
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8">
-            <p className="text-lg text-blue-900">
-              <strong>Filipino Food Near Me</strong> is a free, community-driven directory built to connect 
-              Filipino-Americans and food lovers to authentic Filipino cuisine across the United States.
+        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Our Mission</h2>
+            <p className="text-gray-700 leading-relaxed">
+              Filipino Food Near Me is a free community directory helping Filipino-Americans discover 
+              authentic food and support local businesses across the United States. We're built by the 
+              community, for the community.
             </p>
-          </div>
-
-          <section className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why We Need Your Support</h2>
-            <p className="text-lg text-gray-700 mb-4">
-              Running a nationwide directory takes time, effort, and resources. Your support helps us:
-            </p>
-            <ul className="space-y-3 list-none">
-              <li className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Server">💻</span>
-                <div>
-                  <strong className="text-gray-900">Maintain the website</strong>
-                  <p className="text-gray-700">Hosting, database, domain renewal, and technical infrastructure</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Update">🔄</span>
-                <div>
-                  <strong className="text-gray-900">Keep information current</strong>
-                  <p className="text-gray-700">Verify listings, update closed businesses, add new restaurants</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Growth">📈</span>
-                <div>
-                  <strong className="text-gray-900">Expand the directory</strong>
-                  <p className="text-gray-700">Research and add more Filipino businesses across all 50 states</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Features">✨</span>
-                <div>
-                  <strong className="text-gray-900">Add new features</strong>
-                  <p className="text-gray-700">User reviews, mobile app, advanced search, and more</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Time">⏰</span>
-                <div>
-                  <strong className="text-gray-900">Dedicate more time</strong>
-                  <p className="text-gray-700">Respond to submissions, moderate content, improve user experience</p>
-                </div>
-              </li>
-            </ul>
           </section>
 
-          <section className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Commitment to You</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-green-900 mb-2">Always Free</h3>
-                <p className="text-gray-700">
-                  The directory will always be free to access. No paywalls, no premium tiers, no subscriptions.
-                </p>
-              </div>
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-blue-900 mb-2">Community-Driven</h3>
-                <p className="text-gray-700">
-                  Built by the community, for the community. Your input shapes what we become.
-                </p>
-              </div>
-              <div className="bg-yellow-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-yellow-900 mb-2">Transparent</h3>
-                <p className="text-gray-700">
-                  We're open about our costs, challenges, and improvements. This is your directory.
-                </p>
-              </div>
-              <div className="bg-red-50 p-6 rounded-lg">
-                <h2 className="text-3xl font-bold text-gray-900 mb-3">Independent Community Ratings</h2>
-  <p className="text-gray-700 leading-relaxed mb-4">
-    Your ratings are authentic and unbiased. Businesses cannot pay for better ratings or influence community insights. All ratings come from verified community members through email verification - ensuring real experiences from real people in the Filipino-American community.
-  </p>
-  <p className="text-sm text-gray-600 italic">
-    Note: We may feature business partnerships and advertising, but ratings always remain independent and community-driven.
-  </p>
-</section>
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Independent Community Ratings</h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Your ratings are authentic and unbiased. Businesses cannot pay for better ratings or influence community insights. All ratings come from verified community members through email verification - ensuring real experiences from real people in the Filipino-American community.
+            </p>
+            <p className="text-sm text-gray-600 italic">
+              Note: We may feature business partnerships and advertising, but ratings always remain independent and community-driven.
+            </p>
+          </section>
 
-          <section className="mb-8">
+          <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Ways to Support Us</h2>
-            
+
             <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 border-2 border-yellow-400 rounded-xl p-8 mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">💛 Financial Support</h3>
-              <p className="text-gray-700 mb-6">
-                Every contribution, no matter how small, helps us maintain and improve this free resource.
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">☕ Buy Us Coffee</h3>
+              <p className="text-gray-700 mb-4">
+                Help us keep the servers running and continue building features the community loves.
               </p>
-              
-              <div className="space-y-4">
-                {/* Placeholder for payment buttons - you'll add these after setting up accounts */}
-                <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                  <p className="text-gray-700 mb-6 text-lg">
-                    Support our mission with a one-time contribution:
-                  </p>
-                  
-                  <a 
-                    href="https://buymeacoffee.com/filipinofoodnearme" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block"
-                  >
-                    <img 
-                      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
-                      alt="Buy Me A Coffee" 
-                      className="h-16 hover:scale-105 transition-transform"
-                    />
-                  </a>
-
-                  <p className="text-sm text-gray-500 mt-6">
-                    Or visit: <a 
-                      href="https://buymeacoffee.com/filipinofoodnearme" 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      buymeacoffee.com/filipinofoodnearme
-                    </a>
-                  </p>
-
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-xs text-gray-500">
-                      💡 <strong>Suggested amounts:</strong> $3 (coffee) • $10 (lunch) • $25 (monthly hosting) • Custom amount
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Uncomment when you have Buy Me A Coffee set up:
-                <a 
-                  href="https://www.buymeacoffee.com/YOUR_USERNAME" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block"
-                >
-                  <img 
-                    src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
-                    alt="Buy Me A Coffee" 
-                    className="h-14"
-                  />
-                </a>
-                */}
-              </div>
+              <a 
+                href="https://www.buymeacoffee.com/filipinofood" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg transition"
+              >
+                Support on Buy Me a Coffee
+              </a>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-blue-900 mb-3">🔗 Share the Directory</h3>
-                <p className="text-gray-700 mb-4">
-                  Help us grow by sharing with Filipino-American communities, food groups, and social media.
+            <div className="space-y-6">
+              <div className="border-l-4 border-blue-600 bg-blue-50 p-6 rounded-r-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">📢 Spread the Word</h3>
+                <p className="text-gray-700 mb-3">
+                  Share Filipino Food Near Me with friends, family, and your favorite Filipino businesses!
                 </p>
-                <div className="flex gap-2">
-                  <a 
-                    href="https://www.facebook.com/sharer/sharer.php?u=https://filipinofoodnearme.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium"
-                  >
-                    Share on Facebook
-                  </a>
-                  <a 
-                    href="https://twitter.com/intent/tweet?text=Check%20out%20Filipino%20Food%20Near%20Me%20-%20the%20first%20community%20Filipino%20food%20directory!&url=https://filipinofoodnearme.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium"
-                  >
-                    Share on X
-                  </a>
-                </div>
+                <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  <li>Post about us on social media</li>
+                  <li>Tell your Filipino community groups</li>
+                  <li>Ask businesses to share their listings</li>
+                </ul>
               </div>
 
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-green-900 mb-3">📝 Contribute Data</h3>
-                <p className="text-gray-700 mb-4">
-                  Know a great Filipino restaurant? Help us add it to the directory!
+              <div className="border-l-4 border-green-600 bg-green-50 p-6 rounded-r-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">⭐ Rate & Review</h3>
+                <p className="text-gray-700 mb-3">
+                  Your ratings help others discover amazing Filipino food. Every review makes the directory more valuable!
                 </p>
-                <a 
-                  href="/add-business"
-                  className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium"
+              </div>
+
+              <div className="border-l-4 border-purple-600 bg-purple-50 p-6 rounded-r-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">📍 Submit New Listings</h3>
+                <p className="text-gray-700 mb-3">
+                  Know a Filipino restaurant, bakery, or grocery store that's not listed? Let us know!
+                </p>
+                <Link 
+                  href="/add-business" 
+                  className="text-purple-600 hover:underline font-medium"
                 >
-                  Submit a Business
-                </a>
+                  Submit a Business →
+                </Link>
               </div>
             </div>
           </section>
 
-          <section className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-3">Important Legal Information</h3>
-            <ul className="space-y-2 text-sm text-gray-700">
-              <li>
-                <strong>Not a Nonprofit:</strong> Filipino Food Near Me is not a registered 501(c)(3) nonprofit organization. 
-                Contributions are not tax-deductible.
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">How We Use Your Support</h2>
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-start">
+                <span className="text-2xl mr-3">🖥️</span>
+                <div>
+                  <strong>Server & Hosting Costs:</strong> Keeping the site fast and reliable
+                </div>
               </li>
-              <li>
-                <strong>How Funds Are Used:</strong> All support goes directly toward website hosting, database management, 
-                domain costs, data research, and site improvements.
+              <li className="flex items-start">
+                <span className="text-2xl mr-3">🔍</span>
+                <div>
+                  <strong>Research & Updates:</strong> Finding new businesses and keeping listings accurate
+                </div>
               </li>
-              <li>
-                <strong>No Refunds:</strong> All contributions are final and non-refundable.
+              <li className="flex items-start">
+                <span className="text-2xl mr-3">✨</span>
+                <div>
+                  <strong>New Features:</strong> Building tools the community requests
+                </div>
               </li>
-              <li>
-                <strong>Transparency:</strong> We're committed to using funds responsibly and will share updates on how 
-                support is used to improve the directory.
+              <li className="flex items-start">
+                <span className="text-2xl mr-3">📧</span>
+                <div>
+                  <strong>Communication:</strong> Email services, newsletters, and community updates
+                </div>
               </li>
             </ul>
           </section>
-        </div>
 
-        <div className="bg-gradient-to-r from-blue-600 to-red-600 text-white rounded-xl shadow-lg p-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Thank You for Your Support! 🙏</h2>
-          <p className="text-lg mb-6">
-            Every contribution, share, and business submission helps build the strongest Filipino food community online. 
-            Together, we're making Filipino cuisine more accessible to everyone across America.
-          </p>
-          <p className="text-xl font-bold">
-            Maraming salamat! ❤️
-          </p>
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">100% Community-Driven</h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              We don't charge businesses for listings or charge users for access. Every dollar goes directly 
+              into making this resource better for the Filipino-American community.
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              Whether you contribute $3 or $30, you're helping preserve and promote Filipino food culture 
+              across America. Salamat po! 🙏
+            </p>
+          </section>
+
+          <section className="border-t pt-6">
+            <p className="text-sm text-gray-500">
+              Questions about supporting us? Email us at{' '}
+              <a href="mailto:support@filipinofoodnearme.org" className="text-blue-600 hover:underline">
+                support@filipinofoodnearme.org
+              </a>
+            </p>
+          </section>
         </div>
       </div>
     </div>
