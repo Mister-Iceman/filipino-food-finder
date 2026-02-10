@@ -315,9 +315,6 @@ export default function AdminPage() {
                   <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
                   <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
                   <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
-                  <option value="Filipino bakery">Filipino bakery</option>
-                  <option value="Filipino grocery">Filipino grocery</option>
-                  <option value="Catering">Catering</option>
                 </select>
               </div>
 
