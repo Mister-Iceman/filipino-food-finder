@@ -1,7 +1,34 @@
 import Link from 'next/link'
 import { WebsiteStructuredData } from './components/StructuredData'
+import { createClient } from '@supabase/supabase-js'
 
-export default function HomePage() {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+export default async function HomePage() {
+  // Fetch top 3 upcoming events
+  const today = new Date().toISOString().split('T')[0]
+  
+  const { data: upcomingEvents } = await supabase
+    .from('events')
+    .select('*')
+    .gte('event_date', today)
+    .order('event_date', { ascending: true })
+    .limit(3)
+
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day)
+    
+    return localDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <WebsiteStructuredData />
@@ -47,19 +74,79 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Placeholder for now - will show real events after you add them */}
-            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-              <p className="text-xl text-gray-600 mb-4">🎉 Events coming soon!</p>
-              <p className="text-gray-500 mb-6">
-                We'll be featuring Filipino food festivals, restaurant grand openings, and community events here.
-              </p>
-              <Link 
-                href="/events"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold"
-              >
-                Check the Events Page
-              </Link>
-            </div>
+            {!upcomingEvents || upcomingEvents.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+                <p className="text-xl text-gray-600 mb-4">🎉 No upcoming events yet!</p>
+                <p className="text-gray-500 mb-6">
+                  Check back soon for Filipino food festivals, restaurant grand openings, and community events.
+                </p>
+                <div className="flex gap-4 justify-center">
+                  <Link 
+                    href="/events"
+                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold"
+                  >
+                    View Events Page
+                  </Link>
+                  <Link 
+                    href="/submit-event"
+                    className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold"
+                  >
+                    Submit an Event
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                {upcomingEvents.map((event) => (
+                  <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                    {event.image_url && (
+                      <div className="h-40 bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden">
+                        <img 
+                          src={event.image_url} 
+                          alt={event.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    {!event.image_url && (
+                      <div className="h-40 bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
+                        <span className="text-6xl">🎉</span>
+                      </div>
+                    )}
+                    
+                    <div className="p-6">
+                      {event.is_featured && (
+                        <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">
+                          ⭐ FEATURED
+                        </span>
+                      )}
+
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
+                      
+                      <div className="space-y-1 text-sm text-gray-600 mb-4">
+                        <p className="font-semibold text-blue-600">
+                          📅 {formatDate(event.event_date)}
+                        </p>
+                        {event.city && event.state && (
+                          <p className="text-gray-500">📍 {event.city}, {event.state}</p>
+                        )}
+                      </div>
+
+                      {event.description && (
+                        <p className="text-gray-700 text-sm mb-4 line-clamp-2">{event.description}</p>
+                      )}
+
+                      <Link
+                        href="/events"
+                        className="block text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm"
+                      >
+                        Learn More
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
