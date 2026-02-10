@@ -48,13 +48,17 @@ export default async function EventsPage() {
   }
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+  // Parse as local date instead of UTC to avoid timezone shift
+  const [year, month, day] = date.split('-').map(Number)
+  const localDate = new Date(year, month - 1, day) // month is 0-indexed
+  
+  return localDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

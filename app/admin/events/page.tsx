@@ -156,13 +156,18 @@ export default function EventsAdminPage() {
     setShowForm(false)
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+  const formatDate = (date: string) => {
+  // Parse as local date instead of UTC to avoid timezone shift
+  const [year, month, day] = date.split('-').map(Number)
+  const localDate = new Date(year, month - 1, day) // month is 0-indexed
+  
+  return localDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
 
   if (!isAuthenticated) {
     return (
