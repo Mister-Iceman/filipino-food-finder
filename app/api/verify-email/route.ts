@@ -2,16 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import * as brevo from '@getbrevo/brevo'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-// Initialize Brevo
-const apiInstance = new brevo.TransactionalEmailsApi()
-apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!)
-
 export async function POST(request: NextRequest) {
+  // Initialize clients inside function (runtime, not build time)
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const { email } = await request.json()
 
   if (!email || !email.includes('@')) {
@@ -38,6 +35,10 @@ export async function POST(request: NextRequest) {
 
   // Build verification URL
   const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}/api/verify-email?token=${token}`
+
+  // Initialize Brevo inside function
+  const apiInstance = new brevo.TransactionalEmailsApi()
+  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!)
 
   // Send email via Brevo
   const sendSmtpEmail = new brevo.SendSmtpEmail()
