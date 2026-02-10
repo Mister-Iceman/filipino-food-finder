@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import * as brevo from '@getbrevo/brevo'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+// Initialize Brevo
+const apiInstance = new brevo.TransactionalEmailsApi()
+apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!)
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
   const { email } = await request.json()
 
   if (!email || !email.includes('@')) {
@@ -27,18 +32,78 @@ export async function POST(request: NextRequest) {
     })
 
   if (error) {
+    console.error('Database error:', error)
     return NextResponse.json({ error: 'Failed to send verification' }, { status: 500 })
   }
 
-  // TODO: Send verification email (implement in Step 3)
-  // For now, return the token (in production, send via email)
-  
-  return NextResponse.json({ 
-    success: true,
-    // REMOVE THIS IN PRODUCTION - only for testing
-    token, 
-    verifyUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/verify?token=${token}`
-  })
+  // Build verification URL
+  const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}/api/verify-email?token=${token}`
+
+  // Send email via Brevo
+  const sendSmtpEmail = new brevo.SendSmtpEmail()
+  sendSmtpEmail.to = [{ email }]
+  sendSmtpEmail.sender = { 
+    email: 'info@filipinofoodnearme.org', // Replace with your verified sender email
+    name: 'Filipino Food Near Me' 
+  }
+  sendSmtpEmail.subject = 'Verify your email - Filipino Food Near Me'
+  sendSmtpEmail.htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">🇵🇭 Filipino Food Near Me</h1>
+      </div>
+      
+      <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+        <h2 style="color: #667eea; margin-top: 0;">Verify Your Email</h2>
+        
+        <p style="font-size: 16px;">Thank you for sharing your experience with the Filipino food community!</p>
+        
+        <p style="font-size: 16px;">Click the button below to verify your email and submit your rating:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verifyUrl}" 
+             style="background: #667eea; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">
+            Verify Email & Continue
+          </a>
+        </div>
+        
+        <p style="font-size: 14px; color: #666;">Or copy and paste this link into your browser:</p>
+        <p style="font-size: 12px; color: #999; word-break: break-all;">${verifyUrl}</p>
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #999;">
+          This link expires in 24 hours. If you didn't request this verification, you can safely ignore this email.
+        </p>
+        
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 20px;">
+          Filipino Food Near Me - Supporting our community, one rating at a time<br>
+          <a href="https://filipinofoodnearme.org" style="color: #667eea;">filipinofoodnearme.org</a>
+        </p>
+      </div>
+    </body>
+    </html>
+  `
+
+  try {
+    await apiInstance.sendTransacEmail(sendSmtpEmail)
+    return NextResponse.json({ 
+      success: true,
+      message: 'Verification email sent! Check your inbox.'
+    })
+  } catch (emailError: any) {
+    console.error('Email sending error:', emailError)
+    return NextResponse.json({ 
+      error: 'Failed to send verification email. Please try again.',
+      details: emailError.message 
+    }, { status: 500 })
+  }
 }
 
 export async function GET(request: NextRequest) {
@@ -72,8 +137,6 @@ export async function GET(request: NextRequest) {
     .update({ verified: true })
     .eq('token', token)
 
-  return NextResponse.json({ 
-    success: true,
-    email: data.email 
-  })
+  // Redirect back to the site with success message
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}?verified=true&email=${encodeURIComponent(data.email)}`)
 }

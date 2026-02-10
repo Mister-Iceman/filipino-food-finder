@@ -85,13 +85,14 @@ export default function SupportPage() {
                 </p>
               </div>
               <div className="bg-red-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-red-900 mb-2">Independent</h3>
-                <p className="text-gray-700">
-                  We don't accept payments from businesses for better placement or fake reviews.
-                </p>
-              </div>
-            </div>
-          </section>
+                <h2 className="text-3xl font-bold text-gray-900 mb-3">Independent Community Ratings</h2>
+  <p className="text-gray-700 leading-relaxed mb-4">
+    Your ratings are authentic and unbiased. Businesses cannot pay for better ratings or influence community insights. All ratings come from verified community members through email verification - ensuring real experiences from real people in the Filipino-American community.
+  </p>
+  <p className="text-sm text-gray-600 italic">
+    Note: We may feature business partnerships and advertising, but ratings always remain independent and community-driven.
+  </p>
+</section>
 
           <section className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Ways to Support Us</h2>

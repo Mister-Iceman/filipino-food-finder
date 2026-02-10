@@ -224,48 +224,40 @@ export default function RatingForm({ listingId, listingName, category }: RatingF
   }
 
   if (step === 'verify') {
-    return (
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Check Your Email</h2>
-        <p className="text-gray-700 mb-6">
-          We sent a verification link to <strong>{email}</strong>
+  return (
+    <div className="bg-white rounded-lg shadow-lg p-8">
+      <h2 className="text-3xl font-bold text-gray-900 mb-4">✉️ Check Your Email</h2>
+      <p className="text-gray-700 mb-6">
+        We sent a verification link to <strong>{email}</strong>
+      </p>
+      <p className="text-gray-600 text-sm mb-6">
+        Click the link in the email to verify and continue rating.
+      </p>
+      <div className="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4">
+        <p className="text-gray-700 text-sm mb-2">
+          📬 Didn't receive it?
         </p>
-
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-          <p className="text-sm text-gray-700 mb-2">
-            <strong>Testing Mode:</strong> Click the button below to verify
-          </p>
-          <p className="text-xs text-gray-600">
-            (In production, you'd click the link in your email)
-          </p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
-
+        <ul className="text-gray-600 text-sm space-y-1 mb-3">
+          <li>• Check your spam/junk folder</li>
+          <li>• Wait a few minutes (emails can be delayed)</li>
+        </ul>
         <button
-          onClick={handleVerify}
-          disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50"
+          onClick={() => setStep('email')}
+          className="text-blue-600 hover:underline text-sm font-medium"
         >
-          {loading ? 'Verifying...' : 'Verify Email (Test)'}
+          ← Try a different email address
         </button>
-
-        <p className="text-sm text-gray-500 mt-4 text-center">
-          Didn't receive it?{' '}
-          <button
-            onClick={() => setStep('email')}
-            className="text-blue-600 hover:underline"
-          >
-            Try again
-          </button>
-        </p>
       </div>
-    )
-  }
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 mt-4">
+          {error}
+        </div>
+      )}
+    </div>
+  )
+}
+        
 
   // Rating form (step === 'rate')
   return (
