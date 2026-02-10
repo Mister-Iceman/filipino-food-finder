@@ -1,3 +1,4 @@
+import GoogleAnalytics from './components/GoogleAnalytics'
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -67,6 +68,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#2563eb" />
       </head>
       <body className={inter.className}>
+        <GoogleAnalytics measurementId="G-WV1ZD74FPV" />
         <a 
           href="#main-content" 
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-yellow-500 focus:text-gray-900 focus:font-bold focus:rounded"
