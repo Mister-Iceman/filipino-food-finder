@@ -1,4 +1,4 @@
-// Contact form API route - Updated
+// Contact form API - Environment variables configured
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
