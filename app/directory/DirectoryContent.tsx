@@ -296,9 +296,10 @@ export default function DirectoryContent() {
                   {/* Google Rating */}
                   {listing.google_rating && (
                     <div className="bg-yellow-50 border-l-4 border-yellow-400 px-3 py-2 rounded-lg mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg" title="Google Rating">🌐</span>
-                        <div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg mt-0.5">🌐</span>
+                        <div className="flex-1">
+                          <p className="font-semibold text-yellow-900 text-sm mb-1">Google Rating</p>
                           <div className="flex items-center gap-1">
                             <span className="text-yellow-500 text-xl">★</span>
                             <span className="font-bold text-lg">{listing.google_rating}</span>
