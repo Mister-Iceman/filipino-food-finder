@@ -1,11 +1,56 @@
+'use client'
+
+import { useState } from 'react'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Contact Us | Filipino Food Near Me',
-  description: 'Get in touch with Filipino Food Near Me. Submit questions, report issues, suggest businesses, or inquire about partnerships.',
-}
-
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message')
+      }
+
+      setStatus('success')
+      setFormData({ name: '', email: '', subject: '', message: '' })
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => setStatus('idle'), 5000)
+    } catch (error) {
+      setStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to send message')
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-4xl mx-auto px-4">
@@ -65,7 +110,26 @@ export default function ContactPage() {
 
           <div className="border-t pt-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Send Us a Message</h2>
-            <form className="space-y-6">
+            
+            {/* Success Message */}
+            {status === 'success' && (
+              <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 font-medium">
+                  ✓ Message sent successfully! We'll get back to you within 24-48 hours.
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {status === 'error' && (
+              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-red-800 font-medium">
+                  ✗ {errorMessage}. Please try again or email us directly at info@filipinofoodnearme.org
+                </p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -76,7 +140,10 @@ export default function ContactPage() {
                     id="name"
                     name="name"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    value={formData.name}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="Juan Dela Cruz"
                   />
                 </div>
@@ -90,7 +157,10 @@ export default function ContactPage() {
                     id="email"
                     name="email"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    value={formData.email}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -104,7 +174,10 @@ export default function ContactPage() {
                   id="subject"
                   name="subject"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 >
                   <option value="">Select a topic</option>
                   <option value="general">General Inquiry</option>
@@ -124,23 +197,20 @@ export default function ContactPage() {
                   name="message"
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                  value={formData.message}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none disabled:bg-gray-100"
                   placeholder="Tell us how we can help..."
                 ></textarea>
               </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800">
-                  <strong>Note:</strong> This is a demonstration form. In production, this will send an email to 
-                  info@filipinofoodnearme.org. For now, please email us directly at the address above.
-                </p>
-              </div>
-
               <button
                 type="submit"
-                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold transition-all hover:scale-105"
+                disabled={status === 'loading'}
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Send Message
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>
