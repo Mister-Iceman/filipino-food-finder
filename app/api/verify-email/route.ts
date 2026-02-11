@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const { email } = await request.json()
+  const { email, listingSlug } = await request.json()
 
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
@@ -19,13 +19,14 @@ export async function POST(request: NextRequest) {
   const token = Math.random().toString(36).substring(2) + Date.now().toString(36)
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
 
-  // Store verification token
+  // Store verification token with listing slug
   const { error } = await supabase
     .from('email_verifications')
     .insert({
       email,
       token,
       expires_at: expiresAt.toISOString(),
+      listing_slug: listingSlug || null, // Save the restaurant slug
     })
 
   if (error) {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
   const sendSmtpEmail = new brevo.SendSmtpEmail()
   sendSmtpEmail.to = [{ email }]
   sendSmtpEmail.sender = { 
-    email: 'info@filipinofoodnearme.org', // Replace with your verified sender email
+    email: 'info@filipinofoodnearme.org',
     name: 'Filipino Food Near Me' 
   }
   sendSmtpEmail.subject = 'Verify your email - Filipino Food Near Me'
@@ -138,6 +139,10 @@ export async function GET(request: NextRequest) {
     .update({ verified: true })
     .eq('token', token)
 
-  // Redirect back to the site with success message
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}?verified=true&email=${encodeURIComponent(data.email)}`)
+  // Redirect back to the restaurant page if we have a slug, otherwise homepage
+  const redirectUrl = data.listing_slug 
+    ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}/listings/${data.listing_slug}?verified=true&email=${encodeURIComponent(data.email)}`
+    : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}?verified=true&email=${encodeURIComponent(data.email)}`
+
+  return NextResponse.redirect(redirectUrl)
 }

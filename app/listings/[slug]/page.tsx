@@ -100,6 +100,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
           <RatingForm 
             listingId={listing.id} 
             listingName={listing.name}
+            listingSlug={slug}
             category={category}
           />
         </div>

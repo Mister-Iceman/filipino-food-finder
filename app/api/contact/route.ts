@@ -1,4 +1,3 @@
-// Contact form API - Environment variables configured
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -13,16 +12,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // DEBUG: Check if API key exists
     const apiKey = process.env.BREVO_API_KEY
-    console.log('API Key exists:', !!apiKey)
-    console.log('API Key length:', apiKey?.length || 0)
-    console.log('API Key first 10 chars:', apiKey?.substring(0, 10) || 'NONE')
-
     if (!apiKey) {
-      console.error('BREVO_API_KEY is not set in environment variables')
       return NextResponse.json(
-        { error: 'Server configuration error - API key missing' },
+        { error: 'Server configuration error' },
         { status: 500 }
       )
     }
@@ -37,8 +30,6 @@ export async function POST(request: NextRequest) {
     }
 
     const subjectText = subjectMap[subject] || subject
-
-    console.log('Attempting to send email via Brevo...')
 
     // Send email via Brevo
     const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -91,19 +82,14 @@ export async function POST(request: NextRequest) {
       })
     })
 
-    console.log('Brevo response status:', brevoResponse.status)
-
     if (!brevoResponse.ok) {
       const errorData = await brevoResponse.json()
       console.error('Brevo API error:', errorData)
       return NextResponse.json(
-        { error: `Brevo error: ${JSON.stringify(errorData)}` },
+        { error: 'Failed to send email. Please try again.' },
         { status: 500 }
       )
     }
-
-    const responseData = await brevoResponse.json()
-    console.log('Brevo success:', responseData)
 
     return NextResponse.json({ 
       success: true,
@@ -113,7 +99,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Contact form error:', error)
     return NextResponse.json(
-      { error: `Server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { error: 'Failed to send message. Please try again.' },
       { status: 500 }
     )
   }

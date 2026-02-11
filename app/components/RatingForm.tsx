@@ -1,21 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 interface RatingFormProps {
   listingId: number
   listingName: string
+  listingSlug: string
   category: 'restaurant' | 'grocery'
 }
 
-export default function RatingForm({ listingId, listingName, category }: RatingFormProps) {
+export default function RatingForm({ listingId, listingName, listingSlug, category }: RatingFormProps) {
+  const searchParams = useSearchParams()
   const [step, setStep] = useState<'email' | 'verify' | 'rate'>('email')
   const [email, setEmail] = useState('')
   const [token, setToken] = useState('')
-  const [verifyUrl, setVerifyUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [justVerified, setJustVerified] = useState(false)
 
   // Restaurant state
   const [tasteStyle, setTasteStyle] = useState('')
@@ -29,6 +32,24 @@ export default function RatingForm({ listingId, listingName, category }: RatingF
   const [selection, setSelection] = useState(0)
   const [readyToEat, setReadyToEat] = useState('')
 
+  // Check for verification on page load
+  useEffect(() => {
+    const verified = searchParams.get('verified')
+    const verifiedEmail = searchParams.get('email')
+    
+    if (verified === 'true' && verifiedEmail) {
+      setEmail(decodeURIComponent(verifiedEmail))
+      setStep('rate')
+      setJustVerified(true)
+      
+      // Remove query params from URL after 5 seconds
+      setTimeout(() => {
+        setJustVerified(false)
+        window.history.replaceState({}, '', window.location.pathname)
+      }, 5000)
+    }
+  }, [searchParams])
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -38,7 +59,10 @@ export default function RatingForm({ listingId, listingName, category }: RatingF
       const res = await fetch('/api/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ 
+          email,
+          listingSlug // Pass the restaurant slug
+        }),
       })
 
       const data = await res.json()
@@ -49,32 +73,7 @@ export default function RatingForm({ listingId, listingName, category }: RatingF
         return
       }
 
-      // Store token and verification URL (temporary for testing)
-      setToken(data.token)
-      setVerifyUrl(data.verifyUrl)
       setStep('verify')
-    } catch (err) {
-      setError('Network error. Please try again.')
-    }
-
-    setLoading(false)
-  }
-
-  const handleVerify = async () => {
-    setLoading(true)
-    setError('')
-
-    try {
-      const res = await fetch(`/api/verify-email?token=${token}`)
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error || 'Verification failed')
-        setLoading(false)
-        return
-      }
-
-      setStep('rate')
     } catch (err) {
       setError('Network error. Please try again.')
     }
@@ -224,44 +223,53 @@ export default function RatingForm({ listingId, listingName, category }: RatingF
   }
 
   if (step === 'verify') {
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-8">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">✉️ Check Your Email</h2>
-      <p className="text-gray-700 mb-6">
-        We sent a verification link to <strong>{email}</strong>
-      </p>
-      <p className="text-gray-600 text-sm mb-6">
-        Click the link in the email to verify and continue rating.
-      </p>
-      <div className="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4">
-        <p className="text-gray-700 text-sm mb-2">
-          📬 Didn't receive it?
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">✉️ Check Your Email</h2>
+        <p className="text-gray-700 mb-6">
+          We sent a verification link to <strong>{email}</strong>
         </p>
-        <ul className="text-gray-600 text-sm space-y-1 mb-3">
-          <li>• Check your spam/junk folder</li>
-          <li>• Wait a few minutes (emails can be delayed)</li>
-        </ul>
-        <button
-          onClick={() => setStep('email')}
-          className="text-blue-600 hover:underline text-sm font-medium"
-        >
-          ← Try a different email address
-        </button>
-      </div>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 mt-4">
-          {error}
+        <p className="text-gray-600 text-sm mb-6">
+          Click the link in the email to verify and you'll be brought back here to complete your rating.
+        </p>
+        <div className="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4">
+          <p className="text-gray-700 text-sm mb-2">
+            📬 Didn't receive it?
+          </p>
+          <ul className="text-gray-600 text-sm space-y-1 mb-3">
+            <li>• Check your spam/junk folder</li>
+            <li>• Wait a few minutes (emails can be delayed)</li>
+          </ul>
+          <button
+            onClick={() => setStep('email')}
+            className="text-blue-600 hover:underline text-sm font-medium"
+          >
+            ← Try a different email address
+          </button>
         </div>
-      )}
-    </div>
-  )
-}
-        
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 mt-4">
+            {error}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   // Rating form (step === 'rate')
   return (
     <div className="bg-white rounded-lg shadow-lg p-8">
+      {/* Success message after email verification */}
+      {justVerified && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <p className="text-green-800 font-medium flex items-center">
+            <span className="text-2xl mr-2">✓</span>
+            Email verified! You can now submit your rating for {listingName}.
+          </p>
+        </div>
+      )}
+
       <h2 className="text-3xl font-bold text-gray-900 mb-2">Rate {listingName}</h2>
       <p className="text-gray-600 mb-6">
         {category === 'restaurant' ? '5 quick questions' : '5 quick questions about this market'}
