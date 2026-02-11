@@ -141,8 +141,8 @@ export async function GET(request: NextRequest) {
 
   // Redirect back to the restaurant page if we have a slug, otherwise homepage
   const redirectUrl = data.listing_slug 
-    ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}/listings/${data.listing_slug}?verified=true&email=${encodeURIComponent(data.email)}`
-    : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}?verified=true&email=${encodeURIComponent(data.email)}`
+    ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}/listings/${data.listing_slug}?verified=true&email=${encodeURIComponent(data.email)}&token=${token}`
+    : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'}?verified=true&email=${encodeURIComponent(data.email)}&token=${token}`
 
   return NextResponse.redirect(redirectUrl)
 }

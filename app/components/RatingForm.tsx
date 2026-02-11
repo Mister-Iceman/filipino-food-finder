@@ -36,9 +36,11 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
   useEffect(() => {
     const verified = searchParams.get('verified')
     const verifiedEmail = searchParams.get('email')
+    const verifiedToken = searchParams.get('token')
     
-    if (verified === 'true' && verifiedEmail) {
+    if (verified === 'true' && verifiedEmail && verifiedToken) {
       setEmail(decodeURIComponent(verifiedEmail))
+      setToken(verifiedToken)
       setStep('rate')
       setJustVerified(true)
       
