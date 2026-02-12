@@ -40,7 +40,6 @@ export default function SocialShare({ url, title, description }: SocialShareProp
       </p>
       
       <div className="flex flex-wrap gap-3">
-        {/* Facebook */}
         
           href={shareLinks.facebook}
           target="_blank"
@@ -54,7 +53,6 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           Facebook
         </a>
 
-        {/* Twitter */}
         
           href={shareLinks.twitter}
           target="_blank"
@@ -68,7 +66,6 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           Twitter
         </a>
 
-        {/* WhatsApp */}
         
           href={shareLinks.whatsapp}
           target="_blank"
@@ -82,7 +79,6 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           WhatsApp
         </a>
 
-        {/* Email */}
         
           href={shareLinks.email}
           className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
@@ -94,7 +90,6 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           Email
         </a>
 
-        {/* Copy Link */}
         <button
           onClick={handleCopyLink}
           className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors"
