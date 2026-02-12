@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import type { Metadata } from 'next'
 
 export default function AddBusinessPage() {
   const [formData, setFormData] = useState({
@@ -91,7 +90,7 @@ export default function AddBusinessPage() {
               Your business submission has been received successfully!
             </p>
             <p className="text-gray-600 mb-8">
-              We'll review your submission and email you at <strong>{formData.contactEmail}</strong> within 3-5 business days.
+              We will review your submission and email you within 3-5 business days.
             </p>
             <div className="space-x-4">
               
@@ -130,28 +129,28 @@ export default function AddBusinessPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Why List Your Business?</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Check mark">✅</span>
+                <span className="text-2xl">✅</span>
                 <div>
                   <h3 className="font-bold text-gray-900">Increased Visibility</h3>
                   <p className="text-gray-700">Reach Filipino-Americans and food lovers nationwide</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Check mark">✅</span>
+                <span className="text-2xl">✅</span>
                 <div>
                   <h3 className="font-bold text-gray-900">100% Free</h3>
                   <p className="text-gray-700">No listing fees, no hidden costs</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Check mark">✅</span>
+                <span className="text-2xl">✅</span>
                 <div>
                   <h3 className="font-bold text-gray-900">Community Support</h3>
                   <p className="text-gray-700">Connect with the Filipino-American community</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Check mark">✅</span>
+                <span className="text-2xl">✅</span>
                 <div>
                   <h3 className="font-bold text-gray-900">Easy to Update</h3>
                   <p className="text-gray-700">Contact us anytime to update your information</p>
@@ -164,22 +163,22 @@ export default function AddBusinessPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Eligible Business Types</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                <span className="text-3xl mb-2 block" role="img" aria-label="Restaurant">🍽️</span>
+                <span className="text-3xl mb-2 block">🍽️</span>
                 <h3 className="font-bold text-gray-900">Restaurants</h3>
                 <p className="text-sm text-gray-600">Full-service Filipino dining</p>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                <span className="text-3xl mb-2 block" role="img" aria-label="Grocery">🛒</span>
+                <span className="text-3xl mb-2 block">🛒</span>
                 <h3 className="font-bold text-gray-900">Grocery & Markets</h3>
                 <p className="text-sm text-gray-600">Filipino ingredients & products</p>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                <span className="text-3xl mb-2 block" role="img" aria-label="Bakery">🥐</span>
+                <span className="text-3xl mb-2 block">🥐</span>
                 <h3 className="font-bold text-gray-900">Bakeries & Cafes</h3>
                 <p className="text-sm text-gray-600">Pandesal, pastries, desserts</p>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                <span className="text-3xl mb-2 block" role="img" aria-label="Food truck">🚚</span>
+                <span className="text-3xl mb-2 block">🚚</span>
                 <h3 className="font-bold text-gray-900">Food Trucks & Pop-Ups</h3>
                 <p className="text-sm text-gray-600">Mobile Filipino food vendors</p>
               </div>
@@ -374,7 +373,6 @@ export default function AddBusinessPage() {
               </div>
             </div>
 
-            {/* SOCIAL MEDIA SECTION */}
             <div className="border-t pt-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media (Optional)</h3>
               <p className="text-sm text-gray-600 mb-4">Connect with customers on social platforms</p>
@@ -461,7 +459,7 @@ export default function AddBusinessPage() {
                 placeholder="https://maps.google.com/..."
               />
               <p className="text-sm text-gray-500 mt-1">
-                Find your business on Google Maps, click "Share", and paste the link here
+                Find your business on Google Maps, click Share, and paste the link here
               </p>
             </div>
 
@@ -513,7 +511,7 @@ export default function AddBusinessPage() {
                 placeholder="you@example.com"
               />
               <p className="text-sm text-gray-500 mt-1">
-                We'll use this to confirm your submission and send updates
+                We will use this to confirm your submission and send updates
               </p>
             </div>
 
@@ -541,13 +539,13 @@ export default function AddBusinessPage() {
               <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</span>
               <div>
                 <strong className="text-blue-900">You Get Confirmation</strong>
-                <p className="text-blue-800">We'll email you once your business is listed</p>
+                <p className="text-blue-800">We will email you once your business is listed</p>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">3</span>
               <div>
-                <strong className="text-blue-900">You're Live!</strong>
+                <strong className="text-blue-900">You are Live!</strong>
                 <p className="text-blue-800">Your business appears in search results and directory listings</p>
               </div>
             </li>
