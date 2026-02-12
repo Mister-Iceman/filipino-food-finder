@@ -1,6 +1,7 @@
 import GoogleAnalytics from './components/GoogleAnalytics'
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import Script from 'next/script'
 import "./globals.css"
 import Navigation from "./components/Navigation"
 import Footer from "./components/Footer"
@@ -62,10 +63,22 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Set to true when AdSense is approved
+  const ADSENSE_ENABLED = false
+  const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX' // Replace when approved
+
   return (
     <html lang="en">
       <head>
         <meta name="theme-color" content="#2563eb" />
+        {ADSENSE_ENABLED && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUBLISHER_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body className={inter.className}>
         <GoogleAnalytics measurementId="G-WV1ZD74FPV" />

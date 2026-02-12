@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import RatingForm from '../../components/RatingForm'
 import RatingSummary from '../../components/RatingSummary'
+import AdSlot from '../../components/AdSlot'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -61,48 +62,65 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         <Link href="/directory" className="text-blue-600 hover:underline mb-4 inline-block">
           ← Back to Directory
         </Link>
 
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
-          <p className="text-xl text-gray-600 mb-6">{listing.category_primary}</p>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content - 2 columns */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
+              <p className="text-xl text-gray-600 mb-6">{listing.category_primary}</p>
 
-          {listing.google_rating && (
-            <div className="bg-yellow-50 inline-block px-4 py-2 rounded-lg mb-6">
-              <span className="text-yellow-500 text-2xl">★</span>
-              <span className="font-bold text-xl ml-2">{listing.google_rating}</span>
-              <span className="text-gray-500 ml-2">({listing.google_reviews_count} reviews)</span>
+              {listing.google_rating && (
+                <div className="bg-yellow-50 inline-block px-4 py-2 rounded-lg mb-6">
+                  <span className="text-yellow-500 text-2xl">★</span>
+                  <span className="font-bold text-xl ml-2">{listing.google_rating}</span>
+                  <span className="text-gray-500 ml-2">({listing.google_reviews_count} reviews)</span>
+                </div>
+              )}
+
+              <div className="space-y-4 mb-8">
+                <p className="text-gray-700">
+                  📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}
+                </p>
+                {listing.phone && <p className="text-gray-700">📞 {listing.phone}</p>}
+                {listing.hours && <p className="text-gray-700">🕐 {listing.hours}</p>}
+              </div>
+
+              {/* Community Ratings Summary */}
+              <div className="mb-8">
+                <RatingSummary 
+                  listingId={listing.id}
+                  category={category}
+                />
+              </div>
             </div>
-          )}
 
-          <div className="space-y-4 mb-8">
-            <p className="text-gray-700">
-              📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}
-            </p>
-            {listing.phone && <p className="text-gray-700">📞 {listing.phone}</p>}
-            {listing.hours && <p className="text-gray-700">🕐 {listing.hours}</p>}
+            {/* Rating Form Section */}
+            <div className="mt-8">
+              <RatingForm 
+                listingId={listing.id} 
+                listingName={listing.name}
+                listingSlug={slug}
+                category={category}
+              />
+            </div>
           </div>
-
-          {/* Community Ratings Summary */}
-          <div className="mb-8">
-            <RatingSummary 
-              listingId={listing.id}
-              category={category}
-            />
+          
+          {/* Sidebar - 1 column */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-4 space-y-4">
+              {/* Ad Slot - Vertical */}
+              <AdSlot 
+                slot="0987654321" 
+                format="vertical"
+                responsive={true}
+              />
+            </div>
           </div>
-        </div>
-
-        {/* Rating Form Section */}
-        <div className="mt-8">
-          <RatingForm 
-            listingId={listing.id} 
-            listingName={listing.name}
-            listingSlug={slug}
-            category={category}
-          />
         </div>
       </div>
     </div>

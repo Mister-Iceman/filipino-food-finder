@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import AdSlot from '../components/AdSlot'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -48,17 +49,16 @@ export default async function EventsPage() {
   }
 
   const formatDate = (date: string) => {
-  // Parse as local date instead of UTC to avoid timezone shift
-  const [year, month, day] = date.split('-').map(Number)
-  const localDate = new Date(year, month - 1, day) // month is 0-indexed
-  
-  return localDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+    const [year, month, day] = date.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day)
+    
+    return localDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -83,6 +83,14 @@ export default async function EventsPage() {
           </div>
         </div>
 
+        {/* Top Banner Ad */}
+        <div className="mb-8">
+          <AdSlot 
+            slot="1111111111" 
+            format="horizontal"
+          />
+        </div>
+
         {/* Upcoming Events */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
@@ -100,76 +108,88 @@ export default async function EventsPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
-                  {event.image_url && (
-                    <div className="h-48 bg-gray-200 overflow-hidden">
-                      <img 
-                        src={event.image_url} 
-                        alt={event.title}
-                        className="w-full h-full object-cover"
+              {upcomingEvents.map((event, index) => (
+                <>
+                  {/* Show ad after every 6 events */}
+                  {index > 0 && index % 6 === 0 && (
+                    <div className="md:col-span-2 lg:col-span-3 mb-6">
+                      <AdSlot 
+                        slot="2222222222" 
+                        format="horizontal"
                       />
                     </div>
                   )}
                   
-                  <div className="p-6">
-                    {event.is_featured && (
-                      <div className="mb-3">
-                        <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                          ⭐ FEATURED
-                        </span>
+                  <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                    {event.image_url && (
+                      <div className="h-48 bg-gray-200 overflow-hidden">
+                        <img 
+                          src={event.image_url} 
+                          alt={event.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     )}
-
-                    {event.category && (
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${categoryColors[event.category]}`}>
-                        {categoryLabels[event.category]}
-                      </span>
-                    )}
-
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h3>
                     
-                    <div className="space-y-2 text-sm text-gray-600 mb-4">
-                      <p className="font-semibold text-blue-600">
-                        📅 {formatDate(event.event_date)}
-                        {event.event_time && ` at ${event.event_time}`}
-                      </p>
-                      {event.location_name && (
-                        <p>📍 {event.location_name}</p>
+                    <div className="p-6">
+                      {event.is_featured && (
+                        <div className="mb-3">
+                          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            ⭐ FEATURED
+                          </span>
+                        </div>
                       )}
-                      {event.city && event.state && (
-                        <p className="text-gray-500">{event.city}, {event.state}</p>
-                      )}
-                    </div>
 
-                    {event.description && (
-                      <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
-                    )}
+                      {event.category && (
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${categoryColors[event.category]}`}>
+                          {categoryLabels[event.category]}
+                        </span>
+                      )}
 
-                    <div className="flex gap-2">
-                      {event.event_url && (
-                        <a 
-                          href={event.event_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
-                        >
-                          Learn More
-                        </a>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h3>
+                      
+                      <div className="space-y-2 text-sm text-gray-600 mb-4">
+                        <p className="font-semibold text-blue-600">
+                          📅 {formatDate(event.event_date)}
+                          {event.event_time && ` at ${event.event_time}`}
+                        </p>
+                        {event.location_name && (
+                          <p>📍 {event.location_name}</p>
+                        )}
+                        {event.city && event.state && (
+                          <p className="text-gray-500">{event.city}, {event.state}</p>
+                        )}
+                      </div>
+
+                      {event.description && (
+                        <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
                       )}
-                      {event.ticket_url && (
-                        <a 
-                          href={event.ticket_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
-                        >
-                          Get Tickets
-                        </a>
-                      )}
+
+                      <div className="flex gap-2">
+                        {event.event_url && (
+                          <a 
+                            href={event.event_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
+                          >
+                            Learn More
+                          </a>
+                        )}
+                        {event.ticket_url && (
+                          <a 
+                            href={event.ticket_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
+                          >
+                            Get Tickets
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </>
               ))}
             </div>
           )}
