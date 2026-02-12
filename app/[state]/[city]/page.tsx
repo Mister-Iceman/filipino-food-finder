@@ -12,6 +12,59 @@ interface CityPageProps {
   params: Promise<{ state: string; city: string }>
 }
 
+const stateMap: { [key: string]: string } = {
+  'california': 'CA',
+  'texas': 'TX',
+  'new-york': 'NY',
+  'florida': 'FL',
+  'illinois': 'IL',
+  'pennsylvania': 'PA',
+  'ohio': 'OH',
+  'georgia': 'GA',
+  'north-carolina': 'NC',
+  'michigan': 'MI',
+  'new-jersey': 'NJ',
+  'virginia': 'VA',
+  'washington': 'WA',
+  'arizona': 'AZ',
+  'massachusetts': 'MA',
+  'tennessee': 'TN',
+  'indiana': 'IN',
+  'missouri': 'MO',
+  'maryland': 'MD',
+  'wisconsin': 'WI',
+  'colorado': 'CO',
+  'minnesota': 'MN',
+  'south-carolina': 'SC',
+  'alabama': 'AL',
+  'louisiana': 'LA',
+  'kentucky': 'KY',
+  'oregon': 'OR',
+  'oklahoma': 'OK',
+  'connecticut': 'CT',
+  'utah': 'UT',
+  'iowa': 'IA',
+  'nevada': 'NV',
+  'arkansas': 'AR',
+  'mississippi': 'MS',
+  'kansas': 'KS',
+  'new-mexico': 'NM',
+  'nebraska': 'NE',
+  'west-virginia': 'WV',
+  'idaho': 'ID',
+  'hawaii': 'HI',
+  'new-hampshire': 'NH',
+  'maine': 'ME',
+  'montana': 'MT',
+  'rhode-island': 'RI',
+  'delaware': 'DE',
+  'south-dakota': 'SD',
+  'north-dakota': 'ND',
+  'alaska': 'AK',
+  'vermont': 'VT',
+  'wyoming': 'WY',
+}
+
 export async function generateMetadata({ params }: CityPageProps): Promise<Metadata> {
   const { state, city } = await params
   const slug = `${state}/${city}`
@@ -45,7 +98,7 @@ export default async function CityPage({ params }: CityPageProps) {
     .eq('slug', slug)
     .single()
 
-  const stateAbbr = state.toUpperCase().slice(0, 2)
+  const stateAbbr = stateMap[state] || state.toUpperCase().slice(0, 2)
   const cityName = city.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
   const { data: restaurants } = await supabase
@@ -60,6 +113,11 @@ export default async function CityPage({ params }: CityPageProps) {
   }
 
   if (cityPage) {
+    // Safely get arrays from JSONB fields
+    const communityPlaces = Array.isArray(cityPage.community_places) ? cityPage.community_places : []
+    const foodHighlights = Array.isArray(cityPage.food_highlights) ? cityPage.food_highlights : []
+    const featuredRestaurants = Array.isArray(cityPage.featured_restaurants) ? cityPage.featured_restaurants : []
+
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white py-20">
@@ -94,13 +152,13 @@ export default async function CityPage({ params }: CityPageProps) {
                 </div>
               </section>
 
-              {cityPage.community_places && cityPage.community_places.length > 0 && (
+              {communityPlaces.length > 0 && (
                 <section className="bg-white rounded-xl shadow-lg p-8">
                   <h2 className="text-3xl font-bold text-gray-900 mb-6">
                     🏘️ Where Community Gathers
                   </h2>
                   <div className="space-y-4">
-                    {cityPage.community_places.map((place: any, idx: number) => (
+                    {communityPlaces.map((place: any, idx: number) => (
                       <div key={idx} className="border-l-4 border-blue-500 pl-4">
                         <h3 className="font-bold text-lg text-gray-900">{place.name}</h3>
                         <p className="text-gray-600">{place.description}</p>
@@ -110,13 +168,13 @@ export default async function CityPage({ params }: CityPageProps) {
                 </section>
               )}
 
-              {cityPage.food_highlights && cityPage.food_highlights.length > 0 && (
+              {foodHighlights.length > 0 && (
                 <section className="bg-white rounded-xl shadow-lg p-8">
                   <h2 className="text-3xl font-bold text-gray-900 mb-6">
                     🍽️ What You'll Notice in the Food
                   </h2>
                   <ul className="space-y-3">
-                    {cityPage.food_highlights.map((highlight: string, idx: number) => (
+                    {foodHighlights.map((highlight: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3">
                         <span className="text-blue-600 text-xl">•</span>
                         <span className="text-gray-700">{highlight}</span>
@@ -126,13 +184,13 @@ export default async function CityPage({ params }: CityPageProps) {
                 </section>
               )}
 
-              {cityPage.featured_restaurants && cityPage.featured_restaurants.length > 0 && (
+              {featuredRestaurants.length > 0 && (
                 <section className="bg-white rounded-xl shadow-lg p-8">
                   <h2 className="text-3xl font-bold text-gray-900 mb-6">
                     ⭐ Most Memorable Bites
                   </h2>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {cityPage.featured_restaurants.map((restaurant: any, idx: number) => (
+                    {featuredRestaurants.map((restaurant: any, idx: number) => (
                       <div key={idx} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
                         <h3 className="font-bold text-xl text-gray-900 mb-2">
                           {restaurant.name}
@@ -183,14 +241,18 @@ export default async function CityPage({ params }: CityPageProps) {
                 <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6">
                   <h3 className="font-bold text-lg text-gray-900 mb-4">Quick Facts</h3>
                   <div className="space-y-3 text-sm">
-                    <div>
-                      <p className="text-gray-600">Filipino Population</p>
-                      <p className="font-bold text-gray-900">{cityPage.filipino_population}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600">Migration History</p>
-                      <p className="text-gray-700">{cityPage.migration_history}</p>
-                    </div>
+                    {cityPage.filipino_population && (
+                      <div>
+                        <p className="text-gray-600">Filipino Population</p>
+                        <p className="font-bold text-gray-900">{cityPage.filipino_population}</p>
+                      </div>
+                    )}
+                    {cityPage.migration_history && (
+                      <div>
+                        <p className="text-gray-600">Migration History</p>
+                        <p className="text-gray-700">{cityPage.migration_history}</p>
+                      </div>
+                    )}
                     {cityPage.cultural_tidbit && (
                       <div>
                         <p className="text-gray-600">Did You Know?</p>
