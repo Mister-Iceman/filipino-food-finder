@@ -48,6 +48,14 @@ export default function Navigation() {
             </li>
             <li>
               <Link 
+                href="/states" 
+                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+              >
+                States
+              </Link>
+            </li>
+            <li>
+              <Link 
                 href="/events" 
                 className="text-gray-700 hover:text-red-600 font-medium transition-colors"
               >
@@ -137,6 +145,15 @@ export default function Navigation() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Guides
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/states" 
+                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  States
                 </Link>
               </li>
               <li>
