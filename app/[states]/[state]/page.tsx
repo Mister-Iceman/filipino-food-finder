@@ -202,7 +202,7 @@ export default async function StatePage({ params }: StatePageProps) {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {citiesMap[city].map((listing) => (
+                {citiesMap[city].map((listing: any) => (
                   <Link
                     key={listing.id}
                     href={`/listings/${listing.slug}`}
