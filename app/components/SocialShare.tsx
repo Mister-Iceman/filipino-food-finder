@@ -45,9 +45,7 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          aria-label="Share on Facebook"
         >
-          <span className="text-xl">📘</span>
           Facebook
         </a>
 
@@ -56,9 +54,7 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          aria-label="Share on Twitter"
         >
-          <span className="text-xl">𝕏</span>
           Twitter
         </a>
 
@@ -67,27 +63,21 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          aria-label="Share on WhatsApp"
         >
-          <span className="text-xl">💬</span>
           WhatsApp
         </a>
 
         
           href={shareLinks.email}
           className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          aria-label="Share via Email"
         >
-          <span className="text-xl">✉️</span>
           Email
         </a>
 
         <button
           onClick={handleCopyLink}
           className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors"
-          aria-label="Copy link to clipboard"
         >
-          <span className="text-xl">{copied ? '✅' : '🔗'}</span>
           {copied ? 'Copied!' : 'Copy Link'}
         </button>
       </div>
