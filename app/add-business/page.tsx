@@ -93,16 +93,10 @@ export default function AddBusinessPage() {
               We will review your submission and email you within 3-5 business days.
             </p>
             <div className="space-x-4">
-              
-                href="/directory"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold"
-              >
+              <a href="/directory" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold">
                 Browse Directory
               </a>
-              <button
-                onClick={() => setStatus('idle')}
-                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold"
-              >
+              <button onClick={() => setStatus('idle')} className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
                 Submit Another Business
               </button>
             </div>
@@ -121,7 +115,7 @@ export default function AddBusinessPage() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-blue-900 mb-3">Join 990+ Filipino Businesses</h2>
             <p className="text-blue-800 text-lg">
-              Get featured in <strong>the first and only community Filipino food directory in America</strong> — completely free!
+              Get featured in the first and only community Filipino food directory in America - completely free!
             </p>
           </div>
 
@@ -476,7 +470,7 @@ export default function AddBusinessPage() {
                 disabled={status === 'loading'}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none disabled:bg-gray-100"
                 placeholder="Mon-Fri: 9am-9pm, Sat-Sun: 10am-10pm"
-              ></textarea>
+              />
             </div>
 
             <div>
@@ -492,7 +486,7 @@ export default function AddBusinessPage() {
                 disabled={status === 'loading'}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none disabled:bg-gray-100"
                 placeholder="Tell us about your business, specialties, what makes you unique..."
-              ></textarea>
+              />
             </div>
 
             <div>
