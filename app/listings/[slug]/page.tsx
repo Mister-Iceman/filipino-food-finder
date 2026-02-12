@@ -4,6 +4,7 @@ import Link from 'next/link'
 import RatingForm from '../../components/RatingForm'
 import RatingSummary from '../../components/RatingSummary'
 import AdSlot from '../../components/AdSlot'
+import SocialShare from '../../components/SocialShare'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,6 +30,10 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     listing.category_primary?.toLowerCase().includes('market')
 
   const category = isGrocery ? 'grocery' : 'restaurant'
+
+  // Generate full URL for sharing
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
+  const listingUrl = `${baseUrl}/listings/${slug}`
 
   // Generate JSON-LD schema for SEO
   const schema = {
@@ -88,6 +93,15 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 </p>
                 {listing.phone && <p className="text-gray-700">📞 {listing.phone}</p>}
                 {listing.hours && <p className="text-gray-700">🕐 {listing.hours}</p>}
+              </div>
+
+              {/* Social Share Section */}
+              <div className="mb-8">
+                <SocialShare 
+                  url={listingUrl}
+                  title={`${listing.name} - Filipino Food in ${listing.city}, ${listing.state}`}
+                  description={`Check out ${listing.name}, a ${listing.category_primary} in ${listing.city}, ${listing.state}. Find authentic Filipino food near you!`}
+                />
               </div>
 
               {/* Community Ratings Summary */}
