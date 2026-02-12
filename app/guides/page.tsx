@@ -25,8 +25,6 @@ export default async function GuidesPage() {
     .select('*')
     .order('city')
 
-  console.log('City pages count:', cityPages?.length)
-  console.log('Cities:', cityPages?.map(c => c.city))
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Hero Section */}
@@ -67,6 +65,47 @@ export default async function GuidesPage() {
                 the communities that built them.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Featured Articles Section */}
+        <div className="mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
+            Featured Articles
+          </h2>
+          
+          <div className="grid md:grid-cols-1 gap-8 max-w-4xl mx-auto">
+            <Link
+              href="/guides/most-memorable-filipino-food-cities-2026"
+              className="group bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+            >
+              <div className="p-8">
+                <div className="bg-yellow-500 text-gray-900 px-4 py-2 rounded-full inline-block mb-4 font-bold text-sm">
+                  📖 ANNUAL GUIDE 2026
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
+                  The Most Memorable Filipino Food Cities in America (2026)
+                </h3>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  A cultural journey through the 10 cities where Filipino food tells the story of diaspora, 
+                  community, and home—from plantation workers and Navy sailors to nurses and tech workers 
+                  building vibrant enclaves across the United States.
+                </p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+                  <span>📍 10 Cities</span>
+                  <span>•</span>
+                  <span>🏛️ Cultural History</span>
+                  <span>•</span>
+                  <span>🍽️ Restaurant Highlights</span>
+                </div>
+                <div className="text-blue-600 font-bold group-hover:text-blue-700 flex items-center gap-2">
+                  Read the Full Guide
+                  <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
 
