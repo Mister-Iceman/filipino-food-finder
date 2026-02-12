@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
-const ADMIN_PASSWORD = 'FilipinoDirect2026!'
+const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
 export default function EventsAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)

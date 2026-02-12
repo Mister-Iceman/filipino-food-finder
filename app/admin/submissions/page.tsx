@@ -10,7 +10,7 @@ export default function AdminSubmissionsPage() {
   const [filter, setFilter] = useState('pending')
 
   // CHANGE THIS TO YOUR UNIFIED PASSWORD
-  const ADMIN_PASSWORD = 'YourPasswordHere' // Tell me what password you want!
+  const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()

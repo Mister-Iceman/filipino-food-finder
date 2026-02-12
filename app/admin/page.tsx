@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-const ADMIN_PASSWORD = 'FilipinoDirect2026!'
+const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 type ManagementView = 'listings' | 'events'
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
