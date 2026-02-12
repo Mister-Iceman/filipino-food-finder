@@ -1,11 +1,118 @@
+'use client'
+
+import { useState } from 'react'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Add Your Business | Filipino Food Near Me',
-  description: 'List your Filipino restaurant, bakery, grocery store, or food truck on the first and only community Filipino food directory in America. Free and easy submission.',
-}
-
 export default function AddBusinessPage() {
+  const [formData, setFormData] = useState({
+    businessName: '',
+    categoryPrimary: '',
+    categorySecondary: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    phone: '',
+    website: '',
+    instagram: '',
+    facebook: '',
+    tiktok: '',
+    x: '',
+    googleMaps: '',
+    hours: '',
+    description: '',
+    contactEmail: ''
+  })
+  
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/submit-business', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit business')
+      }
+
+      setStatus('success')
+      setFormData({
+        businessName: '',
+        categoryPrimary: '',
+        categorySecondary: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        phone: '',
+        website: '',
+        instagram: '',
+        facebook: '',
+        tiktok: '',
+        x: '',
+        googleMaps: '',
+        hours: '',
+        description: '',
+        contactEmail: ''
+      })
+    } catch (error) {
+      setStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to submit. Please try again.')
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="min-h-screen bg-gray-50 py-16">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="bg-green-50 border border-green-200 rounded-xl p-12 text-center">
+            <div className="text-6xl mb-4">🎉</div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Thank You!</h1>
+            <p className="text-xl text-gray-700 mb-6">
+              Your business submission has been received successfully!
+            </p>
+            <p className="text-gray-600 mb-8">
+              We'll review your submission and email you at <strong>{formData.contactEmail}</strong> within 3-5 business days.
+            </p>
+            <div className="space-x-4">
+              
+                href="/directory"
+                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold"
+              >
+                Browse Directory
+              </a>
+              <button
+                onClick={() => setStatus('idle')}
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold"
+              >
+                Submit Another Business
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-4xl mx-auto px-4">
@@ -83,31 +190,45 @@ export default function AddBusinessPage() {
         <div className="bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Submit Your Business</h2>
           
-          <form className="space-y-6">
+          {status === 'error' && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-red-800 font-medium">
+                ✗ {errorMessage}
+              </p>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="business-name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-2">
                 Business Name *
               </label>
               <input
                 type="text"
-                id="business-name"
-                name="business-name"
+                id="businessName"
+                name="businessName"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                value={formData.businessName}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 placeholder="e.g., Jollibee, Goldilocks"
               />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="category-primary" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="categoryPrimary" className="block text-sm font-medium text-gray-700 mb-2">
                   Primary Category *
                 </label>
                 <select
-                  id="category-primary"
-                  name="category-primary"
+                  id="categoryPrimary"
+                  name="categoryPrimary"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.categoryPrimary}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 >
                   <option value="">Select primary category</option>
                   <option value="Restaurant">Restaurant</option>
@@ -122,13 +243,16 @@ export default function AddBusinessPage() {
               </div>
 
               <div>
-                <label htmlFor="category-secondary" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="categorySecondary" className="block text-sm font-medium text-gray-700 mb-2">
                   Secondary Category (Optional)
                 </label>
                 <select
-                  id="category-secondary"
-                  name="category-secondary"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  id="categorySecondary"
+                  name="categorySecondary"
+                  value={formData.categorySecondary}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 >
                   <option value="">None</option>
                   <option value="Restaurant">Restaurant</option>
@@ -136,9 +260,6 @@ export default function AddBusinessPage() {
                   <option value="Bakery, Dessert & Cafe">Bakery, Dessert & Cafe</option>
                   <option value="Quick Bites & Turo-Turo">Quick Bites & Turo-Turo</option>
                   <option value="Food Truck & Pop-Up">Food Truck & Pop-Up</option>
-                  <option value="Filipino bakery">Filipino bakery</option>
-                  <option value="Filipino grocery">Filipino grocery</option>
-                  <option value="Catering">Catering</option>
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
                   If your business fits multiple categories
@@ -155,7 +276,10 @@ export default function AddBusinessPage() {
                 id="address"
                 name="address"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                value={formData.address}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 placeholder="123 Main Street"
               />
             </div>
@@ -170,7 +294,10 @@ export default function AddBusinessPage() {
                   id="city"
                   name="city"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.city}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                   placeholder="Los Angeles"
                 />
               </div>
@@ -185,7 +312,10 @@ export default function AddBusinessPage() {
                   name="state"
                   required
                   maxLength={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.state}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                   placeholder="CA"
                 />
               </div>
@@ -200,7 +330,10 @@ export default function AddBusinessPage() {
                   name="zip"
                   required
                   maxLength={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.zip}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                   placeholder="90012"
                 />
               </div>
@@ -216,7 +349,10 @@ export default function AddBusinessPage() {
                   id="phone"
                   name="phone"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                   placeholder="(555) 123-4567"
                 />
               </div>
@@ -229,13 +365,16 @@ export default function AddBusinessPage() {
                   type="url"
                   id="website"
                   name="website"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  value={formData.website}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                   placeholder="https://yourwebsite.com"
                 />
               </div>
             </div>
 
-            {/* SOCIAL MEDIA SECTION - NEW! */}
+            {/* SOCIAL MEDIA SECTION */}
             <div className="border-t pt-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media (Optional)</h3>
               <p className="text-sm text-gray-600 mb-4">Connect with customers on social platforms</p>
@@ -248,8 +387,11 @@ export default function AddBusinessPage() {
                   <input
                     type="url"
                     id="instagram"
-                    name="instagram_url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    name="instagram"
+                    value={formData.instagram}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="https://instagram.com/yourrestaurant"
                   />
                 </div>
@@ -261,8 +403,11 @@ export default function AddBusinessPage() {
                   <input
                     type="url"
                     id="facebook"
-                    name="facebook_url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    name="facebook"
+                    value={formData.facebook}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="https://facebook.com/yourrestaurant"
                   />
                 </div>
@@ -274,8 +419,11 @@ export default function AddBusinessPage() {
                   <input
                     type="url"
                     id="tiktok"
-                    name="tiktok_url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    name="tiktok"
+                    value={formData.tiktok}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="https://tiktok.com/@yourrestaurant"
                   />
                 </div>
@@ -287,8 +435,11 @@ export default function AddBusinessPage() {
                   <input
                     type="url"
                     id="x"
-                    name="x_url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    name="x"
+                    value={formData.x}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                     placeholder="https://x.com/yourrestaurant"
                   />
                 </div>
@@ -296,14 +447,17 @@ export default function AddBusinessPage() {
             </div>
 
             <div>
-              <label htmlFor="google-maps" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="googleMaps" className="block text-sm font-medium text-gray-700 mb-2">
                 Google Maps URL (Optional)
               </label>
               <input
                 type="url"
-                id="google-maps"
-                name="google-maps"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                id="googleMaps"
+                name="googleMaps"
+                value={formData.googleMaps}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 placeholder="https://maps.google.com/..."
               />
               <p className="text-sm text-gray-500 mt-1">
@@ -319,7 +473,10 @@ export default function AddBusinessPage() {
                 id="hours"
                 name="hours"
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                value={formData.hours}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none disabled:bg-gray-100"
                 placeholder="Mon-Fri: 9am-9pm, Sat-Sun: 10am-10pm"
               ></textarea>
             </div>
@@ -332,21 +489,27 @@ export default function AddBusinessPage() {
                 id="description"
                 name="description"
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                value={formData.description}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none disabled:bg-gray-100"
                 placeholder="Tell us about your business, specialties, what makes you unique..."
               ></textarea>
             </div>
 
             <div>
-              <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
                 Your Email (for updates) *
               </label>
               <input
                 type="email"
-                id="contact-email"
-                name="contact-email"
+                id="contactEmail"
+                name="contactEmail"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                value={formData.contactEmail}
+                onChange={handleChange}
+                disabled={status === 'loading'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
                 placeholder="you@example.com"
               />
               <p className="text-sm text-gray-500 mt-1">
@@ -354,18 +517,12 @@ export default function AddBusinessPage() {
               </p>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-800">
-                <strong>Note:</strong> This is a demonstration form. In production, submissions will be emailed to 
-                info@filipinofoodnearme.org for review. We typically process submissions within 3-5 business days.
-              </p>
-            </div>
-
             <button
               type="submit"
-              className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 text-lg"
+              disabled={status === 'loading'}
+              className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 text-lg disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Submit Your Business
+              {status === 'loading' ? 'Submitting...' : 'Submit Your Business'}
             </button>
           </form>
         </div>
