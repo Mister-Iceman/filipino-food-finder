@@ -25,6 +25,8 @@ export default async function GuidesPage() {
     .select('*')
     .order('city')
 
+  console.log('City pages count:', cityPages?.length)
+  console.log('Cities:', cityPages?.map(c => c.city))
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Hero Section */}
