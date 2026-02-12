@@ -12,7 +12,6 @@ interface StatePageProps {
   params: Promise<{ state: string }>
 }
 
-// Map state slugs to full names and abbreviations
 const stateMap: { [key: string]: { full: string; abbr: string } } = {
   'alabama': { full: 'Alabama', abbr: 'AL' },
   'alaska': { full: 'Alaska', abbr: 'AK' },
@@ -102,7 +101,6 @@ export default async function StatePage({ params }: StatePageProps) {
     notFound()
   }
 
-  // Fetch all listings in this state
   const { data: listings } = await supabase
     .from('listings')
     .select('*')
@@ -114,7 +112,6 @@ export default async function StatePage({ params }: StatePageProps) {
     notFound()
   }
 
-  // Group by city
   const citiesMap = listings.reduce((acc, listing) => {
     const city = listing.city
     if (!acc[city]) {
@@ -126,7 +123,6 @@ export default async function StatePage({ params }: StatePageProps) {
 
   const cities = Object.keys(citiesMap).sort()
 
-  // Check if there are any enhanced city pages
   const { data: cityPages } = await supabase
     .from('city_pages')
     .select('city, slug')
@@ -154,7 +150,6 @@ export default async function StatePage({ params }: StatePageProps) {
           across {cities.length} cities in {stateInfo.full}.
         </p>
 
-        {/* Featured City Guides */}
         {cityPages && cityPages.length > 0 && (
           <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-8 mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -164,7 +159,7 @@ export default async function StatePage({ params }: StatePageProps) {
               Explore the culture, history, and flavors of Filipino food in these cities:
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cityPages.map((cityPage) => (
+              {cityPages.map((cityPage: any) => (
                 <Link
                   key={cityPage.slug}
                   href={`/${cityPage.slug}`}
@@ -182,7 +177,6 @@ export default async function StatePage({ params }: StatePageProps) {
           </div>
         )}
 
-        {/* Cities List */}
         <div className="space-y-12">
           {cities.map((city) => (
             <div key={city} className="bg-white rounded-xl shadow-lg p-8">
@@ -225,7 +219,6 @@ export default async function StatePage({ params }: StatePageProps) {
           ))}
         </div>
 
-        {/* CTA */}
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-8 mt-12 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Know a Filipino business in {stateInfo.full}?
