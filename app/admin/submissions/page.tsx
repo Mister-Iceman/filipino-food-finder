@@ -1,12 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export default function AdminSubmissionsPage() {
   const [password, setPassword] = useState('')
@@ -15,7 +9,8 @@ export default function AdminSubmissionsPage() {
   const [loading, setLoading] = useState(false)
   const [filter, setFilter] = useState('pending')
 
-  const ADMIN_PASSWORD = 'Filipino2026!' // Change this to your secure password
+  // CHANGE THIS TO YOUR UNIFIED PASSWORD
+  const ADMIN_PASSWORD = 'YourPasswordHere' // Tell me what password you want!
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,13 +24,16 @@ export default function AdminSubmissionsPage() {
 
   const loadSubmissions = async () => {
     setLoading(true)
-    const { data } = await supabase
-      .from('business_submissions')
-      .select('*')
-      .eq('status', filter)
-      .order('created_at', { ascending: false })
     
-    setSubmissions(data || [])
+    try {
+      const response = await fetch(`/api/admin/get-submissions?status=${filter}`)
+      const data = await response.json()
+      setSubmissions(data.submissions || [])
+    } catch (error) {
+      console.error('Error loading submissions:', error)
+      setSubmissions([])
+    }
+    
     setLoading(false)
   }
 
@@ -59,7 +57,8 @@ export default function AdminSubmissionsPage() {
         alert('Action completed successfully!')
         loadSubmissions()
       } else {
-        alert('Action failed. Please try again.')
+        const error = await response.json()
+        alert('Action failed: ' + (error.error || 'Unknown error'))
       }
     } catch (error) {
       alert('Error: ' + error)
@@ -181,8 +180,15 @@ export default function AdminSubmissionsPage() {
                       {submission.facebook_url && <p><strong>Facebook:</strong> <a href={submission.facebook_url} target="_blank" className="text-blue-600">Link</a></p>}
                       {submission.tiktok_url && <p><strong>TikTok:</strong> <a href={submission.tiktok_url} target="_blank" className="text-blue-600">Link</a></p>}
                       {submission.x_url && <p><strong>X:</strong> <a href={submission.x_url} target="_blank" className="text-blue-600">Link</a></p>}
+                      {submission.google_maps_url && <p><strong>Google Maps:</strong> <a href={submission.google_maps_url} target="_blank" className="text-blue-600">Link</a></p>}
                     </div>
                   </div>
+
+                  {submission.hours && (
+                    <div className="mb-4">
+                      <p className="text-sm"><strong>Hours:</strong> {submission.hours}</p>
+                    </div>
+                  )}
 
                   {submission.description && (
                     <div className="mb-4">
@@ -224,6 +230,13 @@ export default function AdminSubmissionsPage() {
                       >
                         ✗ Reject
                       </button>
+                    </div>
+                  )}
+
+                  {submission.status === 'info_requested' && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-sm text-blue-800"><strong>Info Requested:</strong></p>
+                      <p className="text-sm text-blue-700 mt-2">{submission.admin_notes}</p>
                     </div>
                   )}
                 </div>
