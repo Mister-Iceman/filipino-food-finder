@@ -237,9 +237,9 @@ export default async function HomePage() {
               <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 list-none">
                 <li>
                   <Link
-                    href="/directory?search=Los Angeles"
+                    href="/california/los-angeles"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Los Angeles, California"
+                    aria-label="Explore Filipino food and culture in Los Angeles, California"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Palm tree">🌴</span>
                     <h3 className="font-bold text-gray-900">Los Angeles</h3>
@@ -249,9 +249,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=San Francisco"
+                    href="/california/san-francisco"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in San Francisco, California"
+                    aria-label="Explore Filipino food and culture in San Francisco, California"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Golden Gate Bridge">🌉</span>
                     <h3 className="font-bold text-gray-900">San Francisco</h3>
@@ -261,9 +261,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=New York"
+                    href="/new-york/new-york"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in New York, New York"
+                    aria-label="Explore Filipino food and culture in New York, New York"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Statue of Liberty">🗽</span>
                     <h3 className="font-bold text-gray-900">New York</h3>
@@ -273,9 +273,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Chicago"
+                    href="/illinois/chicago"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Chicago, Illinois"
+                    aria-label="Explore Filipino food and culture in Chicago, Illinois"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="City skyline">🏙️</span>
                     <h3 className="font-bold text-gray-900">Chicago</h3>
@@ -285,9 +285,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Houston"
+                    href="/texas/houston"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Houston, Texas"
+                    aria-label="Explore Filipino food and culture in Houston, Texas"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Cowboy hat">🤠</span>
                     <h3 className="font-bold text-gray-900">Houston</h3>
@@ -297,9 +297,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=San Diego"
+                    href="/california/san-diego"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in San Diego, California"
+                    aria-label="Explore Filipino food and culture in San Diego, California"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Beach">🏖️</span>
                     <h3 className="font-bold text-gray-900">San Diego</h3>
@@ -309,9 +309,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Las Vegas"
+                    href="/nevada/las-vegas"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Las Vegas, Nevada"
+                    aria-label="Explore Filipino food and culture in Las Vegas, Nevada"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Slot machine">🎰</span>
                     <h3 className="font-bold text-gray-900">Las Vegas</h3>
@@ -321,9 +321,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Seattle"
+                    href="/washington/seattle"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Seattle, Washington"
+                    aria-label="Explore Filipino food and culture in Seattle, Washington"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Coffee cup">☕</span>
                     <h3 className="font-bold text-gray-900">Seattle</h3>
@@ -333,9 +333,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Honolulu"
+                    href="/hawaii/honolulu"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Honolulu, Hawaii"
+                    aria-label="Explore Filipino food and culture in Honolulu, Hawaii"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Hibiscus flower">🌺</span>
                     <h3 className="font-bold text-gray-900">Honolulu</h3>
@@ -345,9 +345,9 @@ export default async function HomePage() {
 
                 <li>
                   <Link
-                    href="/directory?search=Virginia Beach"
+                    href="/virginia/virginia-beach"
                     className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
-                    aria-label="Find Filipino food in Virginia Beach, Virginia"
+                    aria-label="Explore Filipino food and culture in Virginia Beach, Virginia"
                   >
                     <span className="text-3xl mb-2 block" role="img" aria-label="Beach">🏖️</span>
                     <h3 className="font-bold text-gray-900">Virginia Beach</h3>
