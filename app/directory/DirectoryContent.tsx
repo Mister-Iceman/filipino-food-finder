@@ -30,17 +30,26 @@ export default function DirectoryContent() {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [stateFilter, setStateFilter] = useState('')
+  const [cityFilter, setCityFilter] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const categoryParam = searchParams.get('category')
     const searchParam = searchParams.get('search')
+    const stateParam = searchParams.get('state')
+    const cityParam = searchParams.get('city')
     
     if (categoryParam) {
       setCategoryFilter(decodeURIComponent(categoryParam))
     }
     if (searchParam) {
       setSearchQuery(decodeURIComponent(searchParam))
+    }
+    if (stateParam) {
+      setStateFilter(decodeURIComponent(stateParam))
+    }
+    if (cityParam) {
+      setCityFilter(decodeURIComponent(cityParam))
     }
   }, [searchParams])
 
@@ -51,7 +60,7 @@ export default function DirectoryContent() {
 
   useEffect(() => {
     filterListings()
-  }, [listings, searchQuery, categoryFilter, stateFilter])
+  }, [listings, searchQuery, categoryFilter, stateFilter, cityFilter])
 
   const loadListings = async () => {
     setLoading(true)
@@ -77,14 +86,12 @@ export default function DirectoryContent() {
   }
 
   const loadCommunityInsights = async () => {
-    // Fetch all ratings
     const { data: ratings } = await supabase
       .from('ratings')
       .select('listing_id, listing_category, taste_style, price, portion_size, good_for, parking')
 
     if (!ratings) return
 
-    // Group by listing_id and calculate insights
     const insightsMap = new Map<number, CommunityInsight>()
     
     const grouped = ratings.reduce((acc: any, rating: any) => {
@@ -99,21 +106,17 @@ export default function DirectoryContent() {
       const listingRatings = grouped[listingId]
       const count = listingRatings.length
 
-      // Most common taste_style for restaurants
       const tasteStyles = listingRatings
         .filter((r: any) => r.taste_style)
         .map((r: any) => r.taste_style)
       const mostCommonTaste = getMostCommon(tasteStyles)
 
-      // Average price
       const prices = listingRatings.filter((r: any) => r.price).map((r: any) => r.price)
       const avgPrice = prices.length > 0 ? Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length) : undefined
 
-      // Average portion size for restaurants
       const portions = listingRatings.filter((r: any) => r.portion_size).map((r: any) => r.portion_size)
       const avgPortion = portions.length > 0 ? Math.round(portions.reduce((a: number, b: number) => a + b, 0) / portions.length) : undefined
 
-      // Most common parking
       const parkingOptions = listingRatings.filter((r: any) => r.parking).map((r: any) => r.parking)
       const mostCommonParking = getMostCommon(parkingOptions)
 
@@ -164,6 +167,12 @@ export default function DirectoryContent() {
       filtered = filtered.filter(listing => listing.state === stateFilter)
     }
     
+    if (cityFilter) {
+      filtered = filtered.filter(listing => 
+        listing.city?.toLowerCase() === cityFilter.toLowerCase()
+      )
+    }
+    
     setFilteredListings(filtered)
   }
 
@@ -176,6 +185,7 @@ export default function DirectoryContent() {
     setSearchQuery('')
     setCategoryFilter('')
     setStateFilter('')
+    setCityFilter('')
   }
 
   const getTasteLabel = (taste: string) => {
@@ -249,7 +259,7 @@ export default function DirectoryContent() {
               >
                 Search
               </button>
-              {(searchQuery || categoryFilter || stateFilter) && (
+              {(searchQuery || categoryFilter || stateFilter || cityFilter) && (
                 <button
                   type="button"
                   onClick={clearFilters}
@@ -284,7 +294,6 @@ export default function DirectoryContent() {
               
               return (
                 <div key={listing.id}>
-                  {/* Show ad after every 6 listings */}
                   {index > 0 && index % 6 === 0 && (
                     <div className="md:col-span-2 lg:col-span-3 mb-6">
                       <AdSlot 
@@ -306,7 +315,6 @@ export default function DirectoryContent() {
                       {listing.category_secondary && ` • ${listing.category_secondary}`}
                     </p>
                     
-                    {/* Google Rating */}
                     {listing.google_rating && (
                       <div className="bg-yellow-50 border-l-4 border-yellow-400 px-3 py-2 rounded-lg mb-3">
                         <div className="flex items-start gap-2">
@@ -323,7 +331,6 @@ export default function DirectoryContent() {
                       </div>
                     )}
 
-                    {/* Community Insights */}
                     {insight ? (
                       <div className="bg-purple-50 border-l-4 border-purple-400 px-3 py-2 rounded-lg mb-4">
                         <div className="flex items-start gap-2">
