@@ -20,18 +20,37 @@ export default async function CityPage({ params }: any) {
     return <div className="min-h-screen flex items-center justify-center"><p>City guide coming soon</p></div>
   }
 
-  // Get state abbreviation for fetching restaurants
   const stateAbbr = data.state
   const cityName = data.city
 
-  // Fetch actual restaurants from the listings table
+  // Fetch actual restaurants from the listings table for this specific city
   const { data: restaurants } = await supabase
     .from('listings')
     .select('*')
     .eq('state', stateAbbr)
-    .ilike('city', cityName)
+    .eq('city', cityName) // Changed from ilike to exact match
     .order('google_rating', { ascending: false })
     .limit(12)
+
+  // For featured restaurants, find their actual listings to get slugs
+  const featuredWithLinks = data.featured_restaurants ? await Promise.all(
+    data.featured_restaurants.map(async (featured: any) => {
+      const { data: listing } = await supabase
+        .from('listings')
+        .select('slug, google_rating, google_total_ratings')
+        .eq('state', stateAbbr)
+        .ilike('name', `%${featured.name}%`)
+        .limit(1)
+        .maybeSingle()
+      
+      return {
+        ...featured,
+        slug: listing?.slug,
+        google_rating: listing?.google_rating,
+        google_total_ratings: listing?.google_total_ratings
+      }
+    })
+  ) : []
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,26 +121,55 @@ export default async function CityPage({ params }: any) {
               </section>
             )}
 
-            {/* Featured Restaurants from Guide */}
-            {data.featured_restaurants && data.featured_restaurants.length > 0 && (
+            {/* Featured Restaurants - NOW CLICKABLE */}
+            {featuredWithLinks.length > 0 && (
               <section className="bg-white rounded-xl shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">
                   ⭐ Most Memorable Bites
                 </h2>
                 <div className="grid md:grid-cols-2 gap-6">
-                  {data.featured_restaurants.map((restaurant: any, idx: number) => (
-                    <div key={idx} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                      <h3 className="font-bold text-xl text-gray-900 mb-2">
-                        {restaurant.name}
-                      </h3>
-                      <p className="text-gray-600 mb-3">{restaurant.description}</p>
-                      {restaurant.signature_dish && (
-                        <p className="text-sm text-blue-600">
-                          <strong>Try:</strong> {restaurant.signature_dish}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                  {featuredWithLinks.map((restaurant: any, idx: number) => {
+                    const CardContent = (
+                      <>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">
+                          {restaurant.name}
+                        </h3>
+                        <p className="text-gray-600 mb-3">{restaurant.description}</p>
+                        {restaurant.signature_dish && (
+                          <p className="text-sm text-blue-600 mb-2">
+                            <strong>Try:</strong> {restaurant.signature_dish}
+                          </p>
+                        )}
+                        {restaurant.google_rating && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <span className="text-yellow-500">★</span>
+                            <span className="font-medium text-sm">{restaurant.google_rating}</span>
+                            {restaurant.google_total_ratings && (
+                              <span className="text-gray-500 text-xs">({restaurant.google_total_ratings})</span>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )
+
+                    if (restaurant.slug) {
+                      return (
+                        <Link
+                          key={idx}
+                          href={`/listings/${restaurant.slug}`}
+                          className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all"
+                        >
+                          {CardContent}
+                        </Link>
+                      )
+                    } else {
+                      return (
+                        <div key={idx} className="border border-gray-200 rounded-lg p-6">
+                          {CardContent}
+                        </div>
+                      )
+                    }
+                  })}
                 </div>
               </section>
             )}
@@ -157,7 +205,7 @@ export default async function CityPage({ params }: any) {
                 </div>
                 <div className="mt-6 text-center">
                   <Link
-                    href={`/directory?state=${stateAbbr}&city=${cityName}`}
+                    href={`/directory?city=${encodeURIComponent(cityName)}&state=${stateAbbr}`}
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
                   >
                     View All {cityName} Restaurants →
