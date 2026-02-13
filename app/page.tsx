@@ -224,6 +224,7 @@ export default async function HomePage() {
           </nav>
         </section>
 
+        {/* Popular Cities - NEW EMOJI DESIGN */}
         <section aria-labelledby="cities-heading" className="bg-white py-16">
           <div className="max-w-7xl mx-auto px-4">
             <h2 id="cities-heading" className="text-4xl font-bold text-center text-gray-900 mb-4">
@@ -234,124 +235,124 @@ export default async function HomePage() {
             </p>
             
             <nav aria-label="Browse by popular city">
-              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 list-none">
+              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 list-none">
                 <li>
                   <Link
                     href="/california/los-angeles"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Los Angeles, California"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Palm tree">🌴</span>
-                    <h3 className="font-bold text-gray-900">Los Angeles</h3>
-                    <p className="text-sm text-gray-600">California</p>
+                    <div className="text-6xl mb-4">🌴</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Los Angeles</h3>
+                    <p className="text-gray-600 text-sm">California</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/california/san-francisco"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in San Francisco, California"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Golden Gate Bridge">🌉</span>
-                    <h3 className="font-bold text-gray-900">San Francisco</h3>
-                    <p className="text-sm text-gray-600">California</p>
+                    <div className="text-6xl mb-4">🌉</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">San Francisco</h3>
+                    <p className="text-gray-600 text-sm">California</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/new-york/new-york"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in New York, New York"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Statue of Liberty">🗽</span>
-                    <h3 className="font-bold text-gray-900">New York</h3>
-                    <p className="text-sm text-gray-600">New York</p>
+                    <div className="text-6xl mb-4">🗽</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">New York</h3>
+                    <p className="text-gray-600 text-sm">New York</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/illinois/chicago"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Chicago, Illinois"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="City skyline">🏙️</span>
-                    <h3 className="font-bold text-gray-900">Chicago</h3>
-                    <p className="text-sm text-gray-600">Illinois</p>
+                    <div className="text-6xl mb-4">🏙️</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Chicago</h3>
+                    <p className="text-gray-600 text-sm">Illinois</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/texas/houston"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Houston, Texas"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Cowboy hat">🤠</span>
-                    <h3 className="font-bold text-gray-900">Houston</h3>
-                    <p className="text-sm text-gray-600">Texas</p>
+                    <div className="text-6xl mb-4">🤠</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Houston</h3>
+                    <p className="text-gray-600 text-sm">Texas</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/california/san-diego"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in San Diego, California"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Beach">🏖️</span>
-                    <h3 className="font-bold text-gray-900">San Diego</h3>
-                    <p className="text-sm text-gray-600">California</p>
+                    <div className="text-6xl mb-4">🏖️</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">San Diego</h3>
+                    <p className="text-gray-600 text-sm">California</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/nevada/las-vegas"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Las Vegas, Nevada"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Slot machine">🎰</span>
-                    <h3 className="font-bold text-gray-900">Las Vegas</h3>
-                    <p className="text-sm text-gray-600">Nevada</p>
+                    <div className="text-6xl mb-4">🎰</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Las Vegas</h3>
+                    <p className="text-gray-600 text-sm">Nevada</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/washington/seattle"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Seattle, Washington"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Coffee cup">☕</span>
-                    <h3 className="font-bold text-gray-900">Seattle</h3>
-                    <p className="text-sm text-gray-600">Washington</p>
+                    <div className="text-6xl mb-4">☕</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Seattle</h3>
+                    <p className="text-gray-600 text-sm">Washington</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/hawaii/honolulu"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Honolulu, Hawaii"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Hibiscus flower">🌺</span>
-                    <h3 className="font-bold text-gray-900">Honolulu</h3>
-                    <p className="text-sm text-gray-600">Hawaii</p>
+                    <div className="text-6xl mb-4">🌺</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Honolulu</h3>
+                    <p className="text-gray-600 text-sm">Hawaii</p>
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     href="/virginia/virginia-beach"
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-6 text-center transition-all hover:scale-105 shadow-md hover:shadow-xl block"
+                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
                     aria-label="Explore Filipino food and culture in Virginia Beach, Virginia"
                   >
-                    <span className="text-3xl mb-2 block" role="img" aria-label="Beach">🏖️</span>
-                    <h3 className="font-bold text-gray-900">Virginia Beach</h3>
-                    <p className="text-sm text-gray-600">Virginia</p>
+                    <div className="text-6xl mb-4">🏖️</div>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Virginia Beach</h3>
+                    <p className="text-gray-600 text-sm">Virginia</p>
                   </Link>
                 </li>
               </ul>
