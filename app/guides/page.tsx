@@ -106,18 +106,19 @@ export default async function GuidesPage() {
           </div>
         </div>
 
-        {/* City Guides - NO LINKS, JUST INFO CARDS */}
+        {/* City Guides - NOW CLICKABLE */}
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
-            Cities We're Covering
+            City Guides
           </h2>
           
           {cityPages && cityPages.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {cityPages.map((city) => (
-                <div
+                <Link
                   key={city.id}
-                  className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-200"
+                  href={`/${city.slug}`}
+                  className="group bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-200 hover:shadow-2xl hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2"
                 >
                   <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-6 text-white">
                     <h3 className="text-3xl font-bold mb-2">{city.city}</h3>
@@ -135,7 +136,7 @@ export default async function GuidesPage() {
                       {city.intro_tagline}
                     </p>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 mb-4">
                       <div className="flex items-start gap-2">
                         <span className="text-lg">🏘️</span>
                         <p className="text-sm text-gray-600">
@@ -151,12 +152,15 @@ export default async function GuidesPage() {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-200">
-                      <p className="text-xs text-gray-500 italic">
-                        Full guide coming soon
-                      </p>
+                      <span className="text-blue-600 font-bold group-hover:text-blue-700 flex items-center gap-2">
+                        Read the Guide
+                        <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
