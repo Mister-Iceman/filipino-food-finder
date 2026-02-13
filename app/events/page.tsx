@@ -112,7 +112,7 @@ export default async function EventsPage() {
                 <>
                   {/* Show ad after every 6 events */}
                   {index > 0 && index % 6 === 0 && (
-                    <div className="md:col-span-2 lg:col-span-3 mb-6">
+                    <div className="md:col-span-2 lg:col-span-3 mb-6" key={`ad-${index}`}>
                       <AdSlot 
                         slot="2222222222" 
                         format="horizontal"
@@ -120,7 +120,11 @@ export default async function EventsPage() {
                     </div>
                   )}
                   
-                  <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                  <Link 
+                    href={`/events/${event.id}`}
+                    key={event.id} 
+                    className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow block cursor-pointer"
+                  >
                     {event.image_url && (
                       <div className="h-48 bg-gray-200 overflow-hidden">
                         <img 
@@ -167,28 +171,18 @@ export default async function EventsPage() {
 
                       <div className="flex gap-2">
                         {event.event_url && (
-                          <a 
-                            href={event.event_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
-                          >
+                          <span className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm">
                             Learn More
-                          </a>
+                          </span>
                         )}
                         {event.ticket_url && (
-                          <a 
-                            href={event.ticket_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm"
-                          >
+                          <span className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm">
                             Get Tickets
-                          </a>
+                          </span>
                         )}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </>
               ))}
             </div>
@@ -202,10 +196,14 @@ export default async function EventsPage() {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="space-y-4">
                 {pastEvents.map((event) => (
-                  <div key={event.id} className="border-l-4 border-gray-300 pl-4 py-2">
+                  <Link 
+                    href={`/events/${event.id}`}
+                    key={event.id} 
+                    className="border-l-4 border-gray-300 pl-4 py-2 block hover:border-blue-500 transition-colors cursor-pointer"
+                  >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-lg font-bold text-gray-700">{event.title}</h3>
+                        <h3 className="text-lg font-bold text-gray-700 hover:text-blue-600">{event.title}</h3>
                         <p className="text-sm text-gray-500">
                           {formatDate(event.event_date)} • {event.city}, {event.state}
                         </p>
@@ -216,7 +214,7 @@ export default async function EventsPage() {
                         </span>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
