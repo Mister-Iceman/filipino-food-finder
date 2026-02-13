@@ -11,11 +11,93 @@ export const metadata: Metadata = {
   },
 }
 
+const cities = [
+  {
+    rank: 1,
+    name: 'Los Angeles',
+    state: 'California',
+    population: '~500,000 Filipinos',
+    highlight: 'Home to Historic Filipinotown, the first officially designated Filipinotown in the United States (2002)',
+    keyDistricts: 'Historic Filipinotown, Eagle Rock, Carson, West Covina',
+  },
+  {
+    rank: 2,
+    name: 'San Francisco',
+    state: 'California',
+    population: '~290,000 Filipinos',
+    highlight: 'SOMA Pilipinas is the first Filipino Cultural Heritage District in a major U.S. city (designated 2016)',
+    keyDistricts: 'SOMA Pilipinas, Daly City (Little Manila by the Bay), Excelsior District',
+  },
+  {
+    rank: 3,
+    name: 'New York',
+    state: 'New York',
+    population: '~250,000 Filipinos',
+    highlight: 'Little Manila in Woodside, Queens is the highest concentration of Filipino restaurants on the East Coast',
+    keyDistricts: 'Woodside Queens, Jersey City, Staten Island',
+  },
+  {
+    rank: 4,
+    name: 'Honolulu',
+    state: 'Hawaii',
+    population: '~214,000 Filipinos',
+    highlight: 'Filipinos are the largest ethnic group in Hawaii, and Filipino food has become inseparable from local cuisine',
+    keyDistricts: 'Kalihi, Waipahu, Ewa Beach',
+  },
+  {
+    rank: 5,
+    name: 'San Diego',
+    state: 'California',
+    population: '~201,000 Filipinos',
+    highlight: 'Deep U.S. Navy roots dating back over a century, with one of the highest Filipino populations in any major U.S. city',
+    keyDistricts: 'Mira Mesa, National City, Chula Vista',
+  },
+  {
+    rank: 6,
+    name: 'Las Vegas',
+    state: 'Nevada',
+    population: '~147,000 Filipinos',
+    highlight: 'Filipino Town on Maryland Parkway was officially recognized in 2023 as Nevada\'s first Filipino district',
+    keyDistricts: 'Filipino Town, Spring Valley, Henderson',
+  },
+  {
+    rank: 7,
+    name: 'Chicago',
+    state: 'Illinois',
+    population: '~145,000 Filipinos',
+    highlight: 'One of the largest Filipino communities in the Midwest, with one of the largest Philippine Independence Day parades in the U.S.',
+    keyDistricts: 'Lincoln Square, Albany Park, Skokie',
+  },
+  {
+    rank: 8,
+    name: 'Seattle',
+    state: 'Washington',
+    population: '~115,000 Filipinos',
+    highlight: 'One of the oldest continuous Filipino communities in the United States, dating back to cannery workers in the early 1900s',
+    keyDistricts: 'Beacon Hill, International District, Tukwila',
+  },
+  {
+    rank: 9,
+    name: 'Houston',
+    state: 'Texas',
+    population: '~70,000-90,000 Filipinos',
+    highlight: 'Rapidly growing community drawn to the Texas Medical Center and energy industry',
+    keyDistricts: 'Bellaire, Jersey Village, Sugar Land',
+  },
+  {
+    rank: 10,
+    name: 'Virginia Beach',
+    state: 'Virginia',
+    population: 'Substantial military-rooted community',
+    highlight: 'Home to Naval Station Norfolk, the largest naval base in the world, attracting generations of Filipino sailors',
+    keyDistricts: 'Virginia Beach, Norfolk, Chesapeake',
+  },
+]
+
 export default function MostMemorableCitiesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <article className="max-w-4xl mx-auto px-4 py-16">
-        {/* Header */}
         <header className="mb-12">
           <nav className="text-sm text-gray-600 mb-6">
             <Link href="/" className="hover:underline">Home</Link>
@@ -44,7 +126,6 @@ export default function MostMemorableCitiesPage() {
           </div>
         </header>
 
-        {/* Introduction */}
         <section className="prose prose-lg max-w-none mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Why These Cities Matter</h2>
           
@@ -70,352 +151,54 @@ export default function MostMemorableCitiesPage() {
           </p>
         </section>
 
-        {/* Cities List */}
         <section className="space-y-12 mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-8">The 10 Most Memorable Cities</h2>
 
-          {/* Los Angeles */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#1</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Los Angeles</h3>
-                  <p className="text-blue-100">California</p>
+          {cities.map((city) => (
+            <div key={city.rank} className="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 border-blue-600">
+              <div className="p-8">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center flex-shrink-0">
+                      <span className="text-3xl font-bold">#{city.rank}</span>
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-gray-900">{city.name}</h3>
+                      <p className="text-lg text-gray-600">{city.state}</p>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-100 border-2 border-yellow-400 rounded-lg px-4 py-2">
+                    <p className="text-sm font-bold text-yellow-800 whitespace-nowrap">📊 {city.population}</p>
+                  </div>
                 </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~500,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Home to Historic Filipinotown, the first officially designated Filipinotown in the United States
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Historic Filipinotown, Eagle Rock, Carson, West Covina</p>
-              </div>
-              <Link
-                href="/california/los-angeles"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Los Angeles Guide →
-              </Link>
-            </div>
-          </div>
 
-          {/* San Francisco */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#2</span>
-                <div>
-                  <h3 className="text-3xl font-bold">San Francisco</h3>
-                  <p className="text-blue-100">California</p>
+                <div className="bg-blue-50 border-l-4 border-blue-600 rounded-r-lg p-6 mb-6">
+                  <h4 className="font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    {city.highlight}
+                  </p>
                 </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~290,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  SOMA Pilipinas is the first Filipino Cultural Heritage District in a major U.S. city
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">SOMA Pilipinas, Daly City (Little Manila by the Bay), Excelsior District</p>
-              </div>
-              <Link
-                href="/california/san-francisco"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full San Francisco Guide →
-              </Link>
-            </div>
-          </div>
 
-          {/* New York */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#3</span>
-                <div>
-                  <h3 className="text-3xl font-bold">New York</h3>
-                  <p className="text-blue-100">New York</p>
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <span>🏘️</span> Key Filipino Districts
+                  </h4>
+                  <p className="text-gray-600">
+                    {city.keyDistricts}
+                  </p>
                 </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~250,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Little Manila in Woodside, Queens is the highest concentration of Filipino restaurants on the East Coast
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Woodside Queens, Jersey City, Staten Island</p>
-              </div>
-              <Link
-                href="/new-york/new-york"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full New York Guide →
-              </Link>
-            </div>
-          </div>
 
-          {/* Honolulu */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#4</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Honolulu</h3>
-                  <p className="text-blue-100">Hawaii</p>
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-700">
+                    <strong>Featured in this guide:</strong> Cultural history, migration patterns, 
+                    community gathering places, and the food traditions that define Filipino life in {city.name}.
+                  </p>
                 </div>
               </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~214,000
-              </p>
             </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Filipinos are the largest ethnic group in Hawaii, and Filipino food has become inseparable from local cuisine
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Kalihi, Waipahu, Ewa Beach</p>
-              </div>
-              <Link
-                href="/hawaii/honolulu"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Honolulu Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* San Diego */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#5</span>
-                <div>
-                  <h3 className="text-3xl font-bold">San Diego</h3>
-                  <p className="text-blue-100">California</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~201,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Deep U.S. Navy roots dating back over a century, with one of the highest Filipino populations in any major U.S. city
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Mira Mesa, National City, Chula Vista</p>
-              </div>
-              <Link
-                href="/california/san-diego"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full San Diego Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* Las Vegas */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#6</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Las Vegas</h3>
-                  <p className="text-blue-100">Nevada</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~147,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Filipino Town on Maryland Parkway was officially recognized in 2023 as Nevada's first Filipino district
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Filipino Town, Spring Valley, Henderson</p>
-              </div>
-              <Link
-                href="/nevada/las-vegas"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Las Vegas Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* Chicago */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#7</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Chicago</h3>
-                  <p className="text-blue-100">Illinois</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~145,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  One of the largest Filipino communities in the Midwest, with one of the largest Philippine Independence Day parades in the U.S.
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Lincoln Square, Albany Park, Skokie</p>
-              </div>
-              <Link
-                href="/illinois/chicago"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Chicago Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* Seattle */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#8</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Seattle</h3>
-                  <p className="text-blue-100">Washington</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~115,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  One of the oldest continuous Filipino communities in the United States, dating back to cannery workers in the early 1900s
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Beacon Hill, International District, Tukwila</p>
-              </div>
-              <Link
-                href="/washington/seattle"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Seattle Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* Houston */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#9</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Houston</h3>
-                  <p className="text-blue-100">Texas</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> ~70,000-90,000
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Rapidly growing community drawn to the Texas Medical Center and energy industry
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Bellaire, Jersey Village, Sugar Land</p>
-              </div>
-              <Link
-                href="/texas/houston"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Houston Guide →
-              </Link>
-            </div>
-          </div>
-
-          {/* Virginia Beach */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-5xl font-bold opacity-75">#10</span>
-                <div>
-                  <h3 className="text-3xl font-bold">Virginia Beach</h3>
-                  <p className="text-blue-100">Virginia</p>
-                </div>
-              </div>
-              <p className="text-lg mt-2">
-                <strong>Filipino Population:</strong> Substantial military-rooted community
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
-                <p className="text-gray-700 leading-relaxed">
-                  Home to Naval Station Norfolk, the largest naval base in the world, attracting generations of Filipino sailors
-                </p>
-              </div>
-              <div className="mb-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">Key Filipino Districts</h4>
-                <p className="text-gray-600">Virginia Beach, Norfolk, Chesapeake</p>
-              </div>
-              <Link
-                href="/virginia/virginia-beach"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-              >
-                Read the Full Virginia Beach Guide →
-              </Link>
-            </div>
-          </div>
+          ))}
         </section>
 
-        {/* Methodology */}
         <section className="bg-gray-100 rounded-xl p-8 mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">How We Chose These Cities</h2>
           
@@ -433,7 +216,6 @@ export default function MostMemorableCitiesPage() {
           </p>
         </section>
 
-        {/* Sources */}
         <section className="border-t-2 border-gray-200 pt-8 mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Sources & References</h2>
           
@@ -474,21 +256,28 @@ export default function MostMemorableCitiesPage() {
           </ol>
         </section>
 
-        {/* CTA */}
         <section className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Explore All 10 City Guides
+            Explore Filipino Food Across America
           </h2>
           <p className="text-lg text-gray-700 mb-6">
-            Each city guide includes cultural history, neighborhood highlights, food influences, 
-            and the most memorable Filipino restaurants in the area.
+            Browse our complete directory of Filipino restaurants, bakeries, and grocery stores 
+            in all 10 cities and beyond.
           </p>
-          <Link
-            href="/guides"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
-          >
-            View All City Guides
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/directory"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
+            >
+              Browse All Restaurants
+            </Link>
+            <Link
+              href="/guides"
+              className="inline-block bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-300 px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
+            >
+              More Guides
+            </Link>
+          </div>
         </section>
       </article>
     </div>

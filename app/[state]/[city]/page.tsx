@@ -1,122 +1,48 @@
-'use client'
+{/* Cities List */}
+        <section className="space-y-12 mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-8">The 10 Most Memorable Cities</h2>
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
-export default function CityPage() {
-  const params = useParams()
-  const [data, setData] = useState<any>(null)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    
-    const state = params?.state as string
-    const city = params?.city as string
-    
-    if (state && city) {
-      supabase
-        .from('city_pages')
-        .select('*')
-        .eq('slug', `${state}/${city}`)
-        .single()
-        .then(({ data }) => setData(data))
-    }
-  }, [params])
-
-  if (!mounted || !data) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="text-2xl">Loading...</div></div>
-  }
-
-  const communityPlaces = data.community_places || []
-  const foodHighlights = data.food_highlights || []
-  const featuredRestaurants = data.featured_restaurants || []
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <nav className="text-sm mb-6 opacity-90">
-            <Link href="/">Home</Link> / <Link href="/guides">Guides</Link> / {data.city}
-          </nav>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">{data.city}, {data.state_full}</h1>
-          <p className="text-xl md:text-2xl max-w-3xl opacity-95">{data.intro_tagline}</p>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-12">
-            <section className="bg-white rounded-xl shadow-lg p-8">
-              <p className="text-gray-700 leading-relaxed mb-4">{data.intro_paragraph_1}</p>
-              <p className="text-gray-700 leading-relaxed">{data.intro_paragraph_2}</p>
-            </section>
-
-            {communityPlaces.length > 0 && (
-              <section className="bg-white rounded-xl shadow-lg p-8">
-                <h2 className="text-3xl font-bold mb-6">Where Community Gathers</h2>
-                <div className="space-y-4">
-                  {communityPlaces.map((place: any, idx: number) => (
-                    <div key={idx} className="border-l-4 border-blue-500 pl-4">
-                      <h3 className="font-bold text-lg">{place.name}</h3>
-                      <p className="text-gray-600">{place.description}</p>
+          {cities.map((city) => (
+            <div key={city.rank} className="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 border-blue-600">
+              <div className="p-8">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center">
+                      <span className="text-3xl font-bold">#{city.rank}</span>
                     </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {foodHighlights.length > 0 && (
-              <section className="bg-white rounded-xl shadow-lg p-8">
-                <h2 className="text-3xl font-bold mb-6">What You Will Notice</h2>
-                <ul className="space-y-3">
-                  {foodHighlights.map((highlight: string, idx: number) => (
-                    <li key={idx} className="flex gap-3">
-                      <span className="text-blue-600 text-xl">•</span>
-                      <span className="text-gray-700">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {featuredRestaurants.length > 0 && (
-              <section className="bg-white rounded-xl shadow-lg p-8">
-                <h2 className="text-3xl font-bold mb-6">Most Memorable Bites</h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {featuredRestaurants.map((restaurant: any, idx: number) => (
-                    <div key={idx} className="border rounded-lg p-6">
-                      <h3 className="font-bold text-xl mb-2">{restaurant.name}</h3>
-                      <p className="text-gray-600 mb-3">{restaurant.description}</p>
-                      {restaurant.signature_dish && <p className="text-sm text-blue-600"><strong>Try:</strong> {restaurant.signature_dish}</p>}
+                    <div>
+                      <h3 className="text-3xl font-bold text-gray-900">{city.name}</h3>
+                      <p className="text-lg text-gray-600">{city.state}</p>
                     </div>
-                  ))}
+                  </div>
+                  <div className="bg-yellow-100 border-2 border-yellow-400 rounded-lg px-4 py-2">
+                    <p className="text-sm font-bold text-yellow-800">📊 {city.population}</p>
+                  </div>
                 </div>
-              </section>
-            )}
-          </div>
 
-          <div className="lg:col-span-1">
-            <div className="sticky top-4">
-              <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-6">
-                <h3 className="font-bold text-lg mb-4">Quick Facts</h3>
-                <div className="space-y-3 text-sm">
-                  <div><p className="text-gray-600">Filipino Population</p><p className="font-bold">{data.filipino_population}</p></div>
-                  <div><p className="text-gray-600">Migration History</p><p className="text-gray-700">{data.migration_history}</p></div>
-                  {data.cultural_tidbit && <div><p className="text-gray-600">Did You Know?</p><p className="text-gray-700">{data.cultural_tidbit}</p></div>}
+                <div className="bg-blue-50 border-l-4 border-blue-600 rounded-r-lg p-6 mb-6">
+                  <h4 className="font-bold text-gray-900 mb-2">What Makes It Memorable</h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    {city.highlight}
+                  </p>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <span>🏘️</span> Key Filipino Districts
+                  </h4>
+                  <p className="text-gray-600">
+                    {city.keyDistricts}
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-700">
+                    <strong>Featured in this guide:</strong> Cultural history, migration patterns, 
+                    community gathering places, and the food traditions that define Filipino life in {city.name}.
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+          ))}
+        </section>

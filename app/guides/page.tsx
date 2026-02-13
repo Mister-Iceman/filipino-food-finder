@@ -19,7 +19,6 @@ export const metadata: Metadata = {
 }
 
 export default async function GuidesPage() {
-  // Fetch all city pages
   const { data: cityPages } = await supabase
     .from('city_pages')
     .select('*')
@@ -27,7 +26,6 @@ export default async function GuidesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Hero Section */}
       <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -41,7 +39,6 @@ export default async function GuidesPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Introduction */}
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
@@ -68,7 +65,7 @@ export default async function GuidesPage() {
           </div>
         </div>
 
-        {/* Featured Articles Section */}
+        {/* Featured Articles */}
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
             Featured Articles
@@ -109,46 +106,40 @@ export default async function GuidesPage() {
           </div>
         </div>
 
-        {/* City Guides Grid */}
+        {/* City Guides - NO LINKS, JUST INFO CARDS */}
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
-            Featured City Guides
+            Cities We're Covering
           </h2>
           
           {cityPages && cityPages.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {cityPages.map((city) => (
-                <Link
+                <div
                   key={city.id}
-                  href={`/${city.slug}`}
-                  className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-200"
                 >
-                  {/* City Header with Gradient */}
                   <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-6 text-white">
                     <h3 className="text-3xl font-bold mb-2">{city.city}</h3>
                     <p className="text-blue-100 text-lg">{city.state_full}</p>
                   </div>
 
-                  {/* Content */}
                   <div className="p-6">
-                    {/* Population Badge */}
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 mb-4">
                       <p className="text-sm font-semibold text-yellow-800">
                         📊 {city.filipino_population}
                       </p>
                     </div>
 
-                    {/* Intro Preview */}
-                    <p className="text-gray-700 leading-relaxed mb-4 line-clamp-3">
-                      {city.intro_paragraph_1}
+                    <p className="text-gray-700 leading-relaxed mb-4 text-sm">
+                      {city.intro_tagline}
                     </p>
 
-                    {/* Highlights */}
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-2">
                       <div className="flex items-start gap-2">
                         <span className="text-lg">🏘️</span>
                         <p className="text-sm text-gray-600">
-                          {city.community_places[0]?.name || 'Cultural neighborhoods'}
+                          {city.community_places?.[0]?.name || 'Cultural neighborhoods'}
                         </p>
                       </div>
                       <div className="flex items-start gap-2">
@@ -159,17 +150,13 @@ export default async function GuidesPage() {
                       </div>
                     </div>
 
-                    {/* Read Guide Button */}
-                    <div className="pt-4 border-t border-gray-200">
-                      <span className="text-blue-600 font-bold group-hover:text-blue-700 flex items-center gap-2">
-                        Read the Guide
-                        <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </span>
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-xs text-gray-500 italic">
+                        Full guide coming soon
+                      </p>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           ) : (
@@ -181,30 +168,15 @@ export default async function GuidesPage() {
           )}
         </div>
 
-        {/* Coming Soon Section */}
+        {/* Coming Soon */}
         <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             More Guides Coming Soon
           </h2>
           <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
             We're building comprehensive guides for more cities across America. Each guide includes cultural 
-            history, neighborhood highlights, food influences, and the most memorable Filipino restaurants 
-            in each area.
+            history, neighborhood highlights, food influences, and the most memorable Filipino restaurants.
           </p>
-          <div className="space-y-4 max-w-xl mx-auto">
-            <div className="flex items-center justify-center gap-3 text-gray-700">
-              <span className="text-2xl">📝</span>
-              <p>Annual series: "Most Memorable Filipino Food Cities"</p>
-            </div>
-            <div className="flex items-center justify-center gap-3 text-gray-700">
-              <span className="text-2xl">🗺️</span>
-              <p>Regional food guides and cultural deep-dives</p>
-            </div>
-            <div className="flex items-center justify-center gap-3 text-gray-700">
-              <span className="text-2xl">📖</span>
-              <p>Filipino food glossaries and ingredient guides</p>
-            </div>
-          </div>
         </div>
 
         {/* CTA */}
@@ -214,20 +186,13 @@ export default async function GuidesPage() {
               Help Us Build Better Guides
             </h2>
             <p className="text-lg text-gray-700 mb-6">
-              Know a restaurant we should feature? Have a story about your city's Filipino community? 
-              We'd love to hear from you.
+              Know a restaurant we should feature? Have a story about your city's Filipino community?
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/add-business"
-                className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
-              >
+              <Link href="/add-business" className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all">
                 Add a Restaurant
               </Link>
-              <Link
-                href="/contact"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
-              >
+              <Link href="/contact" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold transition-all">
                 Share Your Story
               </Link>
             </div>
