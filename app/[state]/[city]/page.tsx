@@ -130,10 +130,10 @@ export default async function CityPage({ params }: any) {
                 </div>
                 <div className="mt-6 text-center">
                   <Link
-                    href={`/directory?state=${stateAbbr}`}
+                    href={`/directory?city=${encodeURIComponent(cityName)}&state=${stateAbbr}`}
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
-                  >
-                    View All {data.state_full} Restaurants →
+                    >
+                    View All {cityName} Restaurants →
                   </Link>
                 </div>
               </section>
