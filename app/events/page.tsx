@@ -108,21 +108,26 @@ export default async function EventsPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingEvents.map((event, index) => (
-                <>
-                  {/* Show ad after every 6 events */}
-                  {index > 0 && index % 6 === 0 && (
+              {upcomingEvents.flatMap((event, index) => {
+                const items = []
+                
+                // Add ad after every 6 events
+                if (index > 0 && index % 6 === 0) {
+                  items.push(
                     <div className="md:col-span-2 lg:col-span-3 mb-6" key={`ad-${index}`}>
                       <AdSlot 
                         slot="2222222222" 
                         format="horizontal"
                       />
                     </div>
-                  )}
-                  
+                  )
+                }
+                
+                // Add event card
+                items.push(
                   <Link 
                     href={`/events/${event.id}`}
-                    key={event.id} 
+                    key={`event-${event.id}`}
                     className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow block cursor-pointer"
                   >
                     {event.image_url && (
@@ -183,8 +188,10 @@ export default async function EventsPage() {
                       </div>
                     </div>
                   </Link>
-                </>
-              ))}
+                )
+                
+                return items
+              })}
             </div>
           )}
         </section>
