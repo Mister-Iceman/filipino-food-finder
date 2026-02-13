@@ -83,23 +83,26 @@ export default async function CityPage({ params }: any) {
               <section className="bg-white rounded-xl shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">⭐ Most Memorable Bites</h2>
                 <div className="grid md:grid-cols-2 gap-6">
-                  {data.featured_restaurants.map((restaurant: any, idx: number) => (
-                    
-                      key={idx}
-                      href={`/directory?search=${encodeURIComponent(restaurant.name)}`}
-                      className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all block"
-                    >
-                      <h3 className="font-bold text-xl text-gray-900 mb-2 hover:text-blue-600">
-                        {restaurant.name}
-                      </h3>
-                      <p className="text-gray-600 mb-3">{restaurant.description}</p>
-                      {restaurant.signature_dish && (
-                        <p className="text-sm text-blue-600">
-                          <strong>Try:</strong> {restaurant.signature_dish}
-                        </p>
-                      )}
-                    </a>
-                  ))}
+                  {data.featured_restaurants.map((restaurant: any, idx: number) => {
+                    const searchUrl = `/directory?search=${encodeURIComponent(restaurant.name)}`
+                    return (
+                      
+                        key={idx}
+                        href={searchUrl}
+                        className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all block"
+                      >
+                        <h3 className="font-bold text-xl text-gray-900 mb-2 hover:text-blue-600">
+                          {restaurant.name}
+                        </h3>
+                        <p className="text-gray-600 mb-3">{restaurant.description}</p>
+                        {restaurant.signature_dish && (
+                          <p className="text-sm text-blue-600">
+                            <strong>Try:</strong> {restaurant.signature_dish}
+                          </p>
+                        )}
+                      </a>
+                    )
+                  })}
                 </div>
               </section>
             )}
@@ -129,12 +132,12 @@ export default async function CityPage({ params }: any) {
                   ))}
                 </div>
                 <div className="mt-6 text-center">
-                  
+                  <Link
                     href={`/directory?city=${encodeURIComponent(cityName)}`}
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
                   >
                     View All {cityName} Restaurants →
-                  </a>
+                  </Link>
                 </div>
               </section>
             )}
