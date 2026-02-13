@@ -66,33 +66,50 @@ export default function EventsAdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
     
     if (editingId) {
-      const { error } = await supabase
-        .from('events')
-        .update(formData)
-        .eq('id', editingId)
+      // Update event via API
+      const response = await fetch('/api/admin/events/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: ADMIN_PASSWORD,
+          eventId: editingId,
+          eventData: formData
+        })
+      })
       
-      if (!error) {
+      if (response.ok) {
         alert('Event updated!')
         resetForm()
         loadEvents()
       } else {
-        alert('Error: ' + error.message)
+        const error = await response.json()
+        alert('Error: ' + error.error)
       }
     } else {
-      const { error } = await supabase
-        .from('events')
-        .insert([formData])
+      // Create event via API
+      const response = await fetch('/api/admin/events/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: ADMIN_PASSWORD,
+          eventData: formData
+        })
+      })
       
-      if (!error) {
+      if (response.ok) {
         alert('Event added!')
         resetForm()
         loadEvents()
       } else {
-        alert('Error: ' + error.message)
+        const error = await response.json()
+        alert('Error: ' + error.error)
       }
     }
+    
+    setLoading(false)
   }
 
   const handleEdit = (event: any) => {
@@ -121,15 +138,26 @@ export default function EventsAdminPage() {
 
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this event?')) {
-      const { error } = await supabase
-        .from('events')
-        .delete()
-        .eq('id', id)
+      setLoading(true)
       
-      if (!error) {
+      const response = await fetch('/api/admin/events/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: ADMIN_PASSWORD,
+          eventId: id
+        })
+      })
+      
+      if (response.ok) {
         alert('Event deleted!')
         loadEvents()
+      } else {
+        const error = await response.json()
+        alert('Error: ' + error.error)
       }
+      
+      setLoading(false)
     }
   }
 
@@ -157,17 +185,17 @@ export default function EventsAdminPage() {
   }
 
   const formatDate = (date: string) => {
-  // Parse as local date instead of UTC to avoid timezone shift
-  const [year, month, day] = date.split('-').map(Number)
-  const localDate = new Date(year, month - 1, day) // month is 0-indexed
-  
-  return localDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+    // Parse as local date instead of UTC to avoid timezone shift
+    const [year, month, day] = date.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day) // month is 0-indexed
+    
+    return localDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
 
   if (!isAuthenticated) {
     return (
@@ -375,9 +403,10 @@ export default function EventsAdminPage() {
               <div className="flex gap-4 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg"
+                  disabled={loading}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg disabled:bg-gray-400"
                 >
-                  {editingId ? 'Update Event' : 'Add Event'}
+                  {loading ? 'Processing...' : (editingId ? 'Update Event' : 'Add Event')}
                 </button>
                 <button
                   type="button"
