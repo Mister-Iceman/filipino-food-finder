@@ -87,7 +87,7 @@ export default async function CityPage({ params }: any) {
                     <Link
                       key={idx}
                       href={`/directory?search=${encodeURIComponent(restaurant.name)}`}
-                      className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all block"
+                      className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all"
                     >
                       <h3 className="font-bold text-xl text-gray-900 mb-2 hover:text-blue-600">
                         {restaurant.name}
@@ -130,10 +130,10 @@ export default async function CityPage({ params }: any) {
                 </div>
                 <div className="mt-6 text-center">
                   <Link
-                    href={`/directory?city=${encodeURIComponent(cityName)}`}
+                    href={`/directory?state=${stateAbbr}`}
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors"
                   >
-                    View All {cityName} Restaurants →
+                    View All {data.state_full} Restaurants →
                   </Link>
                 </div>
               </section>
