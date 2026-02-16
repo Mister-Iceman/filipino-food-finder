@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import SocialLinks from './SocialLinks';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -21,80 +22,87 @@ export default function Navigation() {
           </Link>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-8 list-none">
-            <li>
-              <Link 
-                href="/" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/directory" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Directory
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/guides" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Guides
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/states" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                States
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/events" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Events
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/about" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/contact" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Contact
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/support" 
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-              >
-                Support Us
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/add-business" 
-                className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold transition-all hover:scale-105"
-              >
-                Add Your Business
-              </Link>
-            </li>
-          </ul>
+          <div className="hidden md:flex items-center space-x-8">
+            <ul className="flex space-x-8 list-none">
+              <li>
+                <Link 
+                  href="/" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/directory" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Directory
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/guides" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Guides
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/states" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  States
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/events" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Events
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/about" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/contact" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/support" 
+                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  Support Us
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/add-business" 
+                  className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold transition-all hover:scale-105"
+                >
+                  Add Your Business
+                </Link>
+              </li>
+            </ul>
+            
+            {/* Social Links - Desktop */}
+            <div className="border-l border-gray-300 pl-6">
+              <SocialLinks />
+            </div>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -202,6 +210,11 @@ export default function Navigation() {
                 </Link>
               </li>
             </ul>
+            
+            {/* Social Links - Mobile */}
+            <div className="mt-4 pt-4 border-t border-gray-200 px-4">
+              <SocialLinks />
+            </div>
           </div>
         )}
       </div>

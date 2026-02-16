@@ -1,3 +1,5 @@
+import SocialLinks from './SocialLinks.jsx';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-12" role="contentinfo">
@@ -95,6 +97,11 @@ export default function Footer() {
             >
               info@filipinofoodnearme.org
             </a>
+            
+            {/* Social Media Links */}
+            <div className="mb-4">
+              <SocialLinks />
+            </div>
             
             {/* Buy Me A Coffee Button */}
             <div className="mt-4">
