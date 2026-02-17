@@ -35,11 +35,13 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
   const listingUrl = `${baseUrl}/listings/${slug}`
 
-  // Generate JSON-LD schema for SEO
+  // Generate JSON-LD schema for SEO (ENHANCED VERSION)
   const schema = {
     '@context': 'https://schema.org',
     '@type': isGrocery ? 'GroceryStore' : 'Restaurant',
     name: listing.name,
+    description: `${listing.category_primary} in ${listing.city}, ${listing.state}`,
+    servesCuisine: 'Filipino',
     address: {
       '@type': 'PostalAddress',
       streetAddress: listing.address_street,
@@ -48,6 +50,13 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
       postalCode: listing.zip,
       addressCountry: 'US',
     },
+    ...(listing.latitude && listing.longitude && {
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: listing.latitude,
+        longitude: listing.longitude,
+      },
+    }),
     ...(listing.phone && { telephone: listing.phone }),
     ...(listing.website && { url: listing.website }),
     ...(listing.google_rating && {
@@ -58,6 +67,15 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
       },
     }),
     ...(listing.hours && { openingHours: listing.hours }),
+    ...(listing.image_url && { image: listing.image_url }),
+    ...((listing.instagram_url || listing.facebook_url || listing.twitter_url || listing.tiktok_url) && {
+      sameAs: [
+        listing.instagram_url,
+        listing.facebook_url,
+        listing.twitter_url,
+        listing.tiktok_url,
+      ].filter(Boolean),
+    }),
   }
 
   return (

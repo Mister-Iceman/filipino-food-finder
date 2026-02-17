@@ -210,7 +210,37 @@ export default function DirectoryContent() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-5xl font-bold text-gray-900 mb-8">Restaurant Directory</h1>
+        <div className="mb-8">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">Filipino Food Directory</h1>
+          <p className="text-xl text-gray-600 mb-6">
+            Discover authentic Filipino restaurants, bakeries, grocery stores, and food trucks across America. 
+            From traditional turo-turo to modern Filipino fusion, find your next favorite spot.
+          </p>
+          
+          {/* Category Quick Links */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <Link href="/directory?category=Restaurant" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+              <div className="text-3xl mb-2">🍽️</div>
+              <div className="font-semibold text-gray-900">Restaurants</div>
+            </Link>
+            <Link href="/directory?category=Supermarket%20%26%20Grocery" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+              <div className="text-3xl mb-2">🛒</div>
+              <div className="font-semibold text-gray-900">Grocery</div>
+            </Link>
+            <Link href="/directory?category=Bakery%2C%20Dessert%20%26%20Cafe" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+              <div className="text-3xl mb-2">🥐</div>
+              <div className="font-semibold text-gray-900">Bakeries</div>
+            </Link>
+            <Link href="/directory?category=Quick%20Bites%20%26%20Turo-Turo" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+              <div className="text-3xl mb-2">🌮</div>
+              <div className="font-semibold text-gray-900">Quick Bites</div>
+            </Link>
+            <Link href="/directory?category=Food%20Truck%20%26%20Pop-Up" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+              <div className="text-3xl mb-2">🚚</div>
+              <div className="font-semibold text-gray-900">Food Trucks</div>
+            </Link>
+          </div>
+        </div>
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <form onSubmit={handleSearch}>
