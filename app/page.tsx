@@ -150,6 +150,32 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Kamayan / Community Dining Section */}
+        <section className="relative overflow-hidden">
+          <img
+            src="/Boodle_5.png"
+            alt="Filipino kamayan boodle fight feast with family and friends sharing food on banana leaves"
+            className="w-full h-96 object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent flex items-center">
+            <div className="max-w-7xl mx-auto px-4 w-full">
+              <div className="max-w-xl text-white">
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  Food is Better Together
+                </h2>
+                <p className="text-lg md:text-xl mb-6 text-gray-200">
+                  Kamayan. Boodle fight. Kainan. Whatever you call it—Filipino food is always meant to be shared. Find your community table.
+                </p>
+                <Link
+                  href="/directory"
+                  className="inline-block bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-8 py-3 rounded-full transition-all hover:scale-105"
+                >
+                  Find Filipino Food Near You
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
         <section aria-labelledby="categories-heading" className="max-w-7xl mx-auto px-4 py-16">
           <h2 id="categories-heading" className="text-4xl font-bold text-center text-gray-900 mb-12">
             Browse by Category
