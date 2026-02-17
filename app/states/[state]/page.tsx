@@ -83,6 +83,17 @@ export async function generateMetadata({ params }: StatePageProps): Promise<Meta
   const uniqueCities = new Set(listings?.map(l => l.city) || []).size
   const totalListings = listings?.length || 0
 
+  if (totalListings === 0) {
+    return {
+      title: `Filipino Food in ${stateInfo.full} | Filipino Food Near Me`,
+      description: `Help us build our directory of Filipino restaurants, bakeries, and grocery stores in ${stateInfo.full}. Know a Filipino business? Add it to our community directory.`,
+      openGraph: {
+        title: `Filipino Food in ${stateInfo.full}`,
+        description: `Building the Filipino food directory for ${stateInfo.full}`,
+      },
+    }
+  }
+
   return {
     title: `Filipino Food in ${stateInfo.full} | ${totalListings} Restaurants`,
     description: `Discover ${totalListings} Filipino restaurants, bakeries, and grocery stores across ${uniqueCities} cities in ${stateInfo.full}. Find authentic Filipino food near you.`,
@@ -108,10 +119,86 @@ export default async function StatePage({ params }: StatePageProps) {
     .order('city')
     .order('name')
 
+  // EMPTY STATE - Show placeholder instead of 404
   if (!listings || listings.length === 0) {
-    notFound()
+    return (
+      <div className="min-h-screen bg-gray-50 py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          <nav className="text-sm mb-6 text-gray-600">
+            <Link href="/" className="hover:underline">Home</Link>
+            <span className="mx-2">/</span>
+            <Link href="/directory" className="hover:underline">Directory</Link>
+            <span className="mx-2">/</span>
+            <span>{stateInfo.full}</span>
+          </nav>
+
+          <div className="text-center py-16">
+            <div className="mb-8">
+              <div className="text-6xl mb-4">🍽️</div>
+              <h1 className="text-5xl font-bold text-gray-900 mb-4">
+                Filipino Food in {stateInfo.full}
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                We're building our directory for {stateInfo.full}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8 max-w-2xl mx-auto">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Know a Filipino restaurant, bakery, or grocery store in {stateInfo.full}?
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Help us build the most complete directory of Filipino food in America! 
+                Add businesses you know and love to help fellow food lovers discover Filipino cuisine in {stateInfo.full}.
+              </p>
+              <Link
+                href="/add-business"
+                className="inline-block bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105"
+              >
+                Add a Business
+              </Link>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto text-left">
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                <div className="text-3xl mb-2">🏪</div>
+                <h3 className="font-bold text-gray-900 mb-2">Restaurants</h3>
+                <p className="text-sm text-gray-600">
+                  Turo-turo, fine dining, food trucks, and everything in between
+                </p>
+              </div>
+              <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
+                <div className="text-3xl mb-2">🥐</div>
+                <h3 className="font-bold text-gray-900 mb-2">Bakeries & Cafés</h3>
+                <p className="text-sm text-gray-600">
+                  Pandesal, ensaymada, ube desserts, and Filipino coffee spots
+                </p>
+              </div>
+              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+                <div className="text-3xl mb-2">🛒</div>
+                <h3 className="font-bold text-gray-900 mb-2">Grocery Stores</h3>
+                <p className="text-sm text-gray-600">
+                  Filipino markets and stores with imported ingredients
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-12 text-gray-600">
+              <p className="mb-4">
+                Once businesses are added, this page will show all Filipino food businesses in {stateInfo.full}, 
+                organized by city with ratings, locations, and more.
+              </p>
+              <Link href="/directory" className="text-blue-600 hover:underline font-medium">
+                ← Browse other states
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
+  // NORMAL STATE - Has listings
   const citiesMap = listings.reduce((acc, listing) => {
     const city = listing.city
     if (!acc[city]) {
