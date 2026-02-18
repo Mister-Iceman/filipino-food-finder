@@ -23,7 +23,6 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     notFound()
   }
 
-  // Determine category (restaurant vs grocery)
   const isGrocery = 
     listing.category_primary?.toLowerCase().includes('supermarket') ||
     listing.category_primary?.toLowerCase().includes('grocery') ||
@@ -31,11 +30,9 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 
   const category = isGrocery ? 'grocery' : 'restaurant'
 
-  // Generate full URL for sharing
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
   const listingUrl = `${baseUrl}/listings/${slug}`
 
-  // Generate JSON-LD schema for SEO (ENHANCED VERSION)
   const schema = {
     '@context': 'https://schema.org',
     '@type': isGrocery ? 'GroceryStore' : 'Restaurant',
@@ -86,12 +83,31 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
       />
       
       <div className="max-w-7xl mx-auto px-4">
-        <Link href="/directory" className="text-blue-600 hover:underline mb-4 inline-block">
-          ← Back to Directory
-        </Link>
+        <nav className="text-sm mb-6 text-gray-600" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <Link href="/" className="hover:underline hover:text-blue-600">Home</Link>
+            </li>
+            <li><span className="text-gray-400">/</span></li>
+            <li>
+              <Link href="/directory" className="hover:underline hover:text-blue-600">Directory</Link>
+            </li>
+            <li><span className="text-gray-400">/</span></li>
+            <li>
+              <Link href={`/states/${listing.state.toLowerCase()}`} className="hover:underline hover:text-blue-600">
+                {listing.state}
+              </Link>
+            </li>
+            <li><span className="text-gray-400">/</span></li>
+            <li>
+              <span className="text-gray-900 font-medium">{listing.city}</span>
+            </li>
+            <li><span className="text-gray-400">/</span></li>
+            <li className="text-gray-500">{listing.name}</li>
+          </ol>
+        </nav>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content - 2 columns */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
@@ -109,11 +125,58 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 <p className="text-gray-700">
                   📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}
                 </p>
-                {listing.phone && <p className="text-gray-700">📞 {listing.phone}</p>}
-                {listing.hours && <p className="text-gray-700">🕐 {listing.hours}</p>}
+                {listing.phone && (
+                  <p className="text-gray-700">
+                    📞 <a href={`tel:${listing.phone}`} className="hover:text-blue-600 underline">{listing.phone}</a>
+                  </p>
+                )}
+                {listing.hours && (
+                  <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded">
+                    <p className="text-sm font-semibold text-blue-900 mb-1">Hours</p>
+                    <p className="text-sm text-blue-800">🕐 {listing.hours}</p>
+                  </div>
+                )}
+                {listing.website && (
+                  <p className="text-gray-700">
+                    🌐 <a href={listing.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Visit Website</a>
+                  </p>
+                )}
+                
+                {/* Last Updated & Report Info */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <p className="text-xs text-gray-500">
+                    Last updated: {new Date(listing.updated_at || listing.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </p>
+                  <Link 
+                    href={`/contact?subject=Report%20Incorrect%20Info%20-%20${encodeURIComponent(listing.name)}&restaurant=${encodeURIComponent(listing.name)}&city=${encodeURIComponent(listing.city)}&state=${listing.state}`}
+                    className="text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    📝 Report incorrect info
+                  </Link>
+                </div>
               </div>
 
-              {/* Social Share Section */}
+              <div className="bg-gray-50 border-l-4 border-gray-300 rounded-lg p-4 mb-8">
+                <p className="text-sm font-semibold text-gray-700 mb-2">Looking for something else?</p>
+                <div className="flex flex-wrap gap-2">
+                  <Link href="/restaurants" className="text-xs bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 px-3 py-1 rounded-full transition-colors">
+                    🍽️ Restaurants
+                  </Link>
+                  <Link href="/bakeries" className="text-xs bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 px-3 py-1 rounded-full transition-colors">
+                    🥐 Bakeries
+                  </Link>
+                  <Link href="/grocery-stores" className="text-xs bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 px-3 py-1 rounded-full transition-colors">
+                    🛒 Grocery Stores
+                  </Link>
+                  <Link href="/quick-bites" className="text-xs bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 px-3 py-1 rounded-full transition-colors">
+                    🌮 Quick Bites
+                  </Link>
+                  <Link href="/food-trucks" className="text-xs bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 px-3 py-1 rounded-full transition-colors">
+                    🚚 Food Trucks
+                  </Link>
+                </div>
+              </div>
+
               <div className="mb-8">
                 <SocialShare 
                   url={listingUrl}
@@ -122,7 +185,6 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 />
               </div>
 
-              {/* Community Ratings Summary */}
               <div className="mb-8">
                 <RatingSummary 
                   listingId={listing.id}
@@ -131,7 +193,6 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            {/* Rating Form Section */}
             <div className="mt-8">
               <RatingForm 
                 listingId={listing.id} 
@@ -142,10 +203,8 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
           
-          {/* Sidebar - 1 column */}
           <div className="lg:col-span-1">
             <div className="sticky top-4 space-y-4">
-              {/* Ad Slot - Vertical */}
               <AdSlot 
                 slot="0987654321" 
                 format="vertical"
@@ -154,6 +213,58 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
         </div>
+
+        <div className="mt-12">
+          <NearbyRestaurants city={listing.city} state={listing.state} currentListingId={listing.id} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+async function NearbyRestaurants({ city, state, currentListingId }: { city: string; state: string; currentListingId: number }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  const { data: nearbyListings } = await supabase
+    .from('listings')
+    .select('id, name, slug, category_primary, google_rating, google_reviews_count')
+    .eq('city', city)
+    .eq('state', state)
+    .neq('id', currentListingId)
+    .limit(6)
+
+  if (!nearbyListings || nearbyListings.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8">
+      <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        More Filipino Food in {city}, {state}
+      </h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {nearbyListings.map((nearby) => (
+          <Link
+            key={nearby.id}
+            href={`/listings/${nearby.slug}`}
+            className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow"
+          >
+            <h3 className="font-bold text-gray-900 hover:text-blue-600 mb-1">
+              {nearby.name}
+            </h3>
+            <p className="text-sm text-gray-600 mb-2">{nearby.category_primary}</p>
+            {nearby.google_rating && (
+              <div className="flex items-center gap-1">
+                <span className="text-yellow-500">★</span>
+                <span className="font-medium text-sm">{nearby.google_rating}</span>
+                <span className="text-gray-500 text-xs">({nearby.google_reviews_count})</span>
+              </div>
+            )}
+          </Link>
+        ))}
       </div>
     </div>
   )
