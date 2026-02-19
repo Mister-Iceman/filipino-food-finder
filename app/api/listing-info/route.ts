@@ -9,20 +9,12 @@ const supabase = createClient(
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const slug = searchParams.get('slug')
-
-  if (!slug) {
-    return NextResponse.json({ error: 'Slug required' }, { status: 400 })
-  }
-
+  if (!slug) return NextResponse.json({ error: 'Slug required' }, { status: 400 })
   const { data: listing } = await supabase
     .from('listings')
     .select('id, name, city, state, is_claimed')
     .eq('slug', slug)
     .single()
-
-  if (!listing) {
-    return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
-  }
-
+  if (!listing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(listing)
 }
