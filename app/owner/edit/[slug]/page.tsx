@@ -1,115 +1,105 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import crypto from 'crypto'
+"use client"
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useParams } from "next/navigation"
 
-export async function POST(req: NextRequest) {
-  const body = await req.json()
-  const {
-    listing_id, listing_name, listing_city, listing_state,
-    owner_name, owner_email,
-    new_hours, new_website, new_phone, new_description,
-    new_instagram_url, new_facebook_url, new_tiktok_url, notes
-  } = body
+export default function OwnerEditPage() {
+  const params = useParams()
+  const slug = params.slug as string
+  const [listing, setListing] = useState<{id: string, name: string, city: string, state: string} | null>(null)
+  const [ownerName, setOwnerName] = useState("")
+  const [ownerEmail, setOwnerEmail] = useState("")
+  const [newHours, setNewHours] = useState("")
+  const [newWebsite, setNewWebsite] = useState("")
+  const [newPhone, setNewPhone] = useState("")
+  const [newDescription, setNewDescription] = useState("")
+  const [newInstagram, setNewInstagram] = useState("")
+  const [newFacebook, setNewFacebook] = useState("")
+  const [newTiktok, setNewTiktok] = useState("")
+  const [notes, setNotes] = useState("")
+  const [status, setStatus] = useState("idle")
+  const [errorMsg, setErrorMsg] = useState("")
 
-  if (!listing_id || !owner_name || !owner_email) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-  }
+  useEffect(() => {
+    if (!slug) return
+    fetch("/api/listing-info?slug=" + slug).then(r => r.json()).then(data => { if (data.id) setListing(data) })
+  }, [slug])
 
-  // Must have at least one field to update
-  const hasUpdate = new_hours || new_website || new_phone || new_description ||
-    new_instagram_url || new_facebook_url || new_tiktok_url
-
-  if (!hasUpdate) {
-    return NextResponse.json({ error: 'Please provide at least one field to update' }, { status: 400 })
-  }
-
-  const token = crypto.randomBytes(32).toString('hex')
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
-
-  const { error: insertError } = await supabase
-    .from('listing_update_requests')
-    .insert({
-      listing_id, listing_name, listing_city, listing_state,
-      owner_name, owner_email,
-      new_hours, new_website, new_phone, new_description,
-      new_instagram_url, new_facebook_url, new_tiktok_url,
-      notes, token, status: 'pending'
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus("loading")
+    const res = await fetch("/api/owner-update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ listing_id: listing?.id, listing_name: listing?.name, listing_city: listing?.city, listing_state: listing?.state, owner_name: ownerName, owner_email: ownerEmail, new_hours: newHours || null, new_website: newWebsite || null, new_phone: newPhone || null, new_description: newDescription || null, new_instagram_url: newInstagram || null, new_facebook_url: newFacebook || null, new_tiktok_url: newTiktok || null, notes: notes || null })
     })
-
-  if (insertError) {
-    return NextResponse.json({ error: 'Failed to submit update' }, { status: 500 })
+    const data = await res.json()
+    if (res.ok) { setStatus("success") } else { setStatus("error"); setErrorMsg(data.error || "Something went wrong.") }
   }
 
-  const approveUrl = `${baseUrl}/api/approve-update?token=${token}&action=approve`
-  const rejectUrl = `${baseUrl}/api/approve-update?token=${token}&action=reject`
-
-  // Build update summary for email
-  const updateRows = [
-    new_hours && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;width:160px;">Hours</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_hours}</td></tr>`,
-    new_website && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Website</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_website}</td></tr>`,
-    new_phone && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Phone</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_phone}</td></tr>`,
-    new_description && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Description</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_description}</td></tr>`,
-    new_instagram_url && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Instagram</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_instagram_url}</td></tr>`,
-    new_facebook_url && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Facebook</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_facebook_url}</td></tr>`,
-    new_tiktok_url && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">TikTok</td><td style="padding:8px;border-bottom:1px solid #eee;">${new_tiktok_url}</td></tr>`,
-    notes && `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Notes</td><td style="padding:8px;border-bottom:1px solid #eee;">${notes}</td></tr>`,
-  ].filter(Boolean).join('')
-
-  // Email admin
-  await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'api-key': process.env.BREVO_API_KEY! },
-    body: JSON.stringify({
-      sender: { name: 'FilipinoFoodNearMe', email: 'info@filipinofoodnearme.org' },
-      to: [{ email: 'info@filipinofoodnearme.org' }],
-      subject: `📝 Listing Update Request: ${listing_name}`,
-      htmlContent: `
-        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-          <h2 style="color:#62438D;">Listing Update Request</h2>
-          <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;width:160px;">Business</td><td style="padding:8px;border-bottom:1px solid #eee;">${listing_name}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Location</td><td style="padding:8px;border-bottom:1px solid #eee;">${listing_city}, ${listing_state}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Submitted by</td><td style="padding:8px;border-bottom:1px solid #eee;">${owner_name} (${owner_email})</td></tr>
-          </table>
-          <h3 style="color:#333;">Requested Changes:</h3>
-          <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">${updateRows}</table>
-          <a href="${approveUrl}" style="background:#16a34a;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin-right:12px;">
-            Apply All Changes
-          </a>
-          <a href="${rejectUrl}" style="background:#dc2626;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">
-            Reject Request
-          </a>
+  if (status === "success") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="bg-white rounded-xl shadow-lg p-12 max-w-md w-full text-center">
+          <div className="text-5xl mb-4">✅</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Salamat! Update Submitted</h1>
+          <p className="text-gray-600 mb-2">We received your update for <strong>{listing?.name}</strong>.</p>
+          <p className="text-gray-500 text-sm mb-6">Our team will review and apply changes within 2-3 business days.</p>
+          <Link href={"/listings/" + slug} className="text-blue-600 hover:underline text-sm">Back to listing</Link>
         </div>
-      `
-    })
-  })
+      </div>
+    )
+  }
 
-  // Confirm to owner
-  await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'api-key': process.env.BREVO_API_KEY! },
-    body: JSON.stringify({
-      sender: { name: 'Filipino Food Near Me', email: 'info@filipinofoodnearme.org' },
-      to: [{ email: owner_email, name: owner_name }],
-      subject: `We received your update for ${listing_name}`,
-      htmlContent: `
-        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-          <h2 style="color:#62438D;">Salamat, ${owner_name}!</h2>
-          <p>We received your update request for <strong>${listing_name}</strong>.</p>
-          <p>Our team will review and apply the changes within <strong>2-3 business days</strong>.</p>
-          <p style="color:#666;font-size:13px;">
-            Questions? Reply to this email.<br>
-            The FilipinoFoodNearMe.org Team
-          </p>
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="max-w-xl mx-auto">
+        <nav className="text-sm mb-6 text-gray-600">
+          <Link href="/" className="hover:underline hover:text-blue-600">Home</Link>
+          <span className="mx-2 text-gray-400">/</span>
+          <Link href={"/listings/" + slug} className="hover:underline hover:text-blue-600">{listing?.name || "Listing"}</Link>
+          <span className="mx-2 text-gray-400">/</span>
+          <span className="text-gray-900">Update Listing Info</span>
+        </nav>
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="text-center mb-8">
+            <div className="text-4xl mb-3">📝</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Update Your Listing</h1>
+            {listing && <p className="text-blue-600 font-semibold">{listing.name}</p>}
+            {listing && <p className="text-gray-500 text-sm">{listing.city}, {listing.state}</p>}
+          </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-800">Only fill in the fields you want to update. All changes are reviewed before going live.</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-4 pb-5 border-b border-gray-200">
+              <p className="text-sm font-bold text-gray-700 uppercase tracking-wide">Your Info</p>
+              <input type="text" value={ownerName} onChange={e => setOwnerName(e.target.value)} required placeholder="Your Name *" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="email" value={ownerEmail} onChange={e => setOwnerEmail(e.target.value)} required placeholder="Your Email *" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+            </div>
+            <div className="space-y-4">
+              <p className="text-sm font-bold text-gray-700 uppercase tracking-wide">Business Info</p>
+              <input type="text" value={newHours} onChange={e => setNewHours(e.target.value)} placeholder="Hours (e.g. Mon-Fri 10am-9pm)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="url" value={newWebsite} onChange={e => setNewWebsite(e.target.value)} placeholder="Website URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="tel" value={newPhone} onChange={e => setNewPhone(e.target.value)} placeholder="Phone Number" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <textarea value={newDescription} onChange={e => setNewDescription(e.target.value)} rows={3} placeholder="Description - tell the community about your business..." className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none resize-none" />
+            </div>
+            <div className="space-y-4 border-t border-gray-200 pt-5">
+              <p className="text-sm font-bold text-gray-700 uppercase tracking-wide">Social Media</p>
+              <input type="url" value={newInstagram} onChange={e => setNewInstagram(e.target.value)} placeholder="Instagram URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="url" value={newFacebook} onChange={e => setNewFacebook(e.target.value)} placeholder="Facebook URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="url" value={newTiktok} onChange={e => setNewTiktok(e.target.value)} placeholder="TikTok URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+            </div>
+            <div className="border-t border-gray-200 pt-5">
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Anything else? e.g. we moved, menu changed..." className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none resize-none" />
+            </div>
+            {status === "error" && <div className="bg-red-50 border border-red-200 rounded-lg p-3"><p className="text-red-700 text-sm">{errorMsg}</p></div>}
+            <button type="submit" disabled={status === "loading"} className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-60">{status === "loading" ? "Submitting..." : "Submit Update Request"}</button>
+            <p className="text-xs text-gray-400 text-center">Changes reviewed within 2-3 business days.</p>
+          </form>
         </div>
-      `
-    })
-  })
-
-  return NextResponse.json({ success: true })
+      </div>
+    </div>
+  )
 }
