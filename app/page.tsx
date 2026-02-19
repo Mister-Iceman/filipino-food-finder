@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
 import NewsletterSignup from './components/NewsletterSignup'
+import InstagramFeed from './components/InstagramFeed'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -387,7 +388,7 @@ export default async function HomePage() {
           </div>
         </section>
         <NewsletterSignup />   
-        
+        <InstagramFeed />
         <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-red-600 to-blue-600 text-white py-16">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 id="cta-heading" className="text-4xl font-bold mb-6">
@@ -407,13 +408,6 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer role="contentinfo" className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            © 2026 Filipino Food Near Me. The first and only community Filipino food directory in America.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
