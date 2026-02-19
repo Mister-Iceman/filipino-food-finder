@@ -153,8 +153,14 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                   >
                     📝 Report incorrect info
                   </Link>
+                  <Link 
+                  href={`/claim-listing/${slug}`}
+                  className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-semibold px-3 py-1.5 rounded-full transition"
+                >
+                  🏪 Claim this business
+                  </Link>  
+                  </div>
                 </div>
-              </div>
 
               <div className="bg-gray-50 border-l-4 border-gray-300 rounded-lg p-4 mb-8">
                 <p className="text-sm font-semibold text-gray-700 mb-2">Looking for something else?</p>
