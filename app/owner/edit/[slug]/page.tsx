@@ -26,13 +26,20 @@ export default function OwnerEditPage() {
     fetch("/api/listing-info?slug=" + slug).then(r => r.json()).then(data => { if (data.id) setListing(data) })
   }, [slug])
 
+  const normalizeUrl = (val: string) => {
+    if (!val) return null
+    if (val.startsWith("http://") || val.startsWith("https://")) return val
+    return "https://" + val
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!listing?.id) { setStatus("error"); setErrorMsg("Listing not found. Please try again."); return }
     setStatus("loading")
     const res = await fetch("/api/owner-update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listing_id: listing?.id, listing_name: listing?.name, listing_city: listing?.city, listing_state: listing?.state, owner_name: ownerName, owner_email: ownerEmail, new_hours: newHours || null, new_website: newWebsite || null, new_phone: newPhone || null, new_description: newDescription || null, new_instagram_url: newInstagram || null, new_facebook_url: newFacebook || null, new_tiktok_url: newTiktok || null, notes: notes || null })
+      body: JSON.stringify({ listing_id: listing.id, listing_name: listing.name, listing_city: listing.city, listing_state: listing.state, owner_name: ownerName, owner_email: ownerEmail, new_hours: newHours || null, new_website: normalizeUrl(newWebsite), new_phone: newPhone || null, new_description: newDescription || null, new_instagram_url: normalizeUrl(newInstagram), new_facebook_url: normalizeUrl(newFacebook), new_tiktok_url: normalizeUrl(newTiktok), notes: notes || null })
     })
     const data = await res.json()
     if (res.ok) { setStatus("success") } else { setStatus("error"); setErrorMsg(data.error || "Something went wrong.") }
@@ -68,6 +75,7 @@ export default function OwnerEditPage() {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Update Your Listing</h1>
             {listing && <p className="text-blue-600 font-semibold">{listing.name}</p>}
             {listing && <p className="text-gray-500 text-sm">{listing.city}, {listing.state}</p>}
+            {!listing && <p className="text-gray-400 text-sm mt-2">Loading listing info...</p>}
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-blue-800">Only fill in the fields you want to update. All changes are reviewed before going live.</p>
@@ -81,21 +89,26 @@ export default function OwnerEditPage() {
             <div className="space-y-4">
               <p className="text-sm font-bold text-gray-700 uppercase tracking-wide">Business Info</p>
               <input type="text" value={newHours} onChange={e => setNewHours(e.target.value)} placeholder="Hours (e.g. Mon-Fri 10am-9pm)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
-              <input type="url" value={newWebsite} onChange={e => setNewWebsite(e.target.value)} placeholder="Website URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <div>
+                <input type="text" value={newWebsite} onChange={e => setNewWebsite(e.target.value)} placeholder="Website (e.g. www.myrestaurant.com)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+                <p className="text-xs text-gray-400 mt-1">No need to type https:// — we will add it automatically.</p>
+              </div>
               <input type="tel" value={newPhone} onChange={e => setNewPhone(e.target.value)} placeholder="Phone Number" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
               <textarea value={newDescription} onChange={e => setNewDescription(e.target.value)} rows={3} placeholder="Description - tell the community about your business..." className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none resize-none" />
             </div>
             <div className="space-y-4 border-t border-gray-200 pt-5">
               <p className="text-sm font-bold text-gray-700 uppercase tracking-wide">Social Media</p>
-              <input type="url" value={newInstagram} onChange={e => setNewInstagram(e.target.value)} placeholder="Instagram URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
-              <input type="url" value={newFacebook} onChange={e => setNewFacebook(e.target.value)} placeholder="Facebook URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
-              <input type="url" value={newTiktok} onChange={e => setNewTiktok(e.target.value)} placeholder="TikTok URL" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <div>
+                <input type="text" value={newInstagram} onChange={e => setNewInstagram(e.target.value)} placeholder="Instagram (e.g. www.instagram.com/yourbusiness)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              </div>
+              <input type="text" value={newFacebook} onChange={e => setNewFacebook(e.target.value)} placeholder="Facebook (e.g. www.facebook.com/yourbusiness)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="text" value={newTiktok} onChange={e => setNewTiktok(e.target.value)} placeholder="TikTok (e.g. www.tiktok.com/@yourbusiness)" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
             </div>
             <div className="border-t border-gray-200 pt-5">
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Anything else? e.g. we moved, menu changed..." className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none resize-none" />
             </div>
             {status === "error" && <div className="bg-red-50 border border-red-200 rounded-lg p-3"><p className="text-red-700 text-sm">{errorMsg}</p></div>}
-            <button type="submit" disabled={status === "loading"} className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-60">{status === "loading" ? "Submitting..." : "Submit Update Request"}</button>
+            <button type="submit" disabled={status === "loading" || !listing} className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-60">{status === "loading" ? "Submitting..." : "Submit Update Request"}</button>
             <p className="text-xs text-gray-400 text-center">Changes reviewed within 2-3 business days.</p>
           </form>
         </div>
