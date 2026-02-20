@@ -31,8 +31,6 @@ export default async function NewsroomArticlePage({ params }: { params: { slug: 
 
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Breadcrumb */}
       <div className="bg-gray-50 border-b border-gray-100 px-4 py-3">
         <div className="max-w-3xl mx-auto text-sm text-gray-500">
           <Link href="/" className="hover:text-purple-700">Home</Link>
@@ -43,14 +41,11 @@ export default async function NewsroomArticlePage({ params }: { params: { slug: 
         </div>
       </div>
 
-      {/* Press Release Label */}
       <div className="bg-[#62438D] text-white text-center py-2">
         <span className="text-xs font-bold uppercase tracking-widest">Press Release — For Immediate Release</span>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-10">
-
-        {/* Tags */}
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {article.tags.map((tag: string) => (
@@ -80,7 +75,6 @@ export default async function NewsroomArticlePage({ params }: { params: { slug: 
           />
         )}
 
-        {/* Media Contact Box */}
         <div className="mt-12 border border-purple-100 bg-purple-50 rounded-xl p-6">
           <h3 className="font-bold text-gray-900 mb-3">Media Contact</h3>
           <p className="text-sm text-gray-600">FilipinoFoodNearMe.org</p>

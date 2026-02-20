@@ -39,8 +39,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Breadcrumb */}
       <div className="bg-gray-50 border-b border-gray-100 px-4 py-3">
         <div className="max-w-3xl mx-auto text-sm text-gray-500">
           <Link href="/" className="hover:text-purple-700">Home</Link>
@@ -51,20 +49,15 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Hero Image */}
-      {article.hero_image_url && (
+      {article.hero_image_url ? (
         <div className="w-full h-72 md:h-96 overflow-hidden bg-gray-100">
           <img src={article.hero_image_url} alt={article.hero_image_alt || article.title} className="w-full h-full object-cover" />
         </div>
-      )}
-      {!article.hero_image_url && (
+      ) : (
         <div className="w-full h-48 bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26]" />
       )}
 
-      {/* Article Content */}
       <div className="max-w-3xl mx-auto px-4 py-10">
-
-        {/* Tags */}
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {article.tags.map((tag: string) => (
@@ -73,10 +66,8 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           </div>
         )}
 
-        {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">{article.title}</h1>
 
-        {/* Meta row */}
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8 pb-8 border-b border-gray-100">
           <span className="font-medium text-gray-600">{article.author_name}</span>
           {article.published_at && (
@@ -85,12 +76,10 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           {article.read_time_minutes && <span>{article.read_time_minutes} min read</span>}
         </div>
 
-        {/* Excerpt */}
         {article.excerpt && (
           <p className="text-xl text-gray-600 leading-relaxed mb-8 font-light border-l-4 border-purple-400 pl-4 italic">{article.excerpt}</p>
         )}
 
-        {/* Body Content */}
         {article.content && (
           <div
             className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-a:no-underline hover:prose-a:underline prose-ul:my-4 prose-li:text-gray-700 prose-li:mb-1"
@@ -98,7 +87,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           />
         )}
 
-        {/* Find Filipino Food CTA */}
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-2">Ready to Try It Yourself?</h3>
           <p className="text-purple-200 mb-6">Find Filipino restaurants, bakeries, and more near you — free, community-powered, and always up to date.</p>
@@ -106,7 +94,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Related Articles */}
       {related && related.length > 0 && (
         <div className="bg-gray-50 py-12 px-4">
           <div className="max-w-5xl mx-auto">
