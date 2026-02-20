@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
-import FeaturedArticles from './components/FeaturedArticles'
 import NewsletterSignup from './components/NewsletterSignup'
 import InstagramFeed from './components/InstagramFeed'
+import FeaturedArticles from './components/FeaturedArticles'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
