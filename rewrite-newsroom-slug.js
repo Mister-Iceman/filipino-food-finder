@@ -1,4 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
+const fs = require('fs');
+
+const content = `import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -90,4 +92,11 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
       </div>
     </div>
   )
-}
+}`;
+
+fs.writeFileSync('app/newsroom/[slug]/page.tsx', content);
+console.log('Done. Size:', fs.statSync('app/newsroom/[slug]/page.tsx').size, 'bytes');
+console.log('Verify notFound line:');
+const lines = content.split('\n');
+const idx = lines.findIndex(l => l.includes('notFound()'));
+console.log(lines.slice(idx-1, idx+2).join('\n'));
