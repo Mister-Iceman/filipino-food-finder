@@ -12,8 +12,8 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center space-x-2 font-bold text-xl text-gray-900 hover:text-red-600 transition-colors"
             aria-label="Filipino Food Near Me - Home"
           >
@@ -23,81 +23,52 @@ export default function Navigation() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <ul className="flex space-x-8 list-none">
+            <ul className="flex space-x-6 list-none">
               <li>
-                <Link 
-                  href="/" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/directory" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/directory" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Directory
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/guides" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/guides" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Guides
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/states" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/cultural-knowledge-base" className="text-gray-700 hover:text-purple-700 font-medium transition-colors">
+                  Learn
+                </Link>
+              </li>
+              <li>
+                <Link href="/states" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   States
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/events" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/events" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Events
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/about" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
+                <Link href="/about" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/contact" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/support" 
-                  className="text-gray-700 hover:text-red-600 font-medium transition-colors"
-                >
-                  Support Us
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/add-business" 
+                <Link
+                  href="/add-business"
                   className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold transition-all hover:scale-105"
                 >
                   Add Your Business
                 </Link>
               </li>
             </ul>
-            
+
             {/* Social Links - Desktop */}
             <div className="border-l border-gray-300 pl-6">
               <SocialLinks />
@@ -129,88 +100,62 @@ export default function Navigation() {
           <div className="md:hidden pb-4">
             <ul className="space-y-2 list-none">
               <li>
-                <Link 
-                  href="/" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Home
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/directory" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/directory" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Directory
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/guides" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/guides" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Guides
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/states" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/cultural-knowledge-base" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  Learn
+                </Link>
+              </li>
+              <li>
+                <Link href="/states" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   States
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/events" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/events" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Events
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/about" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/about" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   About
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/contact" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/contact" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Contact
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/support" 
-                  className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/support" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Support Us
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/add-business" 
-                  className="block bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold text-center transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link href="/newsroom" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  Newsroom
+                </Link>
+              </li>
+              <li>
+                <Link href="/add-business" className="block bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold text-center transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Add Your Business
                 </Link>
               </li>
             </ul>
-            
+
             {/* Social Links - Mobile */}
             <div className="mt-4 pt-4 border-t border-gray-200 px-4">
               <SocialLinks />

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
+import FeaturedArticles from './components/FeaturedArticles'
 import NewsletterSignup from './components/NewsletterSignup'
 import InstagramFeed from './components/InstagramFeed'
 
@@ -387,6 +388,7 @@ export default async function HomePage() {
             </nav>
           </div>
         </section>
+        <FeaturedArticles />
         <NewsletterSignup />   
         <InstagramFeed />
         <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-red-600 to-blue-600 text-white py-16">
