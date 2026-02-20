@@ -53,7 +53,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       {article.hero_image_url ? (
         <div style={{maxHeight:"280px",overflow:"hidden",width:"100%",backgroundColor:"#f3f4f6"}}>
-          <img src={article.hero_image_url} alt={article.title} className="w-full h-full object-cover" />
+          <img src={article.hero_image_url} alt={article.title} style={{width:"100%",height:"280px",objectFit:"cover",display:"block"}} />
         </div>
       ) : (
         <div className="w-full h-48 bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26]" />
