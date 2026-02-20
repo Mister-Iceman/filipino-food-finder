@@ -9,8 +9,9 @@ const supabase = createClient(
 
 export const revalidate = 3600
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', params.slug).single()
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', slug).single()
   if (!data) return { title: 'Not Found' }
   return {
     title: data.meta_title || data.title + ' | FilipinoFoodNearMe.org Newsroom',
@@ -18,11 +19,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function NewsroomArticlePage({ params }: { params: { slug: string } }) {
+export default async function NewsroomArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const { data: article } = await supabase
     .from('articles')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('status', 'published')
     .single()
 
