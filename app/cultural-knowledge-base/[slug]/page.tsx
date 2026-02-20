@@ -26,7 +26,12 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     .eq('status', 'published')
     .single()
 
-  if (!article) notFound()
+  if (!article) return (
+    <div className="p-10 text-center">
+      <h1 className="text-2xl font-bold text-red-600 mb-4">Debug: Article Not Found</h1>
+      <p className="text-gray-600">Slug: {params.slug}</p>
+    </div>
+  )
 
   const { data: related } = await supabase
     .from('articles')
