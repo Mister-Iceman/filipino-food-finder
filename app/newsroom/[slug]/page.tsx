@@ -47,7 +47,7 @@ export default async function NewsroomArticlePage({ params }: { params: { slug: 
       <div className="max-w-3xl mx-auto px-4 py-10">
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {article.tags.map((tag) => (
+            {article.tags.map((tag: string) => (
               <span key={tag} className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">{tag}</span>
             ))}
           </div>
