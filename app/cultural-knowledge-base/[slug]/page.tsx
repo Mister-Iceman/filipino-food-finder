@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export const revalidate = 3600
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
   const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', params.slug).single()
   if (!data) return { title: 'Article Not Found' }
   return {
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function ArticlePage({ params }) {
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
   const { data: article } = await supabase
     .from('articles')
     .select('*')
