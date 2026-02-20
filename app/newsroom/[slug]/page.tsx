@@ -1,16 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
 
 export const revalidate = 3600
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }) {
   const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', params.slug).single()
   if (!data) return { title: 'Not Found' }
   return {
@@ -19,7 +18,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function NewsroomArticlePage({ params }: { params: { slug: string } }) {
+export default async function NewsroomArticlePage({ params }) {
   const { data: article } = await supabase
     .from('articles')
     .select('*')
@@ -48,7 +47,7 @@ export default async function NewsroomArticlePage({ params }: { params: { slug: 
       <div className="max-w-3xl mx-auto px-4 py-10">
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {article.tags.map((tag: string) => (
+            {article.tags.map((tag) => (
               <span key={tag} className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">{tag}</span>
             ))}
           </div>
