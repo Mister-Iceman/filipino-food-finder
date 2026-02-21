@@ -48,45 +48,30 @@ const nextConfig: NextConfig = {
       { source: '/author/jcrb-hubspacegmail-com',          destination: '/', permanent: true },
 
       // GROUP 2: Old listing URL format
-      {
-        source: '/listings/seafood-city-supermarket-chicago-il-2',
-        destination: '/listings/seafood-city-supermarket-chicago-il',
-        permanent: true,
-      },
-      {
-        source: '/listing/custom-carpentry-services',
-        destination: '/',
-        permanent: true,
-      },
+      { source: '/listings/seafood-city-supermarket-chicago-il-2', destination: '/listings/seafood-city-supermarket-chicago-il', permanent: true },
+      { source: '/listing/custom-carpentry-services',               destination: '/', permanent: true },
 
       // GROUP 3: Fake/placeholder restaurant pages
-      { source: '/restaurants/united-states/new-york/new-york/panorama',          destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/cesare-hotel',      destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/chez-michael',      destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/ziro',              destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/maya-inn',          destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/gusto',             destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/new-york/new-york/old-whiskey-salon', destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/california/san-francisco/tasty-food-inc',   destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/california/san-francisco/cucina-e-vino',    destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/california/san-francisco/burger-factory',   destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/california/san-francisco/eire-inn',         destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/california/san-francisco/stardust-hotel',   destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/panorama',              destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/cesare-hotel',          destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/chez-michael',          destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/ziro',                  destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/maya-inn',              destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/gusto',                 destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/new-york/new-york/old-whiskey-salon',     destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/california/san-francisco/tasty-food-inc', destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/california/san-francisco/cucina-e-vino',  destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/california/san-francisco/burger-factory', destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/california/san-francisco/eire-inn',       destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/california/san-francisco/stardust-hotel', destination: '/restaurants', permanent: true },
 
       // GROUP 4: Invalid/broken paths
       { source: '/restaurants/category/hotels', destination: '/restaurants', permanent: true },
-      { source: '/
-
-    ];
-  },
-
-};
-
-export default nextConfig;,                           destination: '/',            permanent: true },
+      { source: '/$',                            destination: '/',            permanent: true },
 
       // GROUP 5: WordPress lorem ipsum junk
       { source: '/the-standard-chunk-of-lorem-ipsum-used-since-the-1500s-is-reproduced-below-for-those-interested', destination: '/', permanent: true },
-      { source: '/lorem-ipsum-is-simply-dummy-text-of-the-printing-and-typesetting-industry', destination: '/', permanent: true },
+      { source: '/lorem-ipsum-is-simply-dummy-text-of-the-printing-and-typesetting-industry',                       destination: '/', permanent: true },
       { source: '/where-does-it-come-from',  destination: '/', permanent: true },
       { source: '/reset',                    destination: '/', permanent: true },
       { source: '/category/trends',          destination: '/', permanent: true },
@@ -95,8 +80,8 @@ export default nextConfig;,                           destination: '/',         
       { source: '/feed',                     destination: '/', permanent: true },
 
       // GROUP 6: Old WordPress Philadelphia restaurant pages
-      { source: '/restaurants/united-states/pennsylvania/philadelphia/loews-philadelphia-hotel', destination: '/restaurants', permanent: true },
-      { source: '/restaurants/united-states/pennsylvania/philadelphia/parc',                     destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/pennsylvania/philadelphia/loews-philadelphia-hotel',     destination: '/restaurants', permanent: true },
+      { source: '/restaurants/united-states/pennsylvania/philadelphia/parc',                         destination: '/restaurants', permanent: true },
       { source: '/restaurants/united-states/pennsylvania/philadelphia/zavino-pizzeria-and-wine-bar', destination: '/restaurants', permanent: true },
 
     ];
