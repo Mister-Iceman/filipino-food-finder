@@ -47,6 +47,11 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
         <span className="text-xs font-bold uppercase tracking-widest">Press Release — For Immediate Release</span>
       </div>
 
+      {article.hero_image_url && (
+        <div style={{width:"100%",backgroundColor:"#f3f4f6"}}>
+          <img src={article.hero_image_url} alt={article.hero_image_alt || article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
+        </div>
+      )}
       <div className="max-w-3xl mx-auto px-4 py-10">
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
@@ -56,7 +61,7 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
           </div>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">{article.title}</h1>
+        <h1 className={article.hero_image_url ? "sr-only" : "text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"}>{article.title}</h1>
 
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8 pb-8 border-b border-gray-100">
           <span className="font-medium text-gray-600">{article.author_name}</span>
