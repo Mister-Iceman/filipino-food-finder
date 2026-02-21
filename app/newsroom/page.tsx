@@ -41,9 +41,10 @@ export default async function NewsroomPage() {
             <h2 className="font-bold text-gray-900 text-lg mb-1">Press Kit</h2>
             <p className="text-gray-500 text-sm">Site description, key facts, and media contact information for journalists and editors.</p>
           </div>
-          <a href="mailto:info@filipinofoodnearme.org" title="info@filipinofoodnearme.org" onClick={(e) => { if (!window.location.protocol.includes('mailto')) { e.preventDefault(); navigator.clipboard.writeText('info@filipinofoodnearme.org').then(() => alert('Email copied: info@filipinofoodnearme.org')); }}}
+          <a href="mailto:info@filipinofoodnearme.org"
             className="whitespace-nowrap bg-purple-700 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-purple-800 transition-colors text-sm">
-            Contact Press Team
+            Contact Press Team</a>
+          <p className="text-xs text-gray-500 mt-2">info@filipinofoodnearme.org
           </a>
         </div>
 
