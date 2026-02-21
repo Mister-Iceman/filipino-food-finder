@@ -155,11 +155,6 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
-                <Link href="/newsroom" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  Newsroom
-                </Link>
-              </li>
-              <li>
                 <Link href="/add-business" className="block bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold text-center transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Add Your Business
                 </Link>
