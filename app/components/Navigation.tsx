@@ -41,7 +41,12 @@ export default function Navigation() {
               </li>
               <li>
                 <Link href="/cultural-knowledge-base" className="text-gray-700 hover:text-purple-700 font-medium transition-colors">
-                  Learn
+                  Food Culture
+                </Link>
+              </li>
+              <li>
+                <Link href="/newsroom" className="text-gray-700 hover:text-purple-700 font-medium transition-colors">
+                  Newsroom
                 </Link>
               </li>
               <li>
@@ -116,7 +121,12 @@ export default function Navigation() {
               </li>
               <li>
                 <Link href="/cultural-knowledge-base" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  Learn
+                  Food Culture
+                </Link>
+              </li>
+              <li>
+                <Link href="/newsroom" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  Newsroom
                 </Link>
               </li>
               <li>
