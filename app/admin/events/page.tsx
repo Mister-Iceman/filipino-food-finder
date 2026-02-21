@@ -76,7 +76,7 @@ export default function EventsAdminPage() {
         body: JSON.stringify({
           password: ADMIN_PASSWORD,
           eventId: editingId,
-          eventData: formData
+          eventData: Object.fromEntries(Object.entries(formData).map(([k, v]) => [k, v === '' ? null : v]))
         })
       })
       
@@ -95,7 +95,7 @@ export default function EventsAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           password: ADMIN_PASSWORD,
-          eventData: formData
+          eventData: Object.fromEntries(Object.entries(formData).map(([k, v]) => [k, v === '' ? null : v]))
         })
       })
       
