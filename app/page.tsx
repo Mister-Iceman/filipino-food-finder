@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import NewsletterSignup from './components/NewsletterSignup'
 import InstagramFeed from './components/InstagramFeed'
 import FeaturedArticles from './components/FeaturedArticles'
+import LatestNews from './components/LatestNews'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -389,6 +390,7 @@ export default async function HomePage() {
           </div>
         </section>
         <FeaturedArticles />
+      <LatestNews />
         <NewsletterSignup />   
         <InstagramFeed />
         <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-red-600 to-blue-600 text-white py-16">
