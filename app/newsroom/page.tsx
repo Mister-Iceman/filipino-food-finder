@@ -43,9 +43,9 @@ export default async function NewsroomPage() {
           </div>
           <a href="mailto:info@filipinofoodnearme.org"
             className="whitespace-nowrap bg-purple-700 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-purple-800 transition-colors text-sm">
-            Contact Press Team</a>
-          <p className="text-xs text-gray-500 mt-2">info@filipinofoodnearme.org
+            Contact Press Team
           </a>
+          <p className="text-xs text-gray-500 mt-2">info@filipinofoodnearme.org</p>
         </div>
 
         {/* Articles */}
