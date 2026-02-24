@@ -113,6 +113,33 @@ export default function ListingPolicyPage() {
           </div>
         </div>
 
+          {/* Business Models We Recognize */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Business Models We Recognize</h2>
+            <p className="text-gray-600 text-sm mb-6">We recognize that Filipino food businesses operate in many forms beyond traditional restaurants. Any of the following models qualifies for a directory listing, as long as Filipino food is a core part of what you offer.</p>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="border border-gray-200 rounded-xl p-5">
+                <p className="font-bold text-gray-900 mb-1">🏪 Brick &amp; Mortar / Storefront</p>
+                <p className="text-sm text-gray-600">Traditional restaurant, bakery, cafe, or market with a dedicated customer area open to walk-ins during regular hours.</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <p className="font-bold text-gray-900 mb-1">🏭 Commercial or Shared Kitchen</p>
+                <p className="text-sm text-gray-600">Businesses operating from a licensed commercial or shared commissary kitchen for production, wholesale, or pickup orders. Must have a verifiable commercial address — not a private residence.</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <p className="font-bold text-gray-900 mb-1">🚚 Food Truck</p>
+                <p className="text-sm text-gray-600">Mobile food trucks with a regular, findable schedule. Must have a consistent presence customers can plan around — not one-off appearances only.</p>
+              </div>
+              <div className="border border-gray-200 rounded-xl p-5">
+                <p className="font-bold text-gray-900 mb-1">🛍️ Pickup &amp; Pre-Order</p>
+                <p className="text-sm text-gray-600">Businesses offering scheduled preorder pickup at a licensed commercial location with clear pickup hours. Not eligible if pickup is at a private home with no commercial license.</p>
+              </div>
+            </div>
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <p className="text-sm text-amber-800"><strong>Pop-up only vendors</strong> — businesses with no fixed commercial address that sell only at rotating markets or festivals — should use our <a href="/submit-event" className="underline font-medium">Submit Event</a> form for each appearance instead of a directory listing.</p>
+            </div>
+          </div>
+
         {/* What does NOT qualify */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">What Does Not Qualify</h2>
@@ -225,3 +252,5 @@ export default function ListingPolicyPage() {
     </div>
   )
 }
+
+

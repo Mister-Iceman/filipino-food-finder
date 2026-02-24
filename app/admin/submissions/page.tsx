@@ -8,8 +8,11 @@ export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [filter, setFilter] = useState('pending')
+  const [infoModal, setInfoModal] = useState<{ id: number; name: string } | null>(null)
+  const [infoMessage, setInfoMessage] = useState('')
+  const [approveModal, setApproveModal] = useState<{ id: number; name: string } | null>(null)
+  const [isPickupOnly, setIsPickupOnly] = useState(false)
 
-  // CHANGE THIS TO YOUR UNIFIED PASSWORD
   const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
   const handleLogin = (e: React.FormEvent) => {
@@ -24,7 +27,6 @@ export default function AdminSubmissionsPage() {
 
   const loadSubmissions = async () => {
     setLoading(true)
-    
     try {
       const response = await fetch(`/api/admin/get-submissions?status=${filter}`)
       const data = await response.json()
@@ -33,26 +35,21 @@ export default function AdminSubmissionsPage() {
       console.error('Error loading submissions:', error)
       setSubmissions([])
     }
-    
     setLoading(false)
   }
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadSubmissions()
-    }
+    if (isAuthenticated) loadSubmissions()
   }, [filter, isAuthenticated])
 
-  const handleAction = async (submissionId: number, action: 'approve' | 'reject' | 'request_info', message?: string) => {
+  const handleAction = async (submissionId: number, action: 'approve' | 'reject' | 'request_info', message?: string, pickupOnly?: boolean) => {
     setLoading(true)
-    
     try {
       const response = await fetch(`/api/admin/${action}-submission`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ submissionId, message })
+        body: JSON.stringify({ submissionId, message, is_pickup_only: pickupOnly ?? false })
       })
-
       if (response.ok) {
         alert('Action completed successfully!')
         loadSubmissions()
@@ -63,8 +60,20 @@ export default function AdminSubmissionsPage() {
     } catch (error) {
       alert('Error: ' + error)
     }
-    
     setLoading(false)
+  }
+
+  const handleInfoSubmit = async () => {
+    if (!infoMessage.trim()) { alert('Please enter a message'); return }
+    await handleAction(infoModal!.id, 'request_info', infoMessage)
+    setInfoModal(null)
+    setInfoMessage('')
+  }
+
+  const handleApproveSubmit = async () => {
+    await handleAction(approveModal!.id, 'approve', undefined, isPickupOnly)
+    setApproveModal(null)
+    setIsPickupOnly(false)
   }
 
   if (!isAuthenticated) {
@@ -75,22 +84,16 @@ export default function AdminSubmissionsPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Admin Login</h1>
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                 <input
                   type="password"
-                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="Enter admin password"
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold"
-              >
+              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg">
                 Login
               </button>
             </form>
@@ -101,150 +104,155 @@ export default function AdminSubmissionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Business Submissions</h1>
-          <button
-            onClick={() => setIsAuthenticated(false)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-          >
-            Logout
-          </button>
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">Business Submissions</h1>
+            <p className="text-gray-600 mt-1">Review and manage incoming business listing requests</p>
+          </div>
+          <a href="/admin/events" className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium text-sm">
+            Events Admin →
+          </a>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="flex gap-2 mb-4">
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {['pending', 'info_requested', 'approved', 'rejected'].map((status) => (
             <button
-              onClick={() => setFilter('pending')}
-              className={`px-4 py-2 rounded-lg font-medium ${filter === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+              key={status}
+              onClick={() => setFilter(status)}
+              className={`px-4 py-2 rounded-lg font-medium capitalize ${filter === status ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border hover:bg-gray-50'}`}
             >
-              Pending
+              {status === 'info_requested' ? 'Info Requested' : status.charAt(0).toUpperCase() + status.slice(1)}
             </button>
-            <button
-              onClick={() => setFilter('info_requested')}
-              className={`px-4 py-2 rounded-lg font-medium ${filter === 'info_requested' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            >
-              Info Requested
-            </button>
-            <button
-              onClick={() => setFilter('approved')}
-              className={`px-4 py-2 rounded-lg font-medium ${filter === 'approved' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            >
-              Approved
-            </button>
-            <button
-              onClick={() => setFilter('rejected')}
-              className={`px-4 py-2 rounded-lg font-medium ${filter === 'rejected' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            >
-              Rejected
-            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading submissions...</div>
+        ) : submissions.length === 0 ? (
+          <div className="bg-white rounded-xl shadow p-12 text-center text-gray-500">
+            No {filter} submissions found.
           </div>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            </div>
-          ) : submissions.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              No {filter} submissions
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {submissions.map((submission) => (
-                <div key={submission.id} className="border border-gray-200 rounded-lg p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900">{submission.business_name}</h3>
-                      <p className="text-gray-600">{submission.category_primary}</p>
+        ) : (
+          <div className="space-y-4">
+            {submissions.map((submission) => (
+              <div key={submission.id} className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <h2 className="text-xl font-bold text-gray-900">{submission.business_name}</h2>
+                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">{submission.primary_category}</span>
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${
+                        submission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        submission.status === 'approved' ? 'bg-green-100 text-green-800' :
+                        submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>{submission.status}</span>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      submission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      submission.status === 'approved' ? 'bg-green-100 text-green-800' :
-                      submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {submission.status}
-                    </span>
+                    <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600 mb-3">
+                      <p>📍 {submission.address_street}, {submission.city}, {submission.state} {submission.zip}</p>
+                      <p>📞 {submission.phone}</p>
+                      <p>✉️ {submission.contact_email}</p>
+                      {submission.website && <p>🌐 <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{submission.website}</a></p>}
+                    </div>
+                    {submission.description && <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg mb-3">{submission.description}</p>}
+                    {submission.status === 'info_requested' && submission.admin_notes && (
+                      <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg mb-3">
+                        <p className="text-sm text-blue-800"><strong>Info Requested:</strong> {submission.admin_notes}</p>
+                      </div>
+                    )}
+                    {submission.is_pickup_only && (
+                      <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">🛍️ Pickup & Pre-Order</span>
+                    )}
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4 mb-4 text-sm">
-                    <div>
-                      <p><strong>Address:</strong> {submission.address_street}, {submission.city}, {submission.state} {submission.zip}</p>
-                      <p><strong>Phone:</strong> {submission.phone}</p>
-                      <p><strong>Contact Email:</strong> {submission.contact_email}</p>
-                      {submission.website && <p><strong>Website:</strong> <a href={submission.website} target="_blank" className="text-blue-600">{submission.website}</a></p>}
-                    </div>
-                    <div>
-                      {submission.instagram_url && <p><strong>Instagram:</strong> <a href={submission.instagram_url} target="_blank" className="text-blue-600">Link</a></p>}
-                      {submission.facebook_url && <p><strong>Facebook:</strong> <a href={submission.facebook_url} target="_blank" className="text-blue-600">Link</a></p>}
-                      {submission.tiktok_url && <p><strong>TikTok:</strong> <a href={submission.tiktok_url} target="_blank" className="text-blue-600">Link</a></p>}
-                      {submission.x_url && <p><strong>X:</strong> <a href={submission.x_url} target="_blank" className="text-blue-600">Link</a></p>}
-                      {submission.google_maps_url && <p><strong>Google Maps:</strong> <a href={submission.google_maps_url} target="_blank" className="text-blue-600">Link</a></p>}
-                    </div>
-                  </div>
-
-                  {submission.hours && (
-                    <div className="mb-4">
-                      <p className="text-sm"><strong>Hours:</strong> {submission.hours}</p>
-                    </div>
-                  )}
-
-                  {submission.description && (
-                    <div className="mb-4">
-                      <p className="text-sm"><strong>Description:</strong> {submission.description}</p>
-                    </div>
-                  )}
-
-                  <div className="text-xs text-gray-500 mb-4">
-                    Submitted: {new Date(submission.created_at).toLocaleString()}
-                  </div>
-
-                  {submission.status === 'pending' && (
-                    <div className="flex gap-2">
+                  {(submission.status === 'pending' || submission.status === 'info_requested') && (
+                    <div className="flex flex-col gap-2 flex-shrink-0">
                       <button
-                        onClick={() => handleAction(submission.id, 'approve')}
+                        onClick={() => { setApproveModal({ id: submission.id, name: submission.business_name }); setIsPickupOnly(false) }}
                         disabled={loading}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium disabled:bg-gray-400"
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium text-sm disabled:opacity-50"
                       >
                         ✓ Approve
                       </button>
                       <button
-                        onClick={() => {
-                          const message = prompt('Enter message to request info:')
-                          if (message) handleAction(submission.id, 'request_info', message)
-                        }}
+                        onClick={() => { setInfoModal({ id: submission.id, name: submission.business_name }); setInfoMessage('') }}
                         disabled={loading}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium disabled:bg-gray-400"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm disabled:opacity-50"
                       >
                         ? Request Info
                       </button>
                       <button
-                        onClick={() => {
-                          if (confirm('Are you sure you want to reject this submission?')) {
-                            handleAction(submission.id, 'reject')
-                          }
-                        }}
+                        onClick={() => { if (confirm('Reject this submission? The submitter will be notified.')) handleAction(submission.id, 'reject') }}
                         disabled={loading}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium disabled:bg-gray-400"
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm disabled:opacity-50"
                       >
                         ✗ Reject
                       </button>
                     </div>
                   )}
-
-                  {submission.status === 'info_requested' && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <p className="text-sm text-blue-800"><strong>Info Requested:</strong></p>
-                      <p className="text-sm text-blue-700 mt-2">{submission.admin_notes}</p>
-                    </div>
-                  )}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Info Requested Modal */}
+      {infoModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Request Additional Information</h2>
+            <p className="text-sm text-gray-600 mb-4">For: <strong>{infoModal.name}</strong></p>
+            <p className="text-sm text-gray-700 mb-2">Enter your message — this will be emailed to the submitter:</p>
+            <textarea
+              value={infoMessage}
+              onChange={(e) => setInfoMessage(e.target.value)}
+              rows={5}
+              placeholder="e.g. Could you please confirm your business hours and provide a menu link or photo? We also need to verify your physical address before we can approve your listing."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-4 text-sm"
+            />
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => { setInfoModal(null); setInfoMessage('') }} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium text-sm">Cancel</button>
+              <button onClick={handleInfoSubmit} disabled={loading} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm disabled:opacity-50">
+                {loading ? 'Sending...' : 'Send Request'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Approve Modal */}
+      {approveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Approve Listing</h2>
+            <p className="text-sm text-gray-600 mb-4">Approving: <strong>{approveModal.name}</strong></p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPickupOnly}
+                  onChange={(e) => setIsPickupOnly(e.target.checked)}
+                  className="mt-0.5 w-5 h-5 accent-amber-500"
+                />
+                <div>
+                  <p className="font-bold text-amber-900 text-sm">🛍️ Mark as Pickup & Pre-Order Only</p>
+                  <p className="text-amber-700 text-xs mt-1">Check this for businesses operating from a shared/commercial kitchen, preorder-only bakeries, or pickup-only models — not traditional walk-in storefronts.</p>
+                </div>
+              </label>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => { setApproveModal(null); setIsPickupOnly(false) }} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium text-sm">Cancel</button>
+              <button onClick={handleApproveSubmit} disabled={loading} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm disabled:opacity-50">
+                {loading ? 'Approving...' : '✓ Confirm Approve'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

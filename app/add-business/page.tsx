@@ -140,7 +140,7 @@ export default function AddBusinessPage() {
                 <div className="flex gap-3">
                   <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">You have a physical, publicly accessible location</p>
+                    <p className="font-semibold text-gray-900 text-sm">You have at least one public access point where customers can get your Filipino food</p>
                     <p className="text-gray-600 text-sm">A restaurant, store, market stall, or food truck with a regular, findable presence.</p>
                   </div>
                 </div>
@@ -161,11 +161,11 @@ export default function AddBusinessPage() {
                 </div>
                 <div className="flex gap-3">
                   <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                  <p className="text-sm text-gray-800">It is a <strong>home-based business</strong> with no public storefront or walk-in access</p>
+                  <p className="text-sm text-gray-800">It operates from a <strong>private home kitchen</strong> with no commercial license and no public pickup or walk-in access</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                  <p className="text-sm text-gray-800">It is <strong>online-only</strong> — delivery or pre-order only, with no physical location customers can visit</p>
+                  <p className="text-sm text-gray-800">It is <strong>online-only</strong> — delivery or pre-order with no commercial kitchen address and no public pickup point</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-red-500 font-bold flex-shrink-0">✗</span>
@@ -413,4 +413,5 @@ export default function AddBusinessPage() {
     </div>
   )
 }
+
 
