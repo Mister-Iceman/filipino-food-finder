@@ -205,7 +205,7 @@ export default function SubmitEventPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Additional Information</h2>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Event Website or Facebook Event Link</label>
-                <input type="url" value={formData.event_url} onChange={(e) => setFormData({...formData, event_url: e.target.value})} placeholder="https://example.com/event" className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={formData.event_url} onChange={(e) => setFormData({...formData, event_url: e.target.value})} placeholder="https://example.com/event" className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
                 <p className="text-sm text-gray-500 mt-1">Share a link where people can learn more or buy tickets</p>
               </div>
             </div>
@@ -238,3 +238,4 @@ export default function SubmitEventPage() {
     </div>
   )
 }
+
