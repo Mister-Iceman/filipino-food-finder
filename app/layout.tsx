@@ -6,9 +6,7 @@ import "./globals.css"
 import Navigation from "./components/Navigation"
 import Footer from "./components/Footer"
 import CookieConsent from "./components/CookieConsent"
-
 const inter = Inter({ subsets: ["latin"] })
-
 export const metadata: Metadata = {
   title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",
   description: "The first and only community-driven Filipino food directory. Find authentic Filipino restaurants, bakeries, grocery stores, and food trucks across all 50 states. Built by the community, for the community.",
@@ -57,7 +55,6 @@ export const metadata: Metadata = {
     },
   },
 }
-
 export default function RootLayout({
   children,
 }: {
@@ -66,7 +63,6 @@ export default function RootLayout({
   // Set to true when AdSense is approved
   const ADSENSE_ENABLED = false
   const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX' // Replace when approved
-
   return (
     <html lang="en">
       <head>
@@ -81,9 +77,14 @@ export default function RootLayout({
         )}
       </head>
       <body className={inter.className}>
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="wM76XrC4elkd7wkxvkC8QA"
+          strategy="afterInteractive"
+        />
         <GoogleAnalytics measurementId="G-WV1ZD74FPV" />
-        <a 
-          href="#main-content" 
+        <a
+          href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-yellow-500 focus:text-gray-900 focus:font-bold focus:rounded"
         >
           Skip to main content
