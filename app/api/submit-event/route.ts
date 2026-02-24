@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         sender: { name: 'Filipino Food Near Me', email: 'info@filipinofoodnearme.org' },
         to: [{ email: 'info@filipinofoodnearme.org', name: 'Admin' }],
         subject: 'New Event Submission: ' + body.title,
-        htmlContent: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><h2 style="color:#92345A;">New Event Submission</h2><p><strong>Title:</strong> ' + body.title + '</p><p><strong>Category:</strong> ' + body.category + '</p><p><strong>Date:</strong> ' + body.event_date + '</p><p><strong>Location:</strong> ' + body.city + ', ' + body.state + '</p><p><strong>Submitted by:</strong> ' + body.submitter_name + ' (' + body.submitter_email + ')</p>' + (body.description ? '<p><strong>Description:</strong> ' + body.description + '</p>' : '') + '<br><a href="https://filipinofoodnearme.org/admin/submissions" style="background:#92345A;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold;">Go to Admin Panel</a></div>'
+        htmlContent: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><h2 style="color:#92345A;">New Event Submission</h2><p><strong>Title:</strong> ' + body.title + '</p><p><strong>Category:</strong> ' + body.category + '</p><p><strong>Date:</strong> ' + body.event_date + '</p><p><strong>Location:</strong> ' + body.city + ', ' + body.state + '</p><p><strong>Submitted by:</strong> ' + body.submitter_name + ' (' + body.submitter_email + ')</p>' + (body.description ? '<p><strong>Description:</strong> ' + body.description + '</p>' : '') + '<br><a href="https://filipinofoodnearme.org/admin/events" style="background:#92345A;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold;">Go to Admin Panel</a></div>'
       })
     })
 
@@ -55,4 +55,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to submit event' }, { status: 500 })
   }
 }
+
 
