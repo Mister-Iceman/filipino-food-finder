@@ -320,7 +320,7 @@ export default function AddBusinessPage() {
               </div>
               <div>
                 <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-2">Website (Optional)</label>
-                <input type="url" id="website" name="website" value={formData.website} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://yourwebsite.com" />
+                <input type="text" id="website" name="website" value={formData.website} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://yourwebsite.com" />
               </div>
             </div>
 
@@ -330,26 +330,26 @@ export default function AddBusinessPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="instagram" className="block text-sm font-medium text-gray-700 mb-2">Instagram</label>
-                  <input type="url" id="instagram" name="instagram" value={formData.instagram} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://instagram.com/yourrestaurant" />
+                  <input type="text" id="instagram" name="instagram" value={formData.instagram} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://instagram.com/yourrestaurant" />
                 </div>
                 <div>
                   <label htmlFor="facebook" className="block text-sm font-medium text-gray-700 mb-2">Facebook</label>
-                  <input type="url" id="facebook" name="facebook" value={formData.facebook} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://facebook.com/yourrestaurant" />
+                  <input type="text" id="facebook" name="facebook" value={formData.facebook} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://facebook.com/yourrestaurant" />
                 </div>
                 <div>
                   <label htmlFor="tiktok" className="block text-sm font-medium text-gray-700 mb-2">TikTok</label>
-                  <input type="url" id="tiktok" name="tiktok" value={formData.tiktok} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://tiktok.com/@yourrestaurant" />
+                  <input type="text" id="tiktok" name="tiktok" value={formData.tiktok} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://tiktok.com/@yourrestaurant" />
                 </div>
                 <div>
                   <label htmlFor="x" className="block text-sm font-medium text-gray-700 mb-2">X (Twitter)</label>
-                  <input type="url" id="x" name="x" value={formData.x} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://x.com/yourrestaurant" />
+                  <input type="text" id="x" name="x" value={formData.x} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://x.com/yourrestaurant" />
                 </div>
               </div>
             </div>
 
             <div>
               <label htmlFor="googleMaps" className="block text-sm font-medium text-gray-700 mb-2">Google Maps URL (Optional)</label>
-              <input type="url" id="googleMaps" name="googleMaps" value={formData.googleMaps} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://maps.google.com/..." />
+              <input type="text" id="googleMaps" name="googleMaps" value={formData.googleMaps} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="https://maps.google.com/..." />
               <p className="text-sm text-gray-500 mt-1">Find your business on Google Maps, click Share, and paste the link here</p>
             </div>
 
@@ -413,3 +413,4 @@ export default function AddBusinessPage() {
     </div>
   )
 }
+
