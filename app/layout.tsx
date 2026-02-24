@@ -79,7 +79,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Script
           src="https://analytics.ahrefs.com/analytics.js"
-          data-key="wM76XrC4elkd7wkxvkC8QA"
+          data-key="wM76XrC4eIkd7wkxvkC8QA"
           strategy="afterInteractive"
         />
         <GoogleAnalytics measurementId="G-WV1ZD74FPV" />
