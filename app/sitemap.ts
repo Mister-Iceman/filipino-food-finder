@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select('slug, updated_at')
 
   const listingUrls = listings?.map((listing) => ({
-    url: `${baseUrl}/listings/${listing.slug}`,
+    url: `${baseUrl}/listings/${listing.slug}/`,
     lastModified: new Date(listing.updated_at),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .not('state', 'is', null)
 
   // Create unique city combinations
-  const uniqueCities = [...new Set(cities?.map(c => 
+  const uniqueCities = [...new Set(cities?.map(c =>
     `${c.city.toLowerCase().replace(/\s+/g, '-')},${c.state}`
   ) || [])]
 
@@ -54,50 +54,78 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [city, state] = cityState.split(',')
     const stateName = stateNames[state] || state.toLowerCase()
     return {
-      url: `${baseUrl}/${stateName}/${city}`,
+      url: `${baseUrl}/${stateName}/${city}/`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }
   })
 
+  // Static pages - Cultural Knowledge Base articles
+  const culturalKnowledgeUrls = [
+    'what-is-kamayan-filipino-feast',
+    'guide-to-filipino-breakfast-silog-culture',
+    'story-behind-lechon-king-of-filipino-feasts',
+    'beginners-guide-to-filipino-food',
+    'beyond-the-adobo-5-surprising-truths-filipino-american-soul',
+    '10-filipino-dishes-every-food-lover-should-try',
+  ].map(slug => ({
+    url: `${baseUrl}/cultural-knowledge-base/${slug}/`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
   return [
     {
-      url: baseUrl,
+      url: `${baseUrl}/`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: `${baseUrl}/directory`,
+      url: `${baseUrl}/directory/`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/cultural-knowledge-base/`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/newsroom/`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/about/`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/contact/`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/add-business`,
+      url: `${baseUrl}/add-business/`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/support`,
+      url: `${baseUrl}/support/`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    ...culturalKnowledgeUrls,
     ...cityUrls,
     ...listingUrls,
   ]
