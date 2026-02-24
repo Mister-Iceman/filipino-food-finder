@@ -104,7 +104,7 @@ export default function AddBusinessPage() {
 
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-blue-900 mb-3">Join 990+ Filipino Businesses</h2>
+            <h2 className="text-2xl font-bold text-blue-900 mb-3">Join 1,200+ Filipino Businesses</h2>
             <p className="text-blue-800 text-lg">Get featured in the community-powered Filipino food directory across America — completely free.</p>
           </div>
 
@@ -413,5 +413,6 @@ export default function AddBusinessPage() {
     </div>
   )
 }
+
 
 
