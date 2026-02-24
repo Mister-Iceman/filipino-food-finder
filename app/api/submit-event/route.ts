@@ -33,9 +33,26 @@ export async function POST(request: NextRequest) {
       })
     })
 
+    // Send internal notification to admin
+    await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY || '',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: 'Filipino Food Near Me', email: 'info@filipinofoodnearme.org' },
+        to: [{ email: 'info@filipinofoodnearme.org', name: 'Admin' }],
+        subject: 'New Event Submission: ' + body.title,
+        htmlContent: '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><h2 style="color:#92345A;">New Event Submission</h2><p><strong>Title:</strong> ' + body.title + '</p><p><strong>Category:</strong> ' + body.category + '</p><p><strong>Date:</strong> ' + body.event_date + '</p><p><strong>Location:</strong> ' + body.city + ', ' + body.state + '</p><p><strong>Submitted by:</strong> ' + body.submitter_name + ' (' + body.submitter_email + ')</p>' + (body.description ? '<p><strong>Description:</strong> ' + body.description + '</p>' : '') + '<br><a href="https://filipinofoodnearme.org/admin/submissions" style="background:#92345A;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold;">Go to Admin Panel</a></div>'
+      })
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Event submission error:', error)
     return NextResponse.json({ error: 'Failed to submit event' }, { status: 500 })
   }
 }
+
