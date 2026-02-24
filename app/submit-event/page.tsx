@@ -1,13 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export default function SubmitEventPage() {
   const [submitted, setSubmitted] = useState(false)
@@ -35,17 +29,25 @@ export default function SubmitEventPage() {
     setLoading(true)
     setError('')
 
-    const { error: submitError } = await supabase
-      .from('event_submissions')
-      .insert([{ ...formData, status: 'pending' }])
+    try {
+      const response = await fetch('/api/submit-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
 
-    if (submitError) {
-      setError('Failed to submit event. Please try again.')
-      setLoading(false)
-    } else {
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit event')
+      }
+
       setSubmitted(true)
-      setLoading(false)
+    } catch (err) {
+      setError('Failed to submit event. Please try again.')
     }
+
+    setLoading(false)
   }
 
   if (submitted) {
@@ -56,7 +58,7 @@ export default function SubmitEventPage() {
             <div className="text-6xl mb-4">🎉</div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Thank You!</h1>
             <p className="text-lg text-gray-700 mb-6">Your event has been submitted for review. We will publish it to the events page if approved.</p>
-            <p className="text-gray-600 mb-8">You will receive an email at <strong>{formData.submitter_email}</strong> once your event is reviewed.</p>
+            <p className="text-gray-600 mb-8">Check your email — we just sent you a confirmation. You will hear back within 3–5 business days.</p>
             <div className="flex gap-4 justify-center">
               <Link href="/events" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold">View Events</Link>
               <Link href="/" className="bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded-lg font-bold">Back to Home</Link>
@@ -76,62 +78,34 @@ export default function SubmitEventPage() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Submit an Event</h1>
           <p className="text-gray-600 mb-6">Know about an upcoming Filipino food event? Share it with the community! All submissions are reviewed before publishing.</p>
 
-          {/* QUALIFIES */}
           <div className="border border-gray-200 rounded-xl overflow-hidden mb-4">
             <div className="px-6 py-4" style={{ background: 'linear-gradient(90deg, #62438D, #92345A)' }}>
               <h3 className="text-lg font-bold text-white">✓ Your event qualifies if...</h3>
             </div>
             <div className="p-6 bg-white space-y-3">
-              <div className="flex gap-3">
-                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                <p className="text-sm text-gray-800">It is a Filipino food festival, fair, or market</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                <p className="text-sm text-gray-800">It is a Filipino restaurant grand opening or pop-up dining event</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                <p className="text-sm text-gray-800">It is a Filipino cooking class or food demonstration</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                <p className="text-sm text-gray-800">It is a community gathering where <strong>Filipino food is a central part</strong> of the event — not just a side table</p>
-              </div>
+              <div className="flex gap-3"><span className="text-green-600 font-bold flex-shrink-0">✓</span><p className="text-sm text-gray-800">It is a Filipino food festival, fair, or market</p></div>
+              <div className="flex gap-3"><span className="text-green-600 font-bold flex-shrink-0">✓</span><p className="text-sm text-gray-800">It is a Filipino restaurant grand opening or pop-up dining event</p></div>
+              <div className="flex gap-3"><span className="text-green-600 font-bold flex-shrink-0">✓</span><p className="text-sm text-gray-800">It is a Filipino cooking class or food demonstration</p></div>
+              <div className="flex gap-3"><span className="text-green-600 font-bold flex-shrink-0">✓</span><p className="text-sm text-gray-800">It is a community gathering where <strong>Filipino food is a central part</strong> of the event — not just a side table</p></div>
             </div>
           </div>
 
-          {/* DOES NOT QUALIFY */}
           <div className="border-2 border-red-200 rounded-xl overflow-hidden mb-8">
             <div className="px-6 py-4 bg-red-600">
               <h3 className="text-lg font-bold text-white">✗ Your event does NOT qualify if...</h3>
             </div>
             <div className="p-6 bg-red-50 space-y-3">
-              <div className="flex gap-3">
-                <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                <p className="text-sm text-gray-800">It is a general cultural or community event where food is incidental and <strong>not specifically Filipino</strong></p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                <p className="text-sm text-gray-800">It has no Filipino food vendors, Filipino dishes, or Filipino food focus</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                <p className="text-sm text-gray-800">It is a private event not open to the public</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-red-500 font-bold flex-shrink-0">✗</span>
-                <p className="text-sm text-gray-800">It is a non-food business promotion (e.g., real estate, insurance, retail) that happens to be Filipino-organized</p>
-              </div>
+              <div className="flex gap-3"><span className="text-red-500 font-bold flex-shrink-0">✗</span><p className="text-sm text-gray-800">It is a general cultural or community event where food is incidental and <strong>not specifically Filipino</strong></p></div>
+              <div className="flex gap-3"><span className="text-red-500 font-bold flex-shrink-0">✗</span><p className="text-sm text-gray-800">It has no Filipino food vendors, Filipino dishes, or Filipino food focus</p></div>
+              <div className="flex gap-3"><span className="text-red-500 font-bold flex-shrink-0">✗</span><p className="text-sm text-gray-800">It is a private event not open to the public</p></div>
+              <div className="flex gap-3"><span className="text-red-500 font-bold flex-shrink-0">✗</span><p className="text-sm text-gray-800">It is a non-food business promotion (e.g., real estate, insurance, retail) that happens to be Filipino-organized</p></div>
             </div>
             <div className="px-6 py-3 bg-red-100 border-t border-red-200">
               <p className="text-xs text-red-700">Submissions that do not meet these criteria will be declined. <Link href="/listing-policy#events" className="underline font-medium">Read full events policy →</Link></p>
             </div>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>
-          )}
+          {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="border-b pb-6">
@@ -205,7 +179,7 @@ export default function SubmitEventPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Additional Information</h2>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Event Website or Facebook Event Link</label>
-                <input type="text" value={formData.event_url} onChange={(e) => setFormData({...formData, event_url: e.target.value})} placeholder="https://example.com/event" className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={formData.event_url} onChange={(e) => { let v = e.target.value; if (v && !v.startsWith('http://') && !v.startsWith('https://')) v = 'https://' + v; setFormData({...formData, event_url: v})}} placeholder="example.com/event or facebook.com/events/..." className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
                 <p className="text-sm text-gray-500 mt-1">Share a link where people can learn more or buy tickets</p>
               </div>
             </div>
@@ -220,7 +194,7 @@ export default function SubmitEventPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Your Email *</label>
                   <input type="email" required value={formData.submitter_email} onChange={(e) => setFormData({...formData, submitter_email: e.target.value})} placeholder="your@email.com" className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-                  <p className="text-sm text-gray-500 mt-1">We will email you when your event is reviewed</p>
+                  <p className="text-sm text-gray-500 mt-1">We will email you a confirmation and when your event is reviewed</p>
                 </div>
               </div>
             </div>
@@ -238,4 +212,3 @@ export default function SubmitEventPage() {
     </div>
   )
 }
-
