@@ -86,7 +86,7 @@ export default function DirectoryContent() {
     while (true) {
       const { data } = await supabase
         .from('listings')
-        .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url')
+        .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url, is_pickup_only')
         .range(from, from + batchSize - 1)
         .order('name', { ascending: true })
 
@@ -424,6 +424,12 @@ export default function DirectoryContent() {
                         {listing.category_primary}
                         {listing.category_secondary && ` • ${listing.category_secondary}`}
                       </p>
+
+                      {listing.is_pickup_only && (
+                        <div className="mb-3">
+                          <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                        </div>
+                      )}
 
                       {listing.google_rating && (
                         <div className="bg-yellow-50 border-l-4 border-yellow-400 px-3 py-2 rounded-lg mb-3">

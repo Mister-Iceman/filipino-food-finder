@@ -113,6 +113,12 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
               <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
               <p className="text-xl text-gray-600 mb-6">{listing.category_primary}</p>
 
+              {listing.is_pickup_only && (
+                <div className="mb-4">
+                  <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                </div>
+              )}
+
               {listing.google_rating && (
                 <div className="bg-yellow-50 inline-block px-4 py-2 rounded-lg mb-6">
                   <span className="text-yellow-500 text-2xl">★</span>
