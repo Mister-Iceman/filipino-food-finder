@@ -1,7 +1,57 @@
 import type { NextConfig } from "next";
 
+const ContentSecurityPolicy = [
+  "default-src 'self'",
+  // Next.js needs unsafe-inline for hydration scripts; unsafe-eval for dev/HMR
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com cdn.buymeacoffee.com",
+  // Inline styles are used throughout; cdnjs for Twemoji assets
+  "style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com",
+  // All image origins: Supabase storage, Twemoji SVGs, Buy Me a Coffee badge,
+  // Google Maps tiles, and the remotePatterns already in next/image config
+  [
+    "img-src 'self' data: blob:",
+    "https://kjhufdervnyuayhiwqtc.supabase.co",
+    "https://cdnjs.cloudflare.com",
+    "https://cdn.buymeacoffee.com",
+    "https://maps.googleapis.com",
+    "https://maps.gstatic.com",
+    "https://lh3.googleusercontent.com",
+    "https://images.unsplash.com",
+    "https://placehold.co",
+    "https://streetviewpixels-pa.googleapis.com",
+  ].join(" "),
+  "font-src 'self' data: https://cdnjs.cloudflare.com",
+  // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API
+  [
+    "connect-src 'self'",
+    "https://kjhufdervnyuayhiwqtc.supabase.co",
+    "wss://kjhufdervnyuayhiwqtc.supabase.co",
+    "https://maps.googleapis.com",
+  ].join(" "),
+  "frame-src 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: ContentSecurityPolicy },
+  { key: "X-Frame-Options",          value: "DENY" },
+  { key: "X-Content-Type-Options",   value: "nosniff" },
+  { key: "Referrer-Policy",          value: "strict-origin-when-cross-origin" },
+];
+
 const nextConfig: NextConfig = {
   trailingSlash: true,
+
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
+  },
 
   images: {
     remotePatterns: [
