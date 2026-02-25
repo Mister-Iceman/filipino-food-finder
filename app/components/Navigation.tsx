@@ -17,13 +17,13 @@ export default function Navigation() {
             className="flex items-center space-x-2 font-bold text-xl text-gray-900 hover:text-red-600 transition-colors"
             aria-label="Filipino Food Near Me - Home"
           >
-            <span className="text-2xl" role="img" aria-label="Philippine flag">🇵🇭</span>
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1ed.svg" alt="Philippine flag" className="w-7 h-7" />
             <span>Filipino Food Near Me</span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <ul className="flex space-x-6 list-none">
+            <ul className="flex space-x-4 list-none">
               <li>
                 <Link href="/" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Home
@@ -40,7 +40,7 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
-                <Link href="/cultural-knowledge-base" className="text-gray-700 hover:text-purple-700 font-medium transition-colors">
+                <Link href="/cultural-knowledge-base" className="text-gray-700 hover:text-purple-700 font-medium transition-colors whitespace-nowrap text-center">
                   Food Culture
                 </Link>
               </li>
@@ -67,9 +67,9 @@ export default function Navigation() {
               <li>
                 <Link
                   href="/add-business"
-                  className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold transition-all hover:scale-105"
+                  className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold transition-all hover:scale-105 text-center whitespace-nowrap"
                 >
-                  Add Your Business
+                  Add Business
                 </Link>
               </li>
             </ul>
@@ -156,7 +156,7 @@ export default function Navigation() {
               </li>
               <li>
                 <Link href="/add-business" className="block bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold text-center transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  Add Your Business
+                  Add Business
                 </Link>
               </li>
             </ul>
