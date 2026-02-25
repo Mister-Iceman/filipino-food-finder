@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit, getIP } from '@/lib/rate-limit'
+import { cleanText, cleanUrl } from '@/lib/sanitize'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,8 +26,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
+    // Sanitize all user-supplied fields before validation, DB writes, or emails
+    const clean = {
+      businessName:      cleanText(formData.businessName),
+      categoryPrimary:   cleanText(formData.categoryPrimary),
+      categorySecondary: cleanText(formData.categorySecondary),
+      address:           cleanText(formData.address),
+      city:              cleanText(formData.city),
+      state:             cleanText(formData.state),
+      zip:               cleanText(formData.zip),
+      phone:             cleanText(formData.phone),
+      hours:             cleanText(formData.hours),
+      description:       cleanText(formData.description),
+      contactEmail:      cleanText(formData.contactEmail),
+      // URL fields: invalid / non-http(s) values are silently stripped to null
+      website:    cleanUrl(formData.website)    || null,
+      instagram:  cleanUrl(formData.instagram)  || null,
+      facebook:   cleanUrl(formData.facebook)   || null,
+      tiktok:     cleanUrl(formData.tiktok)     || null,
+      x:          cleanUrl(formData.x)          || null,
+      googleMaps: cleanUrl(formData.googleMaps) || null,
+    }
+
     // Validate required fields
-    if (!formData.businessName || !formData.contactEmail || !formData.phone || !formData.address) {
+    if (!clean.businessName || !clean.contactEmail || !clean.phone || !clean.address) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -38,23 +61,23 @@ export async function POST(request: NextRequest) {
       .from('business_submissions')
       .insert([
         {
-          business_name: formData.businessName,
-          category_primary: formData.categoryPrimary,
-          category_secondary: formData.categorySecondary || null,
-          address_street: formData.address,
-          city: formData.city,
-          state: formData.state,
-          zip: formData.zip,
-          phone: formData.phone,
-          website: formData.website || null,
-          instagram_url: formData.instagram || null,
-          facebook_url: formData.facebook || null,
-          tiktok_url: formData.tiktok || null,
-          x_url: formData.x || null,
-          google_maps_url: formData.googleMaps || null,
-          hours: formData.hours || null,
-          description: formData.description || null,
-          contact_email: formData.contactEmail,
+          business_name: clean.businessName,
+          category_primary: clean.categoryPrimary,
+          category_secondary: clean.categorySecondary || null,
+          address_street: clean.address,
+          city: clean.city,
+          state: clean.state,
+          zip: clean.zip,
+          phone: clean.phone,
+          website: clean.website,
+          instagram_url: clean.instagram,
+          facebook_url: clean.facebook,
+          tiktok_url: clean.tiktok,
+          x_url: clean.x,
+          google_maps_url: clean.googleMaps,
+          hours: clean.hours || null,
+          description: clean.description || null,
+          contact_email: clean.contactEmail,
           status: 'pending'
         }
       ])
@@ -85,16 +108,16 @@ export async function POST(request: NextRequest) {
             name: 'Admin'
           }
         ],
-        subject: `🆕 New Business Submission: ${formData.businessName}`,
+        subject: `🆕 New Business Submission: ${clean.businessName}`,
         htmlContent: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #2563eb;">New Business Submission</h2>
-            
+
             <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Business:</strong> ${formData.businessName}</p>
-              <p><strong>Category:</strong> ${formData.categoryPrimary}</p>
-              <p><strong>Location:</strong> ${formData.city}, ${formData.state}</p>
-              <p><strong>Contact:</strong> ${formData.contactEmail}</p>
+              <p><strong>Business:</strong> ${clean.businessName}</p>
+              <p><strong>Category:</strong> ${clean.categoryPrimary}</p>
+              <p><strong>Location:</strong> ${clean.city}, ${clean.state}</p>
+              <p><strong>Contact:</strong> ${clean.contactEmail}</p>
             </div>
 
             <div style="background-color: #dbeafe; padding: 20px; border-radius: 8px; margin: 20px 0;">
