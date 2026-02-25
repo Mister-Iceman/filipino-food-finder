@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 export default function AddBusinessPage() {
   const [formData, setFormData] = useState({
@@ -27,6 +28,8 @@ export default function AddBusinessPage() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const captchaRef = useRef<HCaptcha>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -44,7 +47,7 @@ export default function AddBusinessPage() {
       const response = await fetch('/api/submit-business', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       })
 
       const data = await response.json()
@@ -54,6 +57,7 @@ export default function AddBusinessPage() {
       }
 
       setStatus('success')
+      setCaptchaToken(null)
       setFormData({
         businessName: '',
         categoryPrimary: '',
@@ -77,6 +81,8 @@ export default function AddBusinessPage() {
     } catch (error) {
       setStatus('error')
       setErrorMessage(error instanceof Error ? error.message : 'Failed to submit. Please try again.')
+      captchaRef.current?.resetCaptcha()
+      setCaptchaToken(null)
     }
   }
 
@@ -91,7 +97,7 @@ export default function AddBusinessPage() {
             <p className="text-gray-600 mb-8">We will review your submission and email you within 3-5 business days.</p>
             <div className="space-x-4">
               <a href="/directory" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold">Browse Directory</a>
-              <button onClick={() => setStatus('idle')} className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">Submit Another Business</button>
+              <button onClick={() => { setStatus('idle'); setCaptchaToken(null); }} className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">Submit Another Business</button>
             </div>
           </div>
         </div>
@@ -377,7 +383,14 @@ export default function AddBusinessPage() {
               <input type="text" id="website_confirm" name="website_confirm" value={formData.website_confirm} onChange={handleChange} tabIndex={-1} autoComplete="off" />
             </div>
 
-            <button type="submit" disabled={status === 'loading'} className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 text-lg disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+            />
+
+            <button type="submit" disabled={status === 'loading' || !captchaToken} className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 text-lg disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
               {status === 'loading' ? 'Submitting...' : 'Submit Your Business'}
             </button>
           </form>

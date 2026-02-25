@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const ContentSecurityPolicy = [
   "default-src 'self'",
   // Next.js needs unsafe-inline for hydration scripts; unsafe-eval for dev/HMR
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com cdn.buymeacoffee.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com cdn.buymeacoffee.com https://js.hcaptcha.com",
   // Inline styles are used throughout; cdnjs for Twemoji assets
   "style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com",
   // All image origins: Supabase storage, Twemoji SVGs, Buy Me a Coffee badge,
@@ -19,16 +19,19 @@ const ContentSecurityPolicy = [
     "https://images.unsplash.com",
     "https://placehold.co",
     "https://streetviewpixels-pa.googleapis.com",
+    "https://imgs.hcaptcha.com",
   ].join(" "),
   "font-src 'self' data: https://cdnjs.cloudflare.com",
-  // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API
+  // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API, hCaptcha
   [
     "connect-src 'self'",
     "https://kjhufdervnyuayhiwqtc.supabase.co",
     "wss://kjhufdervnyuayhiwqtc.supabase.co",
     "https://maps.googleapis.com",
+    "https://api.hcaptcha.com",
   ].join(" "),
-  "frame-src 'none'",
+  // hCaptcha renders its challenge inside an iframe on newassets.hcaptcha.com
+  "frame-src https://newassets.hcaptcha.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 export default function SubmitEventPage() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const captchaRef = useRef<HCaptcha>(null)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -34,7 +37,7 @@ export default function SubmitEventPage() {
       const response = await fetch('/api/submit-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, captchaToken })
       })
 
       const data = await response.json()
@@ -44,8 +47,11 @@ export default function SubmitEventPage() {
       }
 
       setSubmitted(true)
+      setCaptchaToken(null)
     } catch (err) {
       setError('Failed to submit event. Please try again.')
+      captchaRef.current?.resetCaptcha()
+      setCaptchaToken(null)
     }
 
     setLoading(false)
@@ -206,7 +212,14 @@ export default function SubmitEventPage() {
               <input type="text" id="website_confirm" name="website_confirm" value={formData.website_confirm} onChange={(e) => setFormData({...formData, website_confirm: e.target.value})} tabIndex={-1} autoComplete="off" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+            />
+
+            <button type="submit" disabled={loading || !captchaToken} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Submitting...' : 'Submit Event for Review'}
             </button>
 

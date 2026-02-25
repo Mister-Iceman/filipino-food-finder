@@ -26,6 +26,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
+    // hCaptcha verification
+    if (!formData.captchaToken) {
+      return NextResponse.json({ error: 'Please complete the captcha.' }, { status: 400 })
+    }
+    const captchaRes = await fetch('https://api.hcaptcha.com/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret:   process.env.HCAPTCHA_SECRET_KEY ?? '',
+        response: formData.captchaToken,
+      }),
+    })
+    const captchaData = await captchaRes.json()
+    if (!captchaData.success) {
+      return NextResponse.json({ error: 'Captcha verification failed. Please try again.' }, { status: 400 })
+    }
+
     // Sanitize all user-supplied fields before validation, DB writes, or emails
     const clean = {
       businessName:      cleanText(formData.businessName),
