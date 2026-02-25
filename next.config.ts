@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const ContentSecurityPolicy = [
   "default-src 'self'",
   // Next.js needs unsafe-inline for hydration scripts; unsafe-eval for dev/HMR
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com cdn.buymeacoffee.com https://js.hcaptcha.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com cdn.buymeacoffee.com https://js.hcaptcha.com https://www.googletagmanager.com https://analytics.ahrefs.com",
   // Inline styles are used throughout; cdnjs for Twemoji assets
   "style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com",
   // All image origins: Supabase storage, Twemoji SVGs, Buy Me a Coffee badge,
@@ -29,6 +29,8 @@ const ContentSecurityPolicy = [
     "wss://kjhufdervnyuayhiwqtc.supabase.co",
     "https://maps.googleapis.com",
     "https://api.hcaptcha.com",
+    "https://www.google-analytics.com",
+    "https://www.googletagmanager.com",
   ].join(" "),
   // hCaptcha renders its challenge inside an iframe on newassets.hcaptcha.com
   "frame-src https://newassets.hcaptcha.com",
