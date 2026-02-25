@@ -24,7 +24,7 @@ function FooterNewsletterBar() {
     <div className="bg-gray-800 border-b border-gray-700 py-5 px-4">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-center sm:text-left">
-          <p className="text-white font-semibold text-sm">🇵🇭 Get Filipino food finds in your inbox</p>
+          <p className="text-white font-semibold text-sm flex items-center gap-1"><img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1ed.svg" alt="Philippine flag" className="w-4 h-4 inline-block" /> Get Filipino food finds in your inbox</p>
           <p className="text-gray-400 text-xs mt-0.5">New spots, events & stories. No spam, ever.</p>
         </div>
         {status === 'success' ? (
@@ -115,7 +115,7 @@ export default function Footer() {
               <h3 className="text-lg font-bold mb-4">Connect</h3>
               <p className="text-gray-400 mb-4">The first and only community Filipino food directory in America</p>
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-3xl" role="img" aria-label="Philippine flag">🇵🇭</span>
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1ed.svg" alt="Philippine flag" className="w-8 h-8" />
                 <span className="text-gray-300 font-medium">Filipino Food Near Me</span>
               </div>
               <a href="mailto:info@filipinofoodnearme.org" className="text-gray-400 hover:text-white transition-colors block mb-4">
