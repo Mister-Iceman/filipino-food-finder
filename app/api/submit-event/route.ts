@@ -20,6 +20,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
+    // Honeypot check — real users never see or fill this field
+    if (body.website_confirm) {
+      return NextResponse.json({ success: true })
+    }
+
     const { error: insertError } = await supabase
       .from('event_submissions')
       .insert([{ ...body, status: 'pending' }])

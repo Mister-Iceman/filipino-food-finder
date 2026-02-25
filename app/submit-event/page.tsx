@@ -21,7 +21,8 @@ export default function SubmitEventPage() {
     event_url: '',
     category: 'festival',
     submitter_name: '',
-    submitter_email: ''
+    submitter_email: '',
+    website_confirm: ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -197,6 +198,12 @@ export default function SubmitEventPage() {
                   <p className="text-sm text-gray-500 mt-1">We will email you a confirmation and when your event is reviewed</p>
                 </div>
               </div>
+            </div>
+
+            {/* Honeypot — visually hidden, must stay empty; bots that fill it are silently dropped */}
+            <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+              <label htmlFor="website_confirm">Leave this field blank</label>
+              <input type="text" id="website_confirm" name="website_confirm" value={formData.website_confirm} onChange={(e) => setFormData({...formData, website_confirm: e.target.value})} tabIndex={-1} autoComplete="off" />
             </div>
 
             <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">

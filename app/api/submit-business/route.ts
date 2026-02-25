@@ -20,6 +20,11 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.json()
 
+    // Honeypot check — real users never see or fill this field
+    if (formData.website_confirm) {
+      return NextResponse.json({ success: true })
+    }
+
     // Validate required fields
     if (!formData.businessName || !formData.contactEmail || !formData.phone || !formData.address) {
       return NextResponse.json(

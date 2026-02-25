@@ -21,7 +21,8 @@ export default function AddBusinessPage() {
     googleMaps: '',
     hours: '',
     description: '',
-    contactEmail: ''
+    contactEmail: '',
+    website_confirm: ''
   })
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -70,7 +71,8 @@ export default function AddBusinessPage() {
         googleMaps: '',
         hours: '',
         description: '',
-        contactEmail: ''
+        contactEmail: '',
+        website_confirm: ''
       })
     } catch (error) {
       setStatus('error')
@@ -367,6 +369,12 @@ export default function AddBusinessPage() {
               <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">Your Email (for updates) *</label>
               <input type="email" id="contactEmail" name="contactEmail" required value={formData.contactEmail} onChange={handleChange} disabled={status === 'loading'} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100" placeholder="you@example.com" />
               <p className="text-sm text-gray-500 mt-1">We will use this to confirm your submission and send updates</p>
+            </div>
+
+            {/* Honeypot — visually hidden, must stay empty; bots that fill it are silently dropped */}
+            <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+              <label htmlFor="website_confirm">Leave this field blank</label>
+              <input type="text" id="website_confirm" name="website_confirm" value={formData.website_confirm} onChange={handleChange} tabIndex={-1} autoComplete="off" />
             </div>
 
             <button type="submit" disabled={status === 'loading'} className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold transition-all hover:scale-105 text-lg disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
