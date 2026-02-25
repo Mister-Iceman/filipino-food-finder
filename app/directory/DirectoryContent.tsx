@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import PhoneReveal from '../components/PhoneReveal'
 import { createClient } from '@supabase/supabase-js'
 import AdSlot from '../components/AdSlot'
 
@@ -478,7 +479,7 @@ export default function DirectoryContent() {
                       <div className="space-y-2 text-sm text-gray-600 mb-4">
                         <p>📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}</p>
                         {listing.phone && (
-                          <p>📞 <a href={`tel:${listing.phone}`} className="text-blue-600 hover:underline">{listing.phone}</a></p>
+                          <p><PhoneReveal phone={listing.phone} className="text-blue-600 hover:underline" /></p>
                         )}
                         {listing.hours && <p className="text-xs">🕐 {listing.hours}</p>}
                       </div>

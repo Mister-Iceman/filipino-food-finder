@@ -5,6 +5,7 @@ import RatingForm from '../../components/RatingForm'
 import RatingSummary from '../../components/RatingSummary'
 import AdSlot from '../../components/AdSlot'
 import SocialShare from '../../components/SocialShare'
+import PhoneReveal from '../../components/PhoneReveal'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -133,7 +134,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 </p>
                 {listing.phone && (
                   <p className="text-gray-700">
-                    📞 <a href={`tel:${listing.phone}`} className="hover:text-blue-600 underline">{listing.phone}</a>
+                    <PhoneReveal phone={listing.phone} className="hover:text-blue-600 underline" />
                   </p>
                 )}
                 {listing.hours && (

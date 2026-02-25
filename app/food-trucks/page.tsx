@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import PhoneReveal from '../components/PhoneReveal'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -88,7 +89,7 @@ export default async function FoodTrucksPage() {
                 📍 {listing.city}, {listing.state}
               </p>
               {listing.phone && (
-                <p className="text-sm text-gray-600">📞 {listing.phone}</p>
+                <p className="text-sm text-gray-600"><PhoneReveal phone={listing.phone} className="text-sm text-gray-600" /></p>
               )}
             </Link>
           ))}
