@@ -69,7 +69,13 @@ export default async function QuickBitesPage() {
                 {listing.name}
               </h2>
               <p className="text-gray-600 mb-3">{listing.category_primary}</p>
-              
+
+              {listing.is_pickup_only && (
+                <div className="mb-3">
+                  <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                </div>
+              )}
+
               {listing.google_rating && (
                 <div className="bg-yellow-50 inline-block px-3 py-1 rounded-lg mb-3">
                   <span className="text-yellow-500">★</span>
