@@ -293,6 +293,11 @@ export default async function StatePage({ params }: StatePageProps) {
                       {listing.name}
                     </h3>
                     <p className="text-sm text-gray-600 mb-2">{listing.category_primary}</p>
+                    {listing.is_pickup_only && (
+                      <div className="mb-2">
+                        <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                      </div>
+                    )}
                     {listing.google_rating && (
                       <div className="flex items-center gap-1">
                         <span className="text-yellow-500">★</span>
