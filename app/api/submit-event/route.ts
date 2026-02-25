@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkRateLimit, getIP } from '@/lib/rate-limit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,15 @@ const supabase = createClient(
 )
 
 export async function POST(request: NextRequest) {
+  const ip = getIP(request)
+  const { allowed } = checkRateLimit(ip)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Too many submissions. Please wait before trying again.' },
+      { status: 429 }
+    )
+  }
+
   try {
     const body = await request.json()
 
