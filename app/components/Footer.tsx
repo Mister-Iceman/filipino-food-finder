@@ -118,9 +118,11 @@ export default function Footer() {
                 <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1ed.svg" alt="Philippine flag" className="w-8 h-8" />
                 <span className="text-gray-300 font-medium">Filipino Food Near Me</span>
               </div>
-              <a href="mailto:info@filipinofoodnearme.org" className="text-gray-400 hover:text-white transition-colors block mb-4">
-                info@filipinofoodnearme.org
-              </a>
+              <a
+                href="mailto:info@filipinofoodnearme.org"
+                className="text-gray-400 hover:text-white transition-colors block mb-4"
+                dangerouslySetInnerHTML={{ __html: '&#105;&#110;&#102;&#111;&#64;&#102;&#105;&#108;&#105;&#112;&#105;&#110;&#111;&#102;&#111;&#111;&#100;&#110;&#101;&#97;&#114;&#109;&#101;&#46;&#111;&#114;&#103;' }}
+              />
               <div className="mb-4">
                 <SocialLinks />
               </div>
