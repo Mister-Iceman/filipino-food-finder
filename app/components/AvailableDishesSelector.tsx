@@ -40,12 +40,6 @@ export default function AvailableDishesSelector({
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState(false)
 
-  // DEBUG — remove after confirming the selector renders in production
-  console.log(
-    '[AvailableDishesSelector] businessType:', JSON.stringify(businessType),
-    '| passes filter:', shouldShowDishSelector(businessType)
-  )
-
   useEffect(() => {
     async function fetchDishes() {
       const { data, error } = await supabase
