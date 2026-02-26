@@ -5,6 +5,21 @@ import { createClient } from '@supabase/supabase-js'
 
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 type ManagementView = 'listings' | 'events'
+
+interface PendingClaim {
+  id: string
+  listing_id: number
+  listing_name: string
+  listing_city: string
+  listing_state: string
+  owner_name: string
+  owner_role: string
+  owner_email: string
+  message: string | null
+  status: string
+  created_at: string
+}
+
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
@@ -13,6 +28,8 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearching, setIsSearching] = useState(false)
+  const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([])
+  const [claimActionLoading, setClaimActionLoading] = useState<string | null>(null)
   
   const [formData, setFormData] = useState({
     name: '',
@@ -43,8 +60,38 @@ export default function AdminPage() {
   useEffect(() => {
     if (isAuthenticated) {
       loadListings()
+      loadPendingClaims()
     }
   }, [isAuthenticated])
+
+  const loadPendingClaims = async () => {
+    const { data } = await supabase
+      .from('claims')
+      .select('id, listing_id, listing_name, listing_city, listing_state, owner_name, owner_role, owner_email, message, status, created_at')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    setPendingClaims(data ?? [])
+  }
+
+  const handleClaimAction = async (claimId: string, action: 'approve' | 'reject') => {
+    setClaimActionLoading(claimId)
+    const { data: claim } = await supabase
+      .from('claims')
+      .select('token')
+      .eq('id', claimId)
+      .single()
+
+    if (!claim?.token) {
+      alert('Could not find claim token')
+      setClaimActionLoading(null)
+      return
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
+    await fetch(`${baseUrl}/api/approve-claim?token=${claim.token}&action=${action}`)
+    await loadPendingClaims()
+    setClaimActionLoading(null)
+  }
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -242,6 +289,55 @@ export default function AdminPage() {
             {showForm ? 'Cancel' : '+ Add Restaurant'}
           </button>
         </div>
+
+        {/* Pending Claims */}
+        {pendingClaims.length > 0 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-amber-900 mb-1">
+              Pending Claims ({pendingClaims.length})
+            </h2>
+            <p className="text-amber-700 text-sm mb-4">Review and approve or reject listing ownership claims.</p>
+            <div className="space-y-4">
+              {pendingClaims.map(claim => (
+                <div key={claim.id} className="bg-white border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-900">{claim.listing_name}</p>
+                      <p className="text-sm text-gray-600">{claim.listing_city}, {claim.listing_state}</p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        <span className="font-medium">{claim.owner_name}</span>
+                        {claim.owner_role ? ` · ${claim.owner_role}` : ''}
+                      </p>
+                      <p className="text-sm text-gray-600">{claim.owner_email}</p>
+                      {claim.message && (
+                        <p className="text-sm text-gray-500 mt-2 italic">"{claim.message}"</p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-1">
+                        Submitted {new Date(claim.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        onClick={() => handleClaimAction(claim.id, 'approve')}
+                        disabled={claimActionLoading === claim.id}
+                        className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                      >
+                        {claimActionLoading === claim.id ? '...' : 'Approve'}
+                      </button>
+                      <button
+                        onClick={() => handleClaimAction(claim.id, 'reject')}
+                        disabled={claimActionLoading === claim.id}
+                        className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                      >
+                        {claimActionLoading === claim.id ? '...' : 'Reject'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Search Restaurants</h2>
