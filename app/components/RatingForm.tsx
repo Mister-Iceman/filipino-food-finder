@@ -13,7 +13,7 @@ interface RatingFormProps {
 }
 
 export default function RatingForm({ listingId, listingName, listingSlug, category, businessType }: RatingFormProps) {
-  // DEBUG — remove after confirming businessType is correct in production
+  // DEBUG — remove after confirming dish selector renders correctly in production
   console.log('[RatingForm] businessType received:', JSON.stringify(businessType))
 
   const searchParams = useSearchParams()
@@ -39,6 +39,11 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
 
   // Dish tags state (restaurant types only)
   const [selectedDishIds, setSelectedDishIds] = useState<number[]>([])
+
+  // DEBUG — log current step so we can confirm when the dish selector is in the DOM
+  console.log('[RatingForm] step:', step, '| category:', category)
+  // NOTE: AvailableDishesSelector is only mounted when step="rate" AND category="restaurant"
+  // If you see step="email" here, complete email verification first, then re-check the console.
 
   // Check for verification on page load
   useEffect(() => {
