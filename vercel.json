@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.filipinofoodnearme.org" }],
+      "destination": "https://filipinofoodnearme.org/$1",
+      "permanent": true
+    }
+  ]
+}
