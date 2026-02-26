@@ -7,7 +7,7 @@ export interface DishTag {
   category: DishCategory
   display_order: number
   is_active: boolean
-  created_at: string
+  created_at?: string
 }
 
 export interface BusinessDishTag {

@@ -5,7 +5,7 @@ export interface GroceryTag {
   emoji: string | null
   display_order: number
   is_active: boolean
-  created_at: string
+  created_at?: string
 }
 
 export interface UniversalTag {
@@ -15,7 +15,7 @@ export interface UniversalTag {
   emoji: string | null
   display_order: number
   is_active: boolean
-  created_at: string
+  created_at?: string
 }
 
 export interface BusinessGroceryTag {
@@ -25,7 +25,7 @@ export interface BusinessGroceryTag {
   confirmed_count: number
   last_verified: string | null
   verified_by_owner: boolean
-  created_at: string
+  created_at?: string
   grocery_tags?: GroceryTag
 }
 
@@ -36,7 +36,7 @@ export interface BusinessUniversalTag {
   confirmed_count: number
   last_verified: string | null
   verified_by_owner: boolean
-  created_at: string
+  created_at?: string
   universal_tags?: UniversalTag
 }
 
