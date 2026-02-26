@@ -10,6 +10,18 @@ import LatestNews from './components/LatestNews'
 export const metadata: Metadata = {
   title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",
   description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across America.",
+  openGraph: {
+    title: "Filipino Food Near Me | First Community Filipino Food Directory",
+    description: "Flavor With Soul Deserves to Be Found. The first community-driven Filipino food directory in America. Discover authentic Filipino cuisine across all 50 states.",
+    siteName: 'Filipino Food Near Me',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Filipino Food Near Me | First Community Filipino Food Directory",
+    description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across all 50 states.",
+  },
 }
 
 const supabase = createClient(
