@@ -248,17 +248,30 @@ export default function DirectoryContent({ initialListings }: Props) {
       )
     }
 
-    // Dish tag AND filter — business must have ALL selected dish IDs
+    // Dish tag filter — primary: DB match; fallback: text search when no DB matches yet
     if (selectedDishSlugs.length > 0 && dishTags.length > 0) {
-      const requiredIds = dishTags
-        .filter(t => t.slug && selectedDishSlugs.includes(t.slug))
-        .map(t => t.id)
+      const selectedTags = dishTags.filter(t => t.slug && selectedDishSlugs.includes(t.slug))
+      const requiredIds = selectedTags.map(t => t.id)
       if (requiredIds.length > 0) {
-        filtered = filtered.filter(l => {
+        // Primary: business must have ALL selected dish IDs confirmed in business_dish_tags
+        const dbFiltered = filtered.filter(l => {
           const tagMap = dishTagsByBiz.get(l.id)
           if (!tagMap) return false
           return requiredIds.every(id => tagMap.has(id))
         })
+        if (dbFiltered.length > 0) {
+          filtered = dbFiltered
+        } else {
+          // Fallback: text match on name/category for any selected dish (OR logic)
+          const terms = selectedTags.map(t => t.name.split(' (')[0].toLowerCase())
+          filtered = filtered.filter(l =>
+            terms.some(term =>
+              l.name?.toLowerCase().includes(term) ||
+              l.category_primary?.toLowerCase().includes(term) ||
+              l.category_secondary?.toLowerCase().includes(term)
+            )
+          )
+        }
       }
     }
 
@@ -363,6 +376,11 @@ export default function DirectoryContent({ initialListings }: Props) {
     selectedDishSlugs.length > 0 ||
     selectedGrocerySlugs.length > 0 ||
     selectedUniversalSlugs.length > 0
+
+  const hasCommunityTagData =
+    dishTagsByBiz.size > 0 ||
+    groceryTagsByBiz.size > 0 ||
+    universalTagsByBiz.size > 0
 
   const hasActiveFilters = searchQuery || categoryFilter || stateFilter || cityFilter || hasActiveTagFilters || sortOption !== 'az'
 
@@ -479,7 +497,7 @@ export default function DirectoryContent({ initialListings }: Props) {
               <p className="text-sm text-gray-600 ml-auto">
                 Showing {filteredListings.length} of {listings.length} spots
                 {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
-                {hasActiveTagFilters && sortOption === 'az' && (
+                {hasActiveTagFilters && sortOption === 'az' && hasCommunityTagData && (
                   <span className="ml-2 text-blue-600 font-medium">· Sorted by community score</span>
                 )}
               </p>
@@ -524,11 +542,38 @@ export default function DirectoryContent({ initialListings }: Props) {
 
         {!loading && filteredListings.length === 0 && (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <p className="text-2xl text-gray-600 mb-2">No spots found</p>
-            <p className="text-gray-500 mb-4">Try adjusting your search or clearing filters.</p>
-            <button onClick={clearFilters} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
-              Clear All Filters
-            </button>
+            {hasActiveTagFilters ? (
+              <>
+                <p className="text-4xl mb-4">🍽️</p>
+                <p className="text-2xl text-gray-700 font-semibold mb-2">No results yet for this filter</p>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  Be the first to tag a restaurant with this dish by leaving a review!
+                  Community tags help everyone find exactly what they&apos;re craving.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <button
+                    onClick={clearFilters}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+                  >
+                    Browse All Restaurants
+                  </button>
+                  <button
+                    onClick={clearTagFilters}
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium"
+                  >
+                    Clear Tag Filters
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-2xl text-gray-600 mb-2">No spots found</p>
+                <p className="text-gray-500 mb-4">Try adjusting your search or clearing filters.</p>
+                <button onClick={clearFilters} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                  Clear All Filters
+                </button>
+              </>
+            )}
           </div>
         )}
 
