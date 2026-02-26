@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import RatingForm from '../../components/RatingForm'
 import RatingSummary from '../../components/RatingSummary'
@@ -28,7 +28,11 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     .single()
 
   if (!listing) {
-    notFound()
+    // Legacy WordPress slugs not in DB get a permanent 308 redirect to the
+    // directory rather than a 404. App Router page routes intercept before
+    // next.config.ts redirects for matching dynamic paths, so this is the
+    // only reliable place to handle it.
+    permanentRedirect('/directory/')
   }
 
   const isGrocery = 

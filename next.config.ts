@@ -80,8 +80,9 @@ const nextConfig: NextConfig = {
 
       // ── WILDCARD REDIRECTS (processed first) ────────────────────────────────
 
-      // Legacy WordPress /listings/:slug → current listing detail pages
-      { source: '/listings/:slug*',      destination: '/directory/:slug*', permanent: true },
+      // Note: /listings/:slug* is handled inside app/listings/[slug]/page.tsx
+      // via permanentRedirect() because App Router dynamic routes intercept
+      // before next.config.ts redirects fire for matching page paths.
 
       // Legacy claim-listing pages → add-business
       { source: '/claim-listing/:path*', destination: '/add-business/',    permanent: true },
