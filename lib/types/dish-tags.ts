@@ -3,6 +3,7 @@ export type DishCategory = 'savory' | 'dessert'
 export interface DishTag {
   id: number
   name: string
+  slug: string | null
   category: DishCategory
   display_order: number
   is_active: boolean

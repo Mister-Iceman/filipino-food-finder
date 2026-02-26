@@ -1,11 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import PhoneReveal from '../components/PhoneReveal'
+import SearchFilters from '../components/SearchFilters'
+import ActiveFilterChips from '../components/ActiveFilterChips'
 import { createClient } from '@supabase/supabase-js'
 import AdSlot from '../components/AdSlot'
+import type { DishTag } from '../../lib/types/dish-tags'
+import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,19 +28,6 @@ interface CommunityInsight {
 
 const ITEMS_PER_PAGE = 24
 
-const DISH_TAGS = [
-  { label: 'Sisig', emoji: '🍳' },
-  { label: 'Lechon', emoji: '🐷' },
-  { label: 'Lumpia', emoji: '🥢' },
-  { label: 'Pancit', emoji: '🍜' },
-  { label: 'Halo-Halo', emoji: '🍧' },
-  { label: 'Adobo', emoji: '🍖' },
-  { label: 'Ube', emoji: '💜' },
-  { label: 'Kare-Kare', emoji: '🥜' },
-  { label: 'Bangus', emoji: '🐟' },
-  { label: 'Longganisa', emoji: '🌭' },
-]
-
 interface Props {
   initialListings: any[]
 }
@@ -52,10 +43,28 @@ export default function DirectoryContent({ initialListings }: Props) {
   const [stateFilter, setStateFilter] = useState('')
   const [cityFilter, setCityFilter] = useState('')
   const [sortOption, setSortOption] = useState('az')
-  const [activeDishTag, setActiveDishTag] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [loading] = useState(false)
 
+  // Tag data
+  const [dishTags, setDishTags] = useState<DishTag[]>([])
+  const [groceryTags, setGroceryTags] = useState<GroceryTag[]>([])
+  const [universalTags, setUniversalTags] = useState<UniversalTag[]>([])
+  const [dishTagsByBiz, setDishTagsByBiz] = useState<BusinessTagMap>(new Map())
+  const [groceryTagsByBiz, setGroceryTagsByBiz] = useState<BusinessTagMap>(new Map())
+  const [universalTagsByBiz, setUniversalTagsByBiz] = useState<BusinessTagMap>(new Map())
+  const [tagsLoaded, setTagsLoaded] = useState(false)
+
+  // Tag filter state: stored as slugs for direct URL sync
+  const [selectedDishSlugs, setSelectedDishSlugs] = useState<string[]>([])
+  const [selectedGrocerySlugs, setSelectedGrocerySlugs] = useState<string[]>([])
+  const [selectedUniversalSlugs, setSelectedUniversalSlugs] = useState<string[]>([])
+
+  // Refs for URL sync
+  const tagUrlReadRef = useRef(false)
+  const isFirstRenderRef = useRef(true)
+
+  // Read URL params (category/state/city/search always; tag slugs only once on first load)
   useEffect(() => {
     const categoryParam = searchParams.get('category')
     const searchParam = searchParams.get('search')
@@ -66,20 +75,53 @@ export default function DirectoryContent({ initialListings }: Props) {
     if (searchParam) setSearchQuery(decodeURIComponent(searchParam))
     if (stateParam) setStateFilter(decodeURIComponent(stateParam))
     if (cityParam) setCityFilter(decodeURIComponent(cityParam))
+
+    if (!tagUrlReadRef.current) {
+      tagUrlReadRef.current = true
+      const dishSlugs = searchParams.getAll('dish')
+      const productSlugs = searchParams.getAll('product')
+      const tagSlugs = searchParams.getAll('tag')
+      if (dishSlugs.length) setSelectedDishSlugs(dishSlugs)
+      if (productSlugs.length) setSelectedGrocerySlugs(productSlugs)
+      if (tagSlugs.length) setSelectedUniversalSlugs(tagSlugs)
+    }
   }, [searchParams])
+
+  // Write URL whenever filter state changes (after first render)
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false
+      return
+    }
+    const params = new URLSearchParams()
+    if (categoryFilter) params.set('category', categoryFilter)
+    if (stateFilter) params.set('state', stateFilter)
+    if (cityFilter) params.set('city', cityFilter)
+    if (searchQuery) params.set('search', searchQuery)
+    selectedDishSlugs.forEach((s) => params.append('dish', s))
+    selectedGrocerySlugs.forEach((s) => params.append('product', s))
+    selectedUniversalSlugs.forEach((s) => params.append('tag', s))
+    const qs = params.toString()
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }, [searchQuery, categoryFilter, stateFilter, cityFilter, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
 
   useEffect(() => {
     loadCommunityInsights()
+    loadTagData()
   }, [])
 
   useEffect(() => {
     filterAndSortListings()
-  }, [listings, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, activeDishTag])
+  }, [
+    listings, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption,
+    selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs,
+    dishTags, groceryTags, universalTags, dishTagsByBiz, groceryTagsByBiz, universalTagsByBiz,
+  ])
 
   // Reset to page 1 whenever filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, activeDishTag])
+  }, [searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
 
   const loadCommunityInsights = async () => {
     const { data: ratings } = await supabase
@@ -101,7 +143,6 @@ export default function DirectoryContent({ initialListings }: Props) {
       const count = listingRatings.length
       const tasteStyles = listingRatings.filter((r: any) => r.taste_style).map((r: any) => r.taste_style)
       const prices = listingRatings.filter((r: any) => r.price).map((r: any) => r.price)
-      const portions = listingRatings.filter((r: any) => r.portion_size).map((r: any) => r.portion_size)
       const parkingOptions = listingRatings.filter((r: any) => r.parking).map((r: any) => r.parking)
 
       insightsMap.set(parseInt(listingId), {
@@ -109,7 +150,6 @@ export default function DirectoryContent({ initialListings }: Props) {
         rating_count: count,
         taste_style: getMostCommon(tasteStyles),
         avg_price: prices.length > 0 ? Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length) : undefined,
-        avg_portion_size: portions.length > 0 ? Math.round(portions.reduce((a: number, b: number) => a + b, 0) / portions.length) : undefined,
         parking: getMostCommon(parkingOptions),
       })
     })
@@ -117,11 +157,64 @@ export default function DirectoryContent({ initialListings }: Props) {
     setCommunityInsights(insightsMap)
   }
 
+  const loadTagData = async () => {
+    const [
+      { data: dishTagsData },
+      { data: bizDishData },
+      { data: groceryTagsData },
+      { data: bizGroceryData },
+      { data: universalTagsData },
+      { data: bizUniversalData },
+    ] = await Promise.all([
+      supabase.from('dish_tags').select('id, name, slug, category, display_order, is_active').eq('is_active', true).order('display_order'),
+      supabase.from('business_dish_tags').select('business_id, dish_tag_id, confirmed_count'),
+      supabase.from('grocery_tags').select('id, name, slug, emoji, display_order, is_active').eq('is_active', true).order('display_order'),
+      supabase.from('business_grocery_tags').select('business_id, grocery_tag_id, confirmed_count'),
+      supabase.from('universal_tags').select('id, name, slug, emoji, display_order, is_active').eq('is_active', true).order('display_order'),
+      supabase.from('business_universal_tags').select('business_id, universal_tag_id, confirmed_count'),
+    ])
+
+    setDishTags(dishTagsData || [])
+    setGroceryTags(groceryTagsData || [])
+    setUniversalTags(universalTagsData || [])
+
+    const dishMap: BusinessTagMap = new Map()
+    ;(bizDishData || []).forEach(({ business_id, dish_tag_id, confirmed_count }: any) => {
+      if (!dishMap.has(business_id)) dishMap.set(business_id, new Map())
+      dishMap.get(business_id)!.set(dish_tag_id, confirmed_count)
+    })
+    setDishTagsByBiz(dishMap)
+
+    const groceryMap: BusinessTagMap = new Map()
+    ;(bizGroceryData || []).forEach(({ business_id, grocery_tag_id, confirmed_count }: any) => {
+      if (!groceryMap.has(business_id)) groceryMap.set(business_id, new Map())
+      groceryMap.get(business_id)!.set(grocery_tag_id, confirmed_count)
+    })
+    setGroceryTagsByBiz(groceryMap)
+
+    const universalMap: BusinessTagMap = new Map()
+    ;(bizUniversalData || []).forEach(({ business_id, universal_tag_id, confirmed_count }: any) => {
+      if (!universalMap.has(business_id)) universalMap.set(business_id, new Map())
+      universalMap.get(business_id)!.set(universal_tag_id, confirmed_count)
+    })
+    setUniversalTagsByBiz(universalMap)
+
+    setTagsLoaded(true)
+  }
+
   const getMostCommon = (arr: string[]) => {
     if (arr.length === 0) return undefined
     const counts: any = {}
     arr.forEach(item => { counts[item] = (counts[item] || 0) + 1 })
     return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b)
+  }
+
+  const getCommunityScore = (bizId: number): number => {
+    let score = 0
+    dishTagsByBiz.get(bizId)?.forEach(count => { score += count })
+    groceryTagsByBiz.get(bizId)?.forEach(count => { score += count })
+    universalTagsByBiz.get(bizId)?.forEach(count => { score += count })
+    return score
   }
 
   const filterAndSortListings = () => {
@@ -155,24 +248,62 @@ export default function DirectoryContent({ initialListings }: Props) {
       )
     }
 
-    // Dish tag filter — matches against name and categories
-    if (activeDishTag) {
-      const tag = activeDishTag.toLowerCase()
-      filtered = filtered.filter(listing =>
-        listing.name?.toLowerCase().includes(tag) ||
-        listing.category_primary?.toLowerCase().includes(tag) ||
-        listing.category_secondary?.toLowerCase().includes(tag)
-      )
+    // Dish tag AND filter — business must have ALL selected dish IDs
+    if (selectedDishSlugs.length > 0 && dishTags.length > 0) {
+      const requiredIds = dishTags
+        .filter(t => t.slug && selectedDishSlugs.includes(t.slug))
+        .map(t => t.id)
+      if (requiredIds.length > 0) {
+        filtered = filtered.filter(l => {
+          const tagMap = dishTagsByBiz.get(l.id)
+          if (!tagMap) return false
+          return requiredIds.every(id => tagMap.has(id))
+        })
+      }
     }
 
-    // Sort
-    if (sortOption === 'rating') {
-      filtered = filtered.sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0))
+    // Grocery tag AND filter
+    if (selectedGrocerySlugs.length > 0 && groceryTags.length > 0) {
+      const requiredIds = groceryTags
+        .filter(t => selectedGrocerySlugs.includes(t.slug))
+        .map(t => t.id)
+      if (requiredIds.length > 0) {
+        filtered = filtered.filter(l => {
+          const tagMap = groceryTagsByBiz.get(l.id)
+          if (!tagMap) return false
+          return requiredIds.every(id => tagMap.has(id))
+        })
+      }
+    }
+
+    // Universal tag AND filter
+    if (selectedUniversalSlugs.length > 0 && universalTags.length > 0) {
+      const requiredIds = universalTags
+        .filter(t => selectedUniversalSlugs.includes(t.slug))
+        .map(t => t.id)
+      if (requiredIds.length > 0) {
+        filtered = filtered.filter(l => {
+          const tagMap = universalTagsByBiz.get(l.id)
+          if (!tagMap) return false
+          return requiredIds.every(id => tagMap.has(id))
+        })
+      }
+    }
+
+    const hasActiveTagFilters =
+      selectedDishSlugs.length > 0 ||
+      selectedGrocerySlugs.length > 0 ||
+      selectedUniversalSlugs.length > 0
+
+    // Sort: by community score when tag filters active (and default sort); otherwise respect user choice
+    if (hasActiveTagFilters && sortOption === 'az') {
+      filtered.sort((a, b) => getCommunityScore(b.id) - getCommunityScore(a.id))
+    } else if (sortOption === 'rating') {
+      filtered.sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0))
     } else if (sortOption === 'reviews') {
-      filtered = filtered.sort((a, b) => (b.google_reviews_count || 0) - (a.google_reviews_count || 0))
+      filtered.sort((a, b) => (b.google_reviews_count || 0) - (a.google_reviews_count || 0))
     } else {
-      // A-Z (default)
-      filtered = filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+      filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
     }
 
     setFilteredListings(filtered)
@@ -183,17 +314,28 @@ export default function DirectoryContent({ initialListings }: Props) {
     filterAndSortListings()
   }
 
+  const toggleDishSlug = (slug: string) =>
+    setSelectedDishSlugs(prev => prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug])
+
+  const toggleGrocerySlug = (slug: string) =>
+    setSelectedGrocerySlugs(prev => prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug])
+
+  const toggleUniversalSlug = (slug: string) =>
+    setSelectedUniversalSlugs(prev => prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug])
+
+  const clearTagFilters = () => {
+    setSelectedDishSlugs([])
+    setSelectedGrocerySlugs([])
+    setSelectedUniversalSlugs([])
+  }
+
   const clearFilters = () => {
     setSearchQuery('')
     setCategoryFilter('')
     setStateFilter('')
     setCityFilter('')
     setSortOption('az')
-    setActiveDishTag('')
-  }
-
-  const handleDishTag = (label: string) => {
-    setActiveDishTag(prev => prev === label ? '' : label)
+    clearTagFilters()
   }
 
   const getTasteLabel = (taste: string) => {
@@ -211,14 +353,18 @@ export default function DirectoryContent({ initialListings }: Props) {
   const categories = ['Restaurant', 'Supermarket & Grocery', 'Bakery, Dessert & Cafe', 'Quick Bites & Turo-Turo', 'Food Truck & Pop-Up']
   const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
-  // Pagination
   const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE)
   const paginatedListings = filteredListings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   )
 
-  const hasActiveFilters = searchQuery || categoryFilter || stateFilter || cityFilter || activeDishTag || sortOption !== 'az'
+  const hasActiveTagFilters =
+    selectedDishSlugs.length > 0 ||
+    selectedGrocerySlugs.length > 0 ||
+    selectedUniversalSlugs.length > 0
+
+  const hasActiveFilters = searchQuery || categoryFilter || stateFilter || cityFilter || hasActiveTagFilters || sortOption !== 'az'
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -333,32 +479,41 @@ export default function DirectoryContent({ initialListings }: Props) {
               <p className="text-sm text-gray-600 ml-auto">
                 Showing {filteredListings.length} of {listings.length} spots
                 {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
+                {hasActiveTagFilters && sortOption === 'az' && (
+                  <span className="ml-2 text-blue-600 font-medium">· Sorted by community score</span>
+                )}
               </p>
             </div>
           </form>
 
-          {/* Dish Quick-Filter Tags */}
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Filter by dish or specialty</p>
-            <div className="flex flex-wrap gap-2">
-              {DISH_TAGS.map(({ label, emoji }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => handleDishTag(label)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
-                    activeDishTag === label
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400 hover:text-blue-600'
-                  }`}
-                >
-                  <span>{emoji}</span>
-                  <span>{label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Tag Filter Panels */}
+          <SearchFilters
+            dishTags={dishTags}
+            groceryTags={groceryTags}
+            universalTags={universalTags}
+            selectedDishSlugs={selectedDishSlugs}
+            selectedGrocerySlugs={selectedGrocerySlugs}
+            selectedUniversalSlugs={selectedUniversalSlugs}
+            categoryFilter={categoryFilter}
+            onToggleDish={toggleDishSlug}
+            onToggleGrocery={toggleGrocerySlug}
+            onToggleUniversal={toggleUniversalSlug}
+          />
         </div>
+
+        {/* Active Filter Chips */}
+        <ActiveFilterChips
+          selectedDishSlugs={selectedDishSlugs}
+          selectedGrocerySlugs={selectedGrocerySlugs}
+          selectedUniversalSlugs={selectedUniversalSlugs}
+          dishTags={dishTags}
+          groceryTags={groceryTags}
+          universalTags={universalTags}
+          onRemoveDish={(slug) => setSelectedDishSlugs(prev => prev.filter(s => s !== slug))}
+          onRemoveGrocery={(slug) => setSelectedGrocerySlugs(prev => prev.filter(s => s !== slug))}
+          onRemoveUniversal={(slug) => setSelectedUniversalSlugs(prev => prev.filter(s => s !== slug))}
+          onClearTagFilters={clearTagFilters}
+        />
 
         {/* Results */}
         {loading && (
@@ -382,6 +537,15 @@ export default function DirectoryContent({ initialListings }: Props) {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {paginatedListings.map((listing, index) => {
                 const insight = communityInsights.get(listing.id)
+
+                // Matched dish tags for this listing (sorted by confirmed_count desc)
+                const bizDishMap = tagsLoaded ? dishTagsByBiz.get(listing.id) : undefined
+                const matchedDishes = bizDishMap && bizDishMap.size > 0
+                  ? dishTags
+                      .filter(t => bizDishMap.has(t.id))
+                      .sort((a, b) => (bizDishMap.get(b.id) || 0) - (bizDishMap.get(a.id) || 0))
+                      .slice(0, 4)
+                  : []
 
                 return (
                   <div key={listing.id}>
@@ -456,6 +620,24 @@ export default function DirectoryContent({ initialListings }: Props) {
                         </Link>
                       )}
 
+                      {/* Matched / confirmed dish tags */}
+                      {matchedDishes.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {matchedDishes.map(t => (
+                            <span
+                              key={t.id}
+                              className={`text-xs px-2 py-0.5 rounded-full border ${
+                                t.slug && selectedDishSlugs.includes(t.slug)
+                                  ? 'bg-[#0038A8] text-white border-[#0038A8]'
+                                  : 'bg-gray-100 text-gray-600 border-gray-200'
+                              }`}
+                            >
+                              {t.name.split(' (')[0]}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
                       <div className="space-y-2 text-sm text-gray-600 mb-4">
                         <p>📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}</p>
                         {listing.phone && (
@@ -528,7 +710,6 @@ export default function DirectoryContent({ initialListings }: Props) {
                   ‹ Prev
                 </button>
 
-                {/* Page number pills */}
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter(page =>
                     page === 1 ||
