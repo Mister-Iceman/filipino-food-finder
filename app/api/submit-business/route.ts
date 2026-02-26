@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit, getIP } from '@/lib/rate-limit'
 import { cleanText, cleanUrl } from '@/lib/sanitize'
+import * as Sentry from '@sentry/nextjs'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -161,6 +162,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    Sentry.captureException(error)
     console.error('Business submission error:', error)
     return NextResponse.json(
       { error: 'Failed to submit business. Please try again.' },

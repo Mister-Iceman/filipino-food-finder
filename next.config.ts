@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const ContentSecurityPolicy = [
   "default-src 'self'",
@@ -22,7 +23,7 @@ const ContentSecurityPolicy = [
     "https://imgs.hcaptcha.com",
   ].join(" "),
   "font-src 'self' data: https://cdnjs.cloudflare.com",
-  // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API, hCaptcha
+  // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API, hCaptcha, Sentry
   [
     "connect-src 'self'",
     "https://kjhufdervnyuayhiwqtc.supabase.co",
@@ -31,6 +32,8 @@ const ContentSecurityPolicy = [
     "https://api.hcaptcha.com",
     "https://www.google-analytics.com",
     "https://www.googletagmanager.com",
+    "https://*.ingest.sentry.io",
+    "https://*.ingest.us.sentry.io",
   ].join(" "),
   // hCaptcha renders its challenge inside an iframe on newassets.hcaptcha.com
   "frame-src https://newassets.hcaptcha.com",
@@ -48,6 +51,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+
+  // Expose SENTRY_DSN to client-side bundles at build time
+  env: {
+    SENTRY_DSN: process.env.SENTRY_DSN,
+  },
 
   async headers() {
     return [
@@ -178,4 +186,14 @@ const nextConfig: NextConfig = {
 
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Suppress noisy build output; set to false to see full upload logs
+  silent: !process.env.CI,
+
+  // Automatically tree-shake Sentry logger statements in production
+  disableLogger: true,
+
+  // Upload source maps to Sentry (requires SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT)
+  // Set widenClientFileUpload: true to upload more client source maps
+  widenClientFileUpload: true,
+});

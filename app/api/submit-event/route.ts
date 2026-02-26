@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit, getIP } from '@/lib/rate-limit'
 import { cleanText, cleanUrl } from '@/lib/sanitize'
+import * as Sentry from '@sentry/nextjs'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
       .insert([{ ...clean, status: 'pending' }])
 
     if (insertError) {
+      Sentry.captureException(new Error(insertError.message))
       return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
@@ -102,6 +104,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    Sentry.captureException(error)
     console.error('Event submission error:', error)
     return NextResponse.json({ error: 'Failed to submit event' }, { status: 500 })
   }
