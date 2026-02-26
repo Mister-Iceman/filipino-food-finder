@@ -9,7 +9,13 @@ import PhoneReveal from '../../components/PhoneReveal'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    global: {
+      fetch: (url, options = {}) =>
+        fetch(url, { ...options, next: { revalidate: 3600 } }),
+    },
+  }
 )
 
 export default async function ListingPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -245,7 +251,13 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 async function NearbyRestaurants({ city, state, currentListingId }: { city: string; state: string; currentListingId: number }) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        fetch: (url, options = {}) =>
+          fetch(url, { ...options, next: { revalidate: 3600 } }),
+      },
+    }
   )
 
   const { data: nearbyListings } = await supabase

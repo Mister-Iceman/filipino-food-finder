@@ -37,10 +37,14 @@ const DISH_TAGS = [
   { label: 'Longganisa', emoji: '🌭' },
 ]
 
-export default function DirectoryContent() {
+interface Props {
+  initialListings: any[]
+}
+
+export default function DirectoryContent({ initialListings }: Props) {
   const searchParams = useSearchParams()
 
-  const [listings, setListings] = useState<any[]>([])
+  const [listings] = useState<any[]>(initialListings)
   const [filteredListings, setFilteredListings] = useState<any[]>([])
   const [communityInsights, setCommunityInsights] = useState<Map<number, CommunityInsight>>(new Map())
   const [searchQuery, setSearchQuery] = useState('')
@@ -50,7 +54,7 @@ export default function DirectoryContent() {
   const [sortOption, setSortOption] = useState('az')
   const [activeDishTag, setActiveDishTag] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [loading, setLoading] = useState(true)
+  const [loading] = useState(false)
 
   useEffect(() => {
     const categoryParam = searchParams.get('category')
@@ -65,7 +69,6 @@ export default function DirectoryContent() {
   }, [searchParams])
 
   useEffect(() => {
-    loadListings()
     loadCommunityInsights()
   }, [])
 
@@ -77,29 +80,6 @@ export default function DirectoryContent() {
   useEffect(() => {
     setCurrentPage(1)
   }, [searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, activeDishTag])
-
-  const loadListings = async () => {
-    setLoading(true)
-    let allData: any[] = []
-    let from = 0
-    const batchSize = 1000
-
-    while (true) {
-      const { data } = await supabase
-        .from('listings')
-        .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url, is_pickup_only')
-        .range(from, from + batchSize - 1)
-        .order('name', { ascending: true })
-
-      if (!data || data.length === 0) break
-      allData = [...allData, ...data]
-      if (data.length < batchSize) break
-      from += batchSize
-    }
-
-    setListings(allData)
-    setLoading(false)
-  }
 
   const loadCommunityInsights = async () => {
     const { data: ratings } = await supabase
