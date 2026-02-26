@@ -1,10 +1,16 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
 import NewsletterSignup from './components/NewsletterSignup'
 import InstagramFeed from './components/InstagramFeed'
 import FeaturedArticles from './components/FeaturedArticles'
 import LatestNews from './components/LatestNews'
+
+export const metadata: Metadata = {
+  title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",
+  description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across America.",
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,9 +48,12 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-black opacity-10"></div>
           <div className="relative max-w-7xl mx-auto px-4 py-24 sm:py-32">
             <div className="text-center">
-              <h1 className="text-5xl sm:text-7xl font-bold mb-6 drop-shadow-lg">
+              <h1 className="text-5xl sm:text-7xl font-bold mb-4 drop-shadow-lg">
                 The First & Only Community Filipino Food Directory in America
               </h1>
+              <p className="text-2xl sm:text-3xl italic font-medium text-yellow-300 mb-6 max-w-2xl mx-auto tracking-wide drop-shadow">
+                Flavor With Soul Deserves to Be Found.
+              </p>
               <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto">
                 Connecting you to authentic Filipino restaurants, bakeries, grocery stores, and food trucks across all 50 states. Built by the community, for the community.
               </p>
