@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import RatingForm from '../../components/RatingForm'
 import RatingSummary from '../../components/RatingSummary'
+import AvailableDishesDisplay from '../../components/AvailableDishesDisplay'
 import AdSlot from '../../components/AdSlot'
 import SocialShare from '../../components/SocialShare'
 import PhoneReveal from '../../components/PhoneReveal'
@@ -212,7 +213,11 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
               </div>
 
               <div className="mb-8">
-                <RatingSummary 
+                <AvailableDishesDisplay listingId={listing.id} />
+              </div>
+
+              <div className="mb-8">
+                <RatingSummary
                   listingId={listing.id}
                   category={category}
                 />
@@ -220,11 +225,12 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
             </div>
 
             <div className="mt-8">
-              <RatingForm 
-                listingId={listing.id} 
+              <RatingForm
+                listingId={listing.id}
                 listingName={listing.name}
                 listingSlug={slug}
                 category={category}
+                businessType={listing.category_primary || ''}
               />
             </div>
           </div>

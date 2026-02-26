@@ -8,10 +8,10 @@ export async function POST(request: NextRequest) {
   )
 
   const body = await request.json()
-  const { 
-    email, 
-    token, 
-    listing_id, 
+  const {
+    email,
+    token,
+    listing_id,
     listing_category,
     // Restaurant fields
     taste_style,
@@ -22,7 +22,9 @@ export async function POST(request: NextRequest) {
     // Grocery fields
     what_they_have,
     selection,
-    ready_to_eat
+    ready_to_eat,
+    // Dish tags (optional, restaurant types only)
+    dish_tag_ids,
   } = body
 
   // Verify email token
@@ -72,12 +74,33 @@ export async function POST(request: NextRequest) {
     ratingData.parking = parking
   }
 
-  const { error: insertError } = await supabase
+  const { data: ratingResult, error: insertError } = await supabase
     .from('ratings')
     .insert(ratingData)
+    .select('id')
+    .single()
 
-  if (insertError) {
+  if (insertError || !ratingResult) {
     return NextResponse.json({ error: 'Failed to submit rating' }, { status: 500 })
+  }
+
+  // Save dish tags if provided
+  const tagIds: number[] = Array.isArray(dish_tag_ids) ? dish_tag_ids : []
+
+  if (tagIds.length > 0) {
+    // Link tags to this individual review
+    const reviewTagRows = tagIds.map((dish_tag_id: number) => ({
+      rating_id: ratingResult.id,
+      dish_tag_id,
+    }))
+
+    await supabase.from('review_dish_tags').insert(reviewTagRows)
+
+    // Upsert business_dish_tags — increment confirmed_count atomically via RPC
+    await supabase.rpc('upsert_business_dish_tag', {
+      p_business_id: listing_id,
+      p_dish_tag_ids: tagIds,
+    })
   }
 
   return NextResponse.json({ success: true })

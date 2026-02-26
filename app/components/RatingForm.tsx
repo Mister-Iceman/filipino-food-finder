@@ -2,15 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import AvailableDishesSelector from './AvailableDishesSelector'
 
 interface RatingFormProps {
   listingId: number
   listingName: string
   listingSlug: string
   category: 'restaurant' | 'grocery'
+  businessType: string | undefined | null
 }
 
-export default function RatingForm({ listingId, listingName, listingSlug, category }: RatingFormProps) {
+export default function RatingForm({ listingId, listingName, listingSlug, category, businessType }: RatingFormProps) {
+  // DEBUG — remove after confirming businessType is correct in production
+  console.log('[RatingForm] businessType received:', JSON.stringify(businessType))
+
   const searchParams = useSearchParams()
   const [step, setStep] = useState<'email' | 'verify' | 'rate'>('email')
   const [email, setEmail] = useState('')
@@ -31,6 +36,9 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
   const [whatTheyHave, setWhatTheyHave] = useState<string[]>([])
   const [selection, setSelection] = useState(0)
   const [readyToEat, setReadyToEat] = useState('')
+
+  // Dish tags state (restaurant types only)
+  const [selectedDishIds, setSelectedDishIds] = useState<number[]>([])
 
   // Check for verification on page load
   useEffect(() => {
@@ -93,6 +101,7 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
       token,
       listing_id: listingId,
       listing_category: category,
+      dish_tag_ids: selectedDishIds,
     }
 
     if (category === 'restaurant') {
@@ -454,6 +463,13 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
                 ))}
               </div>
             </div>
+
+            {/* Available Dishes — shown only for Restaurant / Quick Bites / Food Truck */}
+            <AvailableDishesSelector
+              businessType={businessType}
+              selectedIds={selectedDishIds}
+              onChange={setSelectedDishIds}
+            />
           </>
         ) : (
           <>
