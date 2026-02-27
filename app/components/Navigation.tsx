@@ -64,11 +64,6 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
-                <Link href="/states" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
-                  States
-                </Link>
-              </li>
-              <li>
                 <Link href="/events" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   Events
                 </Link>
@@ -109,8 +104,8 @@ export default function Navigation() {
               </button>
             </form>
 
-            {/* Social Links - Desktop (xl+ only to avoid crowding on 13/14" laptops) */}
-            <div className="hidden xl:flex border-l border-gray-300 pl-4">
+            {/* Social Links - Desktop (lg+ now that States link is removed) */}
+            <div className="hidden lg:flex border-l border-gray-300 pl-4">
               <SocialLinks />
             </div>
           </div>
@@ -207,11 +202,6 @@ export default function Navigation() {
               <li>
                 <Link href="/newsroom" className="block text-gray-700 hover:text-purple-700 hover:bg-purple-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Newsroom
-                </Link>
-              </li>
-              <li>
-                <Link href="/states" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  States
                 </Link>
               </li>
               <li>
