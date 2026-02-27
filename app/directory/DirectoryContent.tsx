@@ -67,7 +67,7 @@ export default function DirectoryContent({ initialListings }: Props) {
   // Read URL params (category/state/city/search always; tag slugs only once on first load)
   useEffect(() => {
     const categoryParam = searchParams.get('category')
-    const searchParam = searchParams.get('search')
+    const searchParam = searchParams.get('search') || searchParams.get('q')
     const stateParam = searchParams.get('state')
     const cityParam = searchParams.get('city')
 

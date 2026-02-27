@@ -2,10 +2,24 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import SocialLinks from './SocialLinks';
 
 export default function Navigation() {
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const q = searchValue.trim()
+    if (q) {
+      router.push(`/directory?q=${encodeURIComponent(q)}`)
+      setMobileSearchOpen(false)
+      setMobileMenuOpen(false)
+    }
+  }
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50" role="navigation" aria-label="Main navigation">
@@ -22,7 +36,7 @@ export default function Navigation() {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center gap-4">
             <ul className="flex space-x-4 list-none">
               <li>
                 <Link href="/" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
@@ -74,31 +88,97 @@ export default function Navigation() {
               </li>
             </ul>
 
+            {/* Desktop Search */}
+            <form onSubmit={handleSearch} className="relative shrink-0">
+              <input
+                type="search"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Filipino food..."
+                aria-label="Search Filipino food"
+                className="pl-4 pr-9 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white w-44 focus:w-56 transition-all duration-200"
+              />
+              <button
+                type="submit"
+                aria-label="Submit search"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#0038A8] transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </form>
+
             {/* Social Links - Desktop */}
-            <div className="border-l border-gray-300 pl-6">
+            <div className="border-l border-gray-300 pl-4">
               <SocialLinks />
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="md:hidden text-gray-700 hover:text-red-600"
-            aria-label="Toggle mobile menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
+          {/* Mobile: search icon + hamburger */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => { setMobileSearchOpen(!mobileSearchOpen); setMobileMenuOpen(false) }}
+              aria-label="Toggle search"
+              className="text-gray-700 hover:text-[#0038A8] p-1"
+            >
+              {mobileSearchOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              )}
+            </button>
+
+            <button
+              type="button"
+              className="md:hidden text-gray-700 hover:text-red-600"
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setMobileSearchOpen(false) }}
+            >
+              {mobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Search Bar */}
+        {mobileSearchOpen && (
+          <div className="md:hidden pb-3">
+            <form onSubmit={handleSearch} className="relative">
+              <input
+                type="search"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Filipino food..."
+                aria-label="Search Filipino food"
+                autoFocus
+                className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white"
+              />
+              <button
+                type="submit"
+                aria-label="Submit search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#0038A8] transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </form>
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
