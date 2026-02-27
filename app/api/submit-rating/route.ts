@@ -1,7 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import * as brevo from '@getbrevo/brevo'
 
 export async function POST(request: NextRequest) {
+  // Verify Supabase auth session
+  const cookieStore = await cookies()
+  const supabaseAuth = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll() { /* no-op in API route */ },
+      },
+    }
+  )
+
+  const { data: { user }, error: authError } = await supabaseAuth.auth.getUser()
+  if (authError || !user?.email) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+  }
+
+  const email = user.email
+
+  // Service role client for all database writes
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -9,8 +33,6 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
   const {
-    email,
-    token,
     listing_id,
     listing_category,
     // Restaurant fields
@@ -27,21 +49,9 @@ export async function POST(request: NextRequest) {
     dish_tag_ids,
     // Food tag names → review_keywords (optional, all listing types)
     dish_tags,
+    // Newsletter opt-in
+    newsletter_opt_in,
   } = body
-
-  // Verify email token
-  const { data: verification, error: verifyError } = await supabase
-    .from('email_verifications')
-    .select('*')
-    .eq('email', email)
-    .eq('token', token)
-    .eq('verified', true)
-    .gt('expires_at', new Date().toISOString())
-    .single()
-
-  if (verifyError || !verification) {
-    return NextResponse.json({ error: 'Email not verified' }, { status: 401 })
-  }
 
   // Check if user already rated this business
   const { data: existing } = await supabase
@@ -132,6 +142,22 @@ export async function POST(request: NextRequest) {
         .from('listings')
         .update({ review_keywords: updated })
         .eq('id', listing_id)
+    }
+  }
+
+  // Add to Brevo newsletter list if opted in
+  if (newsletter_opt_in === true && process.env.BREVO_LIST_ID && process.env.BREVO_API_KEY) {
+    try {
+      const contactsApi = new brevo.ContactsApi()
+      contactsApi.setApiKey(brevo.ContactsApiApiKeys.apiKey, process.env.BREVO_API_KEY)
+      await contactsApi.createContact({
+        email,
+        listIds: [parseInt(process.env.BREVO_LIST_ID)],
+        updateEnabled: true,
+      })
+    } catch (brevoError) {
+      // Don't fail the rating if newsletter signup fails
+      console.error('Brevo newsletter signup error:', brevoError)
     }
   }
 

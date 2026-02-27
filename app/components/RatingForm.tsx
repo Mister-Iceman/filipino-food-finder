@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useMemo } from 'react'
+import { createClient } from '@/lib/supabase-client'
 import AvailableDishesSelector from './AvailableDishesSelector'
 
 interface RatingFormProps {
@@ -13,10 +13,10 @@ interface RatingFormProps {
 }
 
 export default function RatingForm({ listingId, listingName, listingSlug, category, businessType }: RatingFormProps) {
-  const searchParams = useSearchParams()
+  const supabase = useMemo(() => createClient(), [])
   const [step, setStep] = useState<'email' | 'verify' | 'rate'>('email')
   const [email, setEmail] = useState('')
-  const [token, setToken] = useState('')
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -40,54 +40,49 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
   // Food tag pills — hardcoded dish names that update review_keywords
   const [selectedFoodTags, setSelectedFoodTags] = useState<string[]>([])
 
-  // Check for verification on page load
+  // Check for active session on mount and listen for magic link sign-in
   useEffect(() => {
-    const verified = searchParams.get('verified')
-    const verifiedEmail = searchParams.get('email')
-    const verifiedToken = searchParams.get('token')
-    
-    if (verified === 'true' && verifiedEmail && verifiedToken) {
-      setEmail(decodeURIComponent(verifiedEmail))
-      setToken(verifiedToken)
-      setStep('rate')
-      setJustVerified(true)
-      
-      // Remove query params from URL after 5 seconds
-      setTimeout(() => {
-        setJustVerified(false)
-        window.history.replaceState({}, '', window.location.pathname)
-      }, 5000)
-    }
-  }, [searchParams])
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.email) {
+        setEmail(session.user.email)
+        setStep('rate')
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user?.email) {
+        setEmail(session.user.email)
+        setStep('rate')
+        setJustVerified(true)
+        setTimeout(() => {
+          setJustVerified(false)
+          window.history.replaceState({}, '', window.location.pathname)
+        }, 5000)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    try {
-      const res = await fetch('/api/verify-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email,
-          listingSlug // Pass the restaurant slug
-        }),
-      })
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.href,
+      },
+    })
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error || 'Failed to send verification')
-        setLoading(false)
-        return
-      }
-
-      setStep('verify')
-    } catch (err) {
-      setError('Network error. Please try again.')
+    if (otpError) {
+      setError(otpError.message || 'Failed to send magic link')
+      setLoading(false)
+      return
     }
 
+    setStep('verify')
     setLoading(false)
   }
 
@@ -97,12 +92,11 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
     setError('')
 
     const ratingData: any = {
-      email,
-      token,
       listing_id: listingId,
       listing_category: category,
       dish_tag_ids: selectedDishIds,
       dish_tags: selectedFoodTags,
+      newsletter_opt_in: newsletterOptIn,
     }
 
     if (category === 'restaurant') {
@@ -215,6 +209,18 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
             placeholder="your@email.com"
           />
 
+          <label className="flex items-start gap-3 mb-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={newsletterOptIn}
+              onChange={(e) => setNewsletterOptIn(e.target.checked)}
+              className="mt-1 shrink-0"
+            />
+            <span className="text-sm text-gray-600">
+              Send me updates about new Filipino restaurants and events (optional)
+            </span>
+          </label>
+
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
               {error}
@@ -226,7 +232,7 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50"
           >
-            {loading ? 'Sending...' : 'Send Verification Email'}
+            {loading ? 'Sending...' : 'Send Magic Link'}
           </button>
 
           <p className="text-xs text-gray-500 mt-4 text-center">
@@ -245,10 +251,10 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
       <div className="bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-4">✉️ Check Your Email</h2>
         <p className="text-gray-700 mb-6">
-          We sent a verification link to <strong>{email}</strong>
+          We sent a magic link to <strong>{email}</strong>
         </p>
         <p className="text-gray-600 text-sm mb-6">
-          Click the link in the email to verify and you'll be brought back here to complete your rating.
+          Click the magic link in your email and you'll be brought back here to complete your rating.
         </p>
         <div className="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4">
           <p className="text-gray-700 text-sm mb-2">
