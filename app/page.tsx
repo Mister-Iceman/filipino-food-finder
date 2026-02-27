@@ -125,17 +125,12 @@ export default async function HomePage() {
                 {upcomingEvents.map((event) => (
                   <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
                     {event.image_url && (
-                      <div className="h-40 bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden">
-                        <img 
-                          src={event.image_url} 
+                      <div className="h-40 overflow-hidden">
+                        <img
+                          src={event.image_url}
                           alt={event.title}
                           className="w-full h-full object-cover"
                         />
-                      </div>
-                    )}
-                    {!event.image_url && (
-                      <div className="h-40 bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-                        <span className="text-6xl">🎉</span>
                       </div>
                     )}
                     
