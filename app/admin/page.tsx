@@ -6,6 +6,18 @@ import { createClient } from '@supabase/supabase-js'
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 type ManagementView = 'listings' | 'events'
 
+interface Partner {
+  id: string
+  org_name: string
+  full_name: string | null
+  website: string | null
+  contact_email: string
+  description: string | null
+  category: string
+  status: string
+  created_at: string
+}
+
 interface PendingClaim {
   id: string
   listing_id: number
@@ -30,6 +42,17 @@ export default function AdminPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([])
   const [claimActionLoading, setClaimActionLoading] = useState<string | null>(null)
+  const [partners, setPartners] = useState<Partner[]>([])
+  const [partnerActionLoading, setPartnerActionLoading] = useState<string | null>(null)
+  const [showPartnerForm, setShowPartnerForm] = useState(false)
+  const [partnerFormData, setPartnerFormData] = useState({
+    org_name: '',
+    full_name: '',
+    website: '',
+    contact_email: '',
+    description: '',
+    category: 'Organization',
+  })
   
   const [formData, setFormData] = useState({
     name: '',
@@ -61,6 +84,7 @@ export default function AdminPage() {
     if (isAuthenticated) {
       loadListings()
       loadPendingClaims()
+      loadPartners()
     }
   }, [isAuthenticated])
 
@@ -91,6 +115,44 @@ export default function AdminPage() {
     await fetch(`${baseUrl}/api/approve-claim?token=${claim.token}&action=${action}`)
     await loadPendingClaims()
     setClaimActionLoading(null)
+  }
+
+  const loadPartners = async () => {
+    const { data } = await supabase
+      .from('community_partners')
+      .select('id, org_name, full_name, website, contact_email, description, category, status, created_at')
+      .order('created_at', { ascending: false })
+    setPartners(data ?? [])
+  }
+
+  const handlePartnerAction = async (id: string, action: 'approved' | 'rejected') => {
+    setPartnerActionLoading(id)
+    await supabase
+      .from('community_partners')
+      .update({ status: action, reviewed_at: new Date().toISOString() })
+      .eq('id', id)
+    await loadPartners()
+    setPartnerActionLoading(null)
+  }
+
+  const handleAddPartner = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { error } = await supabase.from('community_partners').insert({
+      org_name: partnerFormData.org_name,
+      full_name: partnerFormData.full_name || null,
+      website: partnerFormData.website || null,
+      contact_email: partnerFormData.contact_email,
+      description: partnerFormData.description || null,
+      category: partnerFormData.category,
+      status: 'approved',
+    })
+    if (!error) {
+      setPartnerFormData({ org_name: '', full_name: '', website: '', contact_email: '', description: '', category: 'Organization' })
+      setShowPartnerForm(false)
+      await loadPartners()
+    } else {
+      alert('Error: ' + error.message)
+    }
   }
 
   const handleLogin = (e: React.FormEvent) => {
@@ -338,6 +400,127 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* Community Partners */}
+        <div className="bg-teal-50 border border-teal-200 rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-2xl font-bold text-teal-900">
+              Community Partners ({partners.length})
+            </h2>
+            <button
+              onClick={() => setShowPartnerForm(!showPartnerForm)}
+              className="bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-lg"
+            >
+              {showPartnerForm ? 'Cancel' : '+ Add Partner'}
+            </button>
+          </div>
+          <p className="text-teal-700 text-sm mb-4">Approve inquiries or add partners manually. Approved partners appear on the public page.</p>
+
+          {showPartnerForm && (
+            <form onSubmit={handleAddPartner} className="bg-white border border-teal-200 rounded-lg p-5 mb-5 space-y-3">
+              <h3 className="font-bold text-gray-800 mb-2">Add Partner Manually</h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                <input
+                  type="text" required placeholder="Organization Name *"
+                  value={partnerFormData.org_name}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, org_name: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <input
+                  type="text" placeholder="Contact Full Name"
+                  value={partnerFormData.full_name}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, full_name: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <input
+                  type="url" placeholder="Website"
+                  value={partnerFormData.website}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, website: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <input
+                  type="email" required placeholder="Contact Email *"
+                  value={partnerFormData.contact_email}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, contact_email: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400"
+                />
+                <select
+                  value={partnerFormData.category}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, category: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400 bg-white"
+                >
+                  {['Organization','Business Association','Nonprofit','Media','Government & Civic','Other'].map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <textarea
+                  placeholder="Description (optional)"
+                  value={partnerFormData.description}
+                  onChange={(e) => setPartnerFormData({ ...partnerFormData, description: e.target.value })}
+                  rows={2}
+                  className="px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-400 resize-none"
+                />
+              </div>
+              <button type="submit" className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2 rounded-lg text-sm">
+                Add as Approved
+              </button>
+            </form>
+          )}
+
+          <div className="space-y-3">
+            {partners.length === 0 ? (
+              <p className="text-teal-700 text-sm">No partner records yet.</p>
+            ) : (
+              partners.map(partner => (
+                <div key={partner.id} className="bg-white border border-teal-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-bold text-gray-900">{partner.org_name}</p>
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          partner.status === 'approved'
+                            ? 'bg-green-100 text-green-700'
+                            : partner.status === 'rejected'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {partner.status}
+                        </span>
+                        <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{partner.category}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-0.5">{partner.contact_email}</p>
+                      {partner.website && (
+                        <a href={partner.website} target="_blank" rel="noopener noreferrer" className="text-xs text-teal-600 hover:underline">{partner.website}</a>
+                      )}
+                      {partner.description && (
+                        <p className="text-sm text-gray-500 mt-1 italic">"{partner.description}"</p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-1">Submitted {new Date(partner.created_at).toLocaleDateString()}</p>
+                    </div>
+                    {partner.status === 'pending' && (
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          onClick={() => handlePartnerAction(partner.id, 'approved')}
+                          disabled={partnerActionLoading === partner.id}
+                          className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                        >
+                          {partnerActionLoading === partner.id ? '...' : 'Approve'}
+                        </button>
+                        <button
+                          onClick={() => handlePartnerAction(partner.id, 'rejected')}
+                          disabled={partnerActionLoading === partner.id}
+                          className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                        >
+                          {partnerActionLoading === partner.id ? '...' : 'Reject'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Search Restaurants</h2>

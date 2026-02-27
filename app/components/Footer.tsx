@@ -97,6 +97,7 @@ export default function Footer() {
                 <li><a href="/guides" className="text-gray-400 hover:text-purple-300 transition-colors">City Guides</a></li>
                 <li><a href="/cultural-knowledge-base/10-filipino-dishes-every-food-lover-should-try" className="text-gray-400 hover:text-purple-300 transition-colors">10 Dishes to Try</a></li>
                 <li><a href="/newsroom" className="text-gray-400 hover:text-purple-300 transition-colors">Latest News</a></li>
+                <li><a href="/community-partners" className="text-gray-400 hover:text-purple-300 transition-colors">Community Partners</a></li>
               </ul>
             </div>
 
