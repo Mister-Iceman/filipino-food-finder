@@ -24,7 +24,7 @@ export default function Navigation() {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16 gap-6">
+        <div className="flex justify-between items-center h-16 gap-4">
           {/* Logo */}
           <Link
             href="/"
@@ -89,9 +89,9 @@ export default function Navigation() {
                 type="search"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Search Filipino food..."
+                placeholder="Search..."
                 aria-label="Search Filipino food"
-                className="pl-4 pr-9 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white w-36 focus:w-48 transition-all duration-200"
+                className="pl-4 pr-9 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white w-28 focus:w-40 transition-all duration-200"
               />
               <button
                 type="submit"
