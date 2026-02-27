@@ -26,7 +26,7 @@ async function fetchAllListings() {
   while (true) {
     const { data } = await supabase
       .from('listings')
-      .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url, is_pickup_only')
+      .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url, is_pickup_only, review_keywords')
       .range(from, from + batchSize - 1)
       .order('name', { ascending: true })
 

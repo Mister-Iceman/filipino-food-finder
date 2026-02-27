@@ -225,6 +225,8 @@ export default function DirectoryContent({ initialListings }: Props) {
       filtered = filtered.filter(listing =>
         listing.name?.toLowerCase().includes(q) ||
         listing.city?.toLowerCase().includes(q) ||
+        listing.category_primary?.toLowerCase().includes(q) ||
+        listing.review_keywords?.toLowerCase().includes(q) ||
         listing.state?.toLowerCase().includes(q) ||
         listing.zip?.toLowerCase().includes(q) ||
         listing.address_street?.toLowerCase().includes(q)

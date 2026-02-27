@@ -189,7 +189,7 @@ export default function AdminPage() {
     const { data, error } = await supabase
       .from('listings')
       .select('*')
-      .or(`name.ilike.%${cleanQuery}%,city.ilike.%${cleanQuery}%,state.ilike.%${cleanQuery}%,zip.ilike.%${cleanQuery}%,address_street.ilike.%${cleanQuery}%`)
+      .or(`name.ilike.%${cleanQuery}%,city.ilike.%${cleanQuery}%,state.ilike.%${cleanQuery}%,zip.ilike.%${cleanQuery}%,address_street.ilike.%${cleanQuery}%,review_keywords.ilike.%${cleanQuery}%`)
       .order('name', { ascending: true })
       .limit(100)
     
