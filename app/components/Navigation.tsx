@@ -109,8 +109,8 @@ export default function Navigation() {
               </button>
             </form>
 
-            {/* Social Links - Desktop */}
-            <div className="border-l border-gray-300 pl-4">
+            {/* Social Links - Desktop (xl+ only to avoid crowding on 13/14" laptops) */}
+            <div className="hidden xl:flex border-l border-gray-300 pl-4">
               <SocialLinks />
             </div>
           </div>
