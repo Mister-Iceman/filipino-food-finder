@@ -37,6 +37,9 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
   // Dish tags state (restaurant types only)
   const [selectedDishIds, setSelectedDishIds] = useState<number[]>([])
 
+  // Food tag pills — hardcoded dish names that update review_keywords
+  const [selectedFoodTags, setSelectedFoodTags] = useState<string[]>([])
+
   // Check for verification on page load
   useEffect(() => {
     const verified = searchParams.get('verified')
@@ -99,6 +102,7 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
       listing_id: listingId,
       listing_category: category,
       dish_tag_ids: selectedDishIds,
+      dish_tags: selectedFoodTags,
     }
 
     if (category === 'restaurant') {
@@ -161,6 +165,12 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
       prev.includes(value)
         ? prev.filter(v => v !== value)
         : [...prev, value]
+    )
+  }
+
+  const toggleFoodTag = (tag: string) => {
+    setSelectedFoodTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     )
   }
 
@@ -648,6 +658,31 @@ export default function RatingForm({ listingId, listingName, listingSlug, catego
             </div>
           </>
         )}
+
+        {/* What did you try here? — optional food tag pills */}
+        <div>
+          <label className="block text-lg font-semibold text-gray-900 mb-1">
+            What did you try here?{' '}
+            <span className="text-sm text-gray-600 font-normal">(optional)</span>
+          </label>
+          <p className="text-sm text-gray-500 mb-3">Select any dishes you ordered</p>
+          <div className="flex flex-wrap gap-2">
+            {['Adobo', 'Lechon', 'Sisig', 'Lumpia', 'Halo-Halo', 'Pancit', 'Sinigang', 'Kare-Kare', 'Ube', 'Silog', 'Breakfast', 'Kamayan'].map((dish) => (
+              <button
+                key={dish}
+                type="button"
+                onClick={() => toggleFoodTag(dish)}
+                className={`px-4 py-2 rounded-full border-2 text-sm font-medium transition ${
+                  selectedFoodTags.includes(dish)
+                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                }`}
+              >
+                {dish}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">

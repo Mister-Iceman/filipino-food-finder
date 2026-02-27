@@ -25,6 +25,8 @@ export async function POST(request: NextRequest) {
     ready_to_eat,
     // Dish tags (optional, restaurant types only)
     dish_tag_ids,
+    // Food tag names → review_keywords (optional, all listing types)
+    dish_tags,
   } = body
 
   // Verify email token
@@ -101,6 +103,36 @@ export async function POST(request: NextRequest) {
       p_business_id: listing_id,
       p_dish_tag_ids: tagIds,
     })
+  }
+
+  // Append food tag names to review_keywords (deduped, case-insensitive)
+  const foodTags: string[] = Array.isArray(dish_tags) ? dish_tags : []
+  if (foodTags.length > 0) {
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('review_keywords')
+      .eq('id', listing_id)
+      .single()
+
+    const existing = listing?.review_keywords || ''
+    const existingNormalized = existing
+      .split(',')
+      .map((k: string) => k.trim().toLowerCase())
+      .filter(Boolean)
+
+    const toAdd = foodTags.filter(
+      (tag) => !existingNormalized.includes(tag.toLowerCase())
+    )
+
+    if (toAdd.length > 0) {
+      const updated = existing
+        ? `${existing}, ${toAdd.join(', ')}`
+        : toAdd.join(', ')
+      await supabase
+        .from('listings')
+        .update({ review_keywords: updated })
+        .eq('id', listing_id)
+    }
   }
 
   return NextResponse.json({ success: true })
