@@ -28,7 +28,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center space-x-2 font-bold text-xl text-gray-900 hover:text-red-600 transition-colors"
+            className="flex items-center space-x-2 font-bold text-xl text-gray-900 hover:text-red-600 transition-colors shrink-0 whitespace-nowrap"
             aria-label="Filipino Food Near Me - Home"
           >
             <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1ed.svg" alt="Philippine flag" className="w-7 h-7" />
@@ -96,7 +96,7 @@ export default function Navigation() {
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Search Filipino food..."
                 aria-label="Search Filipino food"
-                className="pl-4 pr-9 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white w-44 focus:w-56 transition-all duration-200"
+                className="pl-4 pr-9 py-2 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#0038A8] focus:bg-white w-36 focus:w-48 transition-all duration-200"
               />
               <button
                 type="submit"
