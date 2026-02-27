@@ -125,39 +125,28 @@ export default async function EventsPage() {
                 
                 // Add event card
                 items.push(
-                  <Link 
+                  <Link
                     href={`/events/${event.id}`}
                     key={`event-${event.id}`}
                     className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow block cursor-pointer"
                   >
-                    {event.image_url && (
-                      <div className="h-48 bg-gray-200 overflow-hidden">
-                        <img 
-                          src={event.image_url} 
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    
-                    <div className="p-6">
-                      {event.is_featured && (
-                        <div className="mb-3">
-                          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <div className="p-4">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        {event.is_featured && (
+                          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                             ⭐ FEATURED
                           </span>
-                        </div>
-                      )}
+                        )}
+                        {event.category && (
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${categoryColors[event.category]}`}>
+                            {categoryLabels[event.category]}
+                          </span>
+                        )}
+                      </div>
 
-                      {event.category && (
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${categoryColors[event.category]}`}>
-                          {categoryLabels[event.category]}
-                        </span>
-                      )}
-
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h3>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1.5">{event.title}</h3>
                       
-                      <div className="space-y-2 text-sm text-gray-600 mb-4">
+                      <div className="space-y-1 text-sm text-gray-600 mb-3">
                         <p className="font-semibold text-blue-600">
                           📅 {formatDate(event.event_date)}
                           {event.event_time && ` at ${event.event_time}`}
@@ -171,7 +160,7 @@ export default async function EventsPage() {
                       </div>
 
                       {event.description && (
-                        <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
+                        <p className="text-gray-700 mb-3 text-sm line-clamp-2">{event.description}</p>
                       )}
 
                       <div className="flex gap-2">
