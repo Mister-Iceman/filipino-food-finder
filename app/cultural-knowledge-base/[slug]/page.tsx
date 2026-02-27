@@ -23,7 +23,7 @@ const MAKE_IT_AT_HOME_BY_SLUG: Array<{
     // Matches slugs containing "silog" OR "beginner"
     match: 'silog|beginner',
     links: [
-      { label: 'Silver Swan Soy Sauce',    url: 'https://amzn.to/4bcIfbx', note: 'The Filipino pantry staple' },
+      { label: 'Silver Swan Soy Sauce',    url: 'https://amzn.to/4aZ1VP3', note: 'The Filipino pantry staple' },
       { label: 'Datu Puti Cane Vinegar',   url: 'https://amzn.to/4l7KUGT', note: 'For adobo and dipping sauces' },
       { label: 'Ube Extract',              url: 'https://amzn.to/46vlk8H', note: 'For ube desserts at home' },
       { label: 'I Am a Filipino Cookbook', url: 'https://amzn.to/3ZZ09bu', note: 'Best intro to Filipino cooking' },
