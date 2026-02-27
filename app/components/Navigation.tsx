@@ -24,7 +24,7 @@ export default function Navigation() {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 gap-6">
           {/* Logo */}
           <Link
             href="/"
