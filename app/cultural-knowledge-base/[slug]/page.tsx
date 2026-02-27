@@ -1,6 +1,41 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import MakeItAtHome from '../../components/MakeItAtHome'
+
+// ---------------------------------------------------------------------------
+// Affiliate links keyed by partial slug match.
+// Update the keys if your DB slugs differ from these patterns.
+// ---------------------------------------------------------------------------
+const MAKE_IT_AT_HOME_BY_SLUG: Array<{
+  match: string  // substring that must appear in the article slug
+  title?: string
+  links: Array<{ label: string; url: string; note?: string }>
+}> = [
+  {
+    match: 'kamayan',
+    links: [
+      { label: 'Frozen Banana Leaves',    url: 'https://amzn.to/3Oz4xLX', note: 'Essential for authentic kamayan' },
+      { label: 'I Am a Filipino Cookbook', url: 'https://amzn.to/3ZZ09bu', note: 'By Nicole Ponseca, NYC kamayan pioneer' },
+    ],
+  },
+  {
+    // Matches slugs containing "silog" OR "beginner"
+    match: 'silog|beginner',
+    links: [
+      { label: 'Silver Swan Soy Sauce',    url: 'https://amzn.to/4bcIfbx', note: 'The Filipino pantry staple' },
+      { label: 'Datu Puti Cane Vinegar',   url: 'https://amzn.to/4l7KUGT', note: 'For adobo and dipping sauces' },
+      { label: 'Ube Extract',              url: 'https://amzn.to/46vlk8H', note: 'For ube desserts at home' },
+      { label: 'I Am a Filipino Cookbook', url: 'https://amzn.to/3ZZ09bu', note: 'Best intro to Filipino cooking' },
+    ],
+  },
+]
+
+function getAffiliateLinks(slug: string) {
+  return MAKE_IT_AT_HOME_BY_SLUG.find(({ match }) =>
+    new RegExp(match).test(slug)
+  ) ?? null
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,6 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const affiliateEntry = getAffiliateLinks(slug)
 
   const { data: article } = await supabase
     .from('articles')
@@ -87,6 +123,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
+        )}
+
+        {affiliateEntry && (
+          <MakeItAtHome title={affiliateEntry.title} links={affiliateEntry.links} />
         )}
 
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">

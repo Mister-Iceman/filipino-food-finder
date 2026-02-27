@@ -107,6 +107,7 @@ export default function Footer() {
                 <li><a href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
                 <li><a href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
                 <li><a href="/accessibility" className="text-gray-400 hover:text-white transition-colors">Accessibility</a></li>
+                <li><a href="/affiliate-disclosure" className="text-gray-400 hover:text-white transition-colors">Affiliate Disclosure</a></li>
               </ul>
             </div>
 
