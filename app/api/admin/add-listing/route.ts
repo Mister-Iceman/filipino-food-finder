@@ -11,7 +11,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       name, category_primary, address_street, city, state, zip,
-      phone, website, google_maps_url, description, hours, status
+      phone, website, google_maps_url, description, hours,
+      google_rating, google_reviews_count
     } = body
 
     if (!name || !category_primary || !address_street || !city || !state || !zip) {
@@ -42,7 +43,8 @@ export async function POST(request: NextRequest) {
         google_maps_url: google_maps_url || null,
         description: description || null,
         hours: hours || null,
-        status: status || 'active',
+        google_rating: google_rating ? parseFloat(google_rating) : null,
+        google_reviews_count: google_reviews_count ? parseInt(google_reviews_count, 10) : null,
       }])
 
     if (error) {

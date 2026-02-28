@@ -39,7 +39,8 @@ export default function AddBusinessPage() {
     google_maps_url: '',
     description: '',
     hours: '',
-    status: 'active',
+    google_rating: '',
+    google_reviews_count: '',
   })
 
   const handleLogin = (e: React.FormEvent) => {
@@ -283,17 +284,32 @@ export default function AddBusinessPage() {
               />
             </div>
 
-            {/* Status */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select
-                value={form.status}
-                onChange={e => set('status', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+            {/* Google Rating + Reviews */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Google Rating</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={form.google_rating}
+                  onChange={e => set('google_rating', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 4.5"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Google Reviews Count</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={form.google_reviews_count}
+                  onChange={e => set('google_reviews_count', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 124"
+                />
+              </div>
             </div>
 
             {/* Slug preview */}
