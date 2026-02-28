@@ -176,7 +176,7 @@ export default function DirectoryContent({ initialListings }: Props) {
 
     setDishTags(dishTagsData || [])
     setGroceryTags(groceryTagsData || [])
-    setUniversalTags(universalTagsData || [])
+    setUniversalTags((universalTagsData || []).filter((t: any) => t.name !== 'Halal Options'))
 
     const dishMap: BusinessTagMap = new Map()
     ;(bizDishData || []).forEach(({ business_id, dish_tag_id, confirmed_count }: any) => {
