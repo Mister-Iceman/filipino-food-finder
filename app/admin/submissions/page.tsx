@@ -1,10 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function AdminSubmissionsPage() {
+function AddedBanner() {
   const searchParams = useSearchParams()
+  if (searchParams.get('added') !== '1') return null
+  return (
+    <div className="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded-lg mb-6 font-medium">
+      Business listing added successfully!
+    </div>
+  )
+}
+
+export default function AdminSubmissionsPage() {
   const [password, setPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [submissions, setSubmissions] = useState<any[]>([])
@@ -108,11 +117,9 @@ export default function AdminSubmissionsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        {searchParams.get('added') === '1' && (
-          <div className="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded-lg mb-6 font-medium">
-            Business listing added successfully!
-          </div>
-        )}
+        <Suspense fallback={null}>
+          <AddedBanner />
+        </Suspense>
 
         <div className="flex justify-between items-center mb-8">
           <div>
