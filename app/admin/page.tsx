@@ -201,16 +201,18 @@ export default function AdminPage() {
 
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this restaurant?')) {
-      const { error } = await supabase
-        .from('listings')
-        .delete()
-        .eq('id', id)
-      if (!error) {
+      console.log('[handleDelete] sending DELETE to /api/admin/edit-listing/' + id)
+      const res = await fetch(`/api/admin/edit-listing/${id}`, { method: 'DELETE' })
+      const json = await res.json()
+      console.log('[handleDelete] response:', res.status, json)
+      if (res.ok) {
         if (searchQuery.trim()) {
           performSearch(searchQuery.trim(), currentPage)
         } else {
           loadListings()
         }
+      } else {
+        alert('Delete failed: ' + (json.error ?? 'Unknown error'))
       }
     }
   }

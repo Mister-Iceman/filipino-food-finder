@@ -70,6 +70,7 @@ export async function PUT(request: NextRequest, context: Context) {
 
 export async function DELETE(request: NextRequest, context: Context) {
   const { id } = await context.params
+  console.log('[DELETE /api/admin/edit-listing] id:', id)
 
   // Fetch slug before deleting so we can revalidate the listing page
   const { data: current } = await supabase
