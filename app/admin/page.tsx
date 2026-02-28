@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
-type ManagementView = 'listings' | 'events'
+const PAGE_SIZE = 20
 
 interface Partner {
   id: string
@@ -37,9 +37,9 @@ export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [listings, setListings] = useState<any[]>([])
   const [showForm, setShowForm] = useState(false)
-  const [editingId, setEditingId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isSearching, setIsSearching] = useState(false)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([])
   const [claimActionLoading, setClaimActionLoading] = useState<string | null>(null)
   const [partners, setPartners] = useState<Partner[]>([])
@@ -53,7 +53,6 @@ export default function AdminPage() {
     description: '',
     category: 'Organization',
   })
-  
   const [formData, setFormData] = useState({
     name: '',
     address_street: '',
@@ -74,6 +73,7 @@ export default function AdminPage() {
     tiktok_url: '',
     x_url: ''
   })
+  const searchTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -82,11 +82,24 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadListings()
       loadPendingClaims()
       loadPartners()
     }
   }, [isAuthenticated])
+
+  // Debounced search / default listings load
+  useEffect(() => {
+    if (!isAuthenticated) return
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = setTimeout(() => {
+      if (searchQuery.trim()) {
+        performSearch(searchQuery.trim(), 0)
+      } else {
+        loadListings()
+      }
+    }, 300)
+    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
+  }, [searchQuery, isAuthenticated])
 
   const loadPendingClaims = async () => {
     const { data } = await supabase
@@ -165,110 +178,28 @@ export default function AdminPage() {
   }
 
   const loadListings = async () => {
-    setIsSearching(false)
-    setSearchQuery('')
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('listings')
-      .select('*')
+      .select('id, name, category_primary, city, state, google_rating, created_at')
       .order('created_at', { ascending: false })
-      .limit(50)
-    
-    if (data) setListings(data)
+      .limit(10)
+    setListings(data ?? [])
+    setTotalCount(0)
+    setCurrentPage(0)
   }
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) {
-      loadListings()
-      return
-    }
-
-    setIsSearching(true)
-    const cleanQuery = searchQuery.trim()
-    
-    const { data, error } = await supabase
+  const performSearch = async (query: string, page: number) => {
+    const from = page * PAGE_SIZE
+    const to = from + PAGE_SIZE - 1
+    const { data, count } = await supabase
       .from('listings')
-      .select('*')
-      .or(`name.ilike.%${cleanQuery}%,city.ilike.%${cleanQuery}%,state.ilike.%${cleanQuery}%,zip.ilike.%${cleanQuery}%,address_street.ilike.%${cleanQuery}%,review_keywords.ilike.%${cleanQuery}%`)
+      .select('id, name, category_primary, city, state, google_rating, created_at', { count: 'exact' })
+      .or(`name.ilike.%${query}%,city.ilike.%${query}%,state.ilike.%${query}%`)
       .order('name', { ascending: true })
-      .limit(100)
-    
-    if (data) {
-      setListings(data)
-    } else {
-      setListings([])
-    }
-  }
-
-  const clearSearch = () => {
-    setSearchQuery('')
-    setIsSearching(false)
-    loadListings()
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    const dataToSubmit = {
-      ...formData,
-      google_rating: formData.google_rating ? parseFloat(formData.google_rating) : null,
-      google_reviews_count: formData.google_reviews_count ? parseInt(formData.google_reviews_count) : 0
-    }
-
-    if (editingId) {
-      const { error } = await supabase
-        .from('listings')
-        .update(dataToSubmit)
-        .eq('id', editingId)
-      
-      if (!error) {
-        alert('Restaurant updated!')
-        resetForm()
-        if (isSearching && searchQuery) {
-          handleSearch(e)
-        } else {
-          loadListings()
-        }
-      }
-    } else {
-      const { error } = await supabase
-        .from('listings')
-        .insert([dataToSubmit])
-      
-      if (!error) {
-        alert('Restaurant added!')
-        resetForm()
-        loadListings()
-      } else {
-        alert('Error: ' + error.message)
-      }
-    }
-  }
-
-  const handleEdit = (listing: any) => {
-    setFormData({
-      name: listing.name || '',
-      address_street: listing.address_street || '',
-      city: listing.city || '',
-      state: listing.state || '',
-      zip: listing.zip || '',
-      country: listing.country || 'US',
-      phone: listing.phone || '',
-      website: listing.website || '',
-      google_maps_url: listing.google_maps_url || '',
-      category_primary: listing.category_primary || 'Restaurant',
-      category_secondary: listing.category_secondary || '',
-      google_rating: listing.google_rating?.toString() || '',
-      google_reviews_count: listing.google_reviews_count?.toString() || '',
-      hours: listing.hours || '',
-      instagram_url: listing.instagram_url || '',
-      facebook_url: listing.facebook_url || '',
-      tiktok_url: listing.tiktok_url || '',
-      x_url: listing.x_url || ''
-    })
-    setEditingId(listing.id)
-    setShowForm(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+      .range(from, to)
+    setListings(data ?? [])
+    setTotalCount(count ?? 0)
+    setCurrentPage(page)
   }
 
   const handleDelete = async (id: number) => {
@@ -277,15 +208,36 @@ export default function AdminPage() {
         .from('listings')
         .delete()
         .eq('id', id)
-      
       if (!error) {
-        alert('Restaurant deleted!')
-        if (isSearching && searchQuery) {
-          handleSearch(new Event('submit') as any)
+        if (searchQuery.trim()) {
+          performSearch(searchQuery.trim(), currentPage)
         } else {
           loadListings()
         }
       }
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const dataToSubmit = {
+      ...formData,
+      google_rating: formData.google_rating ? parseFloat(formData.google_rating) : null,
+      google_reviews_count: formData.google_reviews_count ? parseInt(formData.google_reviews_count) : 0
+    }
+    const { error } = await supabase
+      .from('listings')
+      .insert([dataToSubmit])
+    if (!error) {
+      alert('Restaurant added!')
+      resetForm()
+      if (searchQuery.trim()) {
+        performSearch(searchQuery.trim(), currentPage)
+      } else {
+        loadListings()
+      }
+    } else {
+      alert('Error: ' + error.message)
     }
   }
 
@@ -310,7 +262,6 @@ export default function AdminPage() {
       tiktok_url: '',
       x_url: ''
     })
-    setEditingId(null)
     setShowForm(false)
   }
 
@@ -338,6 +289,8 @@ export default function AdminPage() {
       </div>
     )
   }
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -522,44 +475,10 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Search Restaurants</h2>
-          <form onSubmit={handleSearch} className="flex gap-4">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name, city, state, zip code, or address..."
-              className="flex-1 px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold"
-            >
-              Search
-            </button>
-            {isSearching && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-900 px-6 py-3 rounded-lg font-bold"
-              >
-                Clear
-              </button>
-            )}
-          </form>
-          {isSearching && (
-            <p className="text-sm text-gray-600 mt-3">
-              Showing search results for: <strong>"{searchQuery}"</strong> ({listings.length} found)
-            </p>
-          )}
-        </div>
-
+        {/* Add Restaurant Form */}
         {showForm && (
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">
-              {editingId ? 'Edit Restaurant' : 'Add New Restaurant'}
-            </h2>
+            <h2 className="text-2xl font-bold mb-6">Add New Restaurant</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
@@ -724,7 +643,7 @@ export default function AdminPage() {
                   type="submit"
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg"
                 >
-                  {editingId ? 'Update Restaurant' : 'Add Restaurant'}
+                  Add Restaurant
                 </button>
                 <button
                   type="button"
@@ -738,46 +657,70 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* Listings Management */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-6 bg-gray-50 border-b">
-            <h2 className="text-2xl font-bold">
-              {isSearching ? `Search Results (${listings.length})` : `Recent Listings (${listings.length})`}
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Listings Management</h2>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by business name, city, or state..."
+              className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {searchQuery.trim() ? (
+              <p className="text-sm text-gray-600 mt-2">
+                {totalCount} result{totalCount !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo;
+                {' · '}
+                <button onClick={() => setSearchQuery('')} className="text-blue-600 hover:underline">
+                  Clear
+                </button>
+              </p>
+            ) : (
+              <p className="text-sm text-gray-500 mt-2">Showing 10 most recently added listings</p>
+            )}
           </div>
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Name</th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">City, State</th>
+                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Business Name</th>
                   <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Category</th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Rating</th>
+                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">City</th>
+                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">State</th>
+                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Google Rating</th>
+                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Date Added</th>
                   <th className="px-6 py-3 text-right text-sm font-bold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {listings.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                      {isSearching ? 'No restaurants found matching your search.' : 'No restaurants found.'}
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                      {searchQuery.trim() ? 'No listings found matching your search.' : 'No listings found.'}
                     </td>
                   </tr>
                 ) : (
                   listings.map((listing) => (
                     <tr key={listing.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">{listing.name}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{listing.city}, {listing.state}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{listing.category_primary}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{listing.city}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{listing.state}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {listing.google_rating ? `★ ${listing.google_rating}` : '-'}
+                        {listing.google_rating ? `★ ${listing.google_rating}` : '—'}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm space-x-2">
-                        <button
-                          onClick={() => handleEdit(listing)}
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {new Date(listing.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-right text-sm space-x-3">
+                        <a
+                          href={`/admin/listings/${listing.id}/edit`}
                           className="text-blue-600 hover:text-blue-800 font-medium"
                         >
                           Edit
-                        </button>
+                        </a>
                         <button
                           onClick={() => handleDelete(listing.id)}
                           className="text-red-600 hover:text-red-800 font-medium"
@@ -791,6 +734,29 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination for search results */}
+          {searchQuery.trim() && totalPages > 1 && (
+            <div className="p-4 flex items-center justify-between border-t bg-gray-50">
+              <button
+                onClick={() => performSearch(searchQuery.trim(), currentPage - 1)}
+                disabled={currentPage === 0}
+                className="px-4 py-2 bg-white border rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {currentPage + 1} of {totalPages} ({totalCount} total)
+              </span>
+              <button
+                onClick={() => performSearch(searchQuery.trim(), currentPage + 1)}
+                disabled={currentPage + 1 >= totalPages}
+                className="px-4 py-2 bg-white border rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

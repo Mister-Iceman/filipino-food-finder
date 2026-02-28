@@ -20,6 +20,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Hard guardrail: reject exact duplicate (name + city + state, case-insensitive)
+    const { data: duplicate } = await supabase
+      .from('listings')
+      .select('id, name, city, state')
+      .ilike('name', name)
+      .ilike('city', city)
+      .ilike('state', state)
+      .limit(1)
+      .maybeSingle()
+
+    if (duplicate) {
+      return NextResponse.json(
+        { error: `A listing named "${duplicate.name}" already exists in ${duplicate.city}, ${duplicate.state}. If this is a different location, use a more specific name.` },
+        { status: 409 }
+      )
+    }
+
     const baseSlug = [name, city, state]
       .map(s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))
       .join('-')
