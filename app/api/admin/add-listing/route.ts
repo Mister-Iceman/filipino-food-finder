@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -49,8 +50,17 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Insert error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: error.message, details: error }, { status: 500 })
     }
+
+    // Bust ISR cache so the new listing appears immediately
+    revalidatePath('/directory')
+    revalidatePath('/')
+    revalidatePath('/restaurants')
+    revalidatePath('/bakeries')
+    revalidatePath('/grocery-stores')
+    revalidatePath('/food-trucks')
+    revalidatePath('/quick-bites')
 
     return NextResponse.json({ success: true, slug })
   } catch (error) {
