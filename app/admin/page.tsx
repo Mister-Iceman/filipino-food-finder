@@ -181,27 +181,21 @@ export default function AdminPage() {
   }
 
   const loadListings = async () => {
-    const { data } = await supabase
-      .from('listings')
-      .select('id, name, category_primary, city, state, google_rating, created_at')
-      .order('created_at', { ascending: false })
-      .limit(10)
-    setListings(data ?? [])
+    const res = await fetch('/api/admin/get-listings')
+    const json = await res.json()
+    console.log('[loadListings] raw response:', json)
+    setListings(json.listings ?? [])
     setTotalCount(0)
     setCurrentPage(0)
   }
 
   const performSearch = async (query: string, page: number) => {
-    const from = page * PAGE_SIZE
-    const to = from + PAGE_SIZE - 1
-    const { data, count } = await supabase
-      .from('listings')
-      .select('id, name, category_primary, city, state, google_rating, created_at', { count: 'exact' })
-      .or(`name.ilike.%${query}%,city.ilike.%${query}%,state.ilike.%${query}%`)
-      .order('name', { ascending: true })
-      .range(from, to)
-    setListings(data ?? [])
-    setTotalCount(count ?? 0)
+    const params = new URLSearchParams({ search: query, page: String(page) })
+    const res = await fetch(`/api/admin/get-listings?${params}`)
+    const json = await res.json()
+    console.log('[performSearch] raw response:', json)
+    setListings(json.listings ?? [])
+    setTotalCount(json.totalCount ?? 0)
     setCurrentPage(page)
   }
 
