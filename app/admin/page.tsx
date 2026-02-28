@@ -80,23 +80,26 @@ export default function AdminPage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
+  // Initial load — fires immediately when authenticated
   useEffect(() => {
     if (isAuthenticated) {
+      loadListings()
       loadPendingClaims()
       loadPartners()
     }
   }, [isAuthenticated])
 
-  // Debounced search / default listings load
+  // Debounced search — only fires when searchQuery changes after auth
   useEffect(() => {
     if (!isAuthenticated) return
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    if (!searchQuery.trim()) {
+      // Cleared search — reload default recent listings immediately
+      loadListings()
+      return
+    }
     searchTimerRef.current = setTimeout(() => {
-      if (searchQuery.trim()) {
-        performSearch(searchQuery.trim(), 0)
-      } else {
-        loadListings()
-      }
+      performSearch(searchQuery.trim(), 0)
     }, 300)
     return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
   }, [searchQuery, isAuthenticated])
