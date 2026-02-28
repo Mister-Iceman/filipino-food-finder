@@ -314,12 +314,18 @@ export default function AddBusinessPage() {
 
             {/* Slug preview */}
             {form.name && form.city && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600">
-                <span className="font-medium">Generated slug: </span>
-                <span className="font-mono">
-                  {form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}
-                  -{form.city.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}
-                </span>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Generated Slug <span className="text-gray-400 font-normal">(read-only — uniqueness checked on submit)</span>
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value={[form.name, form.city, form.state]
+                    .map(s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))
+                    .join('-')}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 font-mono text-sm cursor-default"
+                />
               </div>
             )}
 

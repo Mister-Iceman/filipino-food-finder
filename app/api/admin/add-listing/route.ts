@@ -20,14 +20,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const slug = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      + '-' + city
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+    const baseSlug = [name, city, state]
+      .map(s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))
+      .join('-')
+
+    // Find a unique slug by checking existing ones
+    let slug = baseSlug
+    let suffix = 2
+    while (true) {
+      const { data: existing } = await supabase
+        .from('listings')
+        .select('slug')
+        .eq('slug', slug)
+        .maybeSingle()
+      if (!existing) break
+      slug = `${baseSlug}-${suffix}`
+      suffix++
+    }
 
     const { error } = await supabase
       .from('listings')
