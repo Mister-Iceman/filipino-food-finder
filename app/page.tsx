@@ -7,6 +7,8 @@ import InstagramFeed from './components/InstagramFeed'
 import FeaturedArticles from './components/FeaturedArticles'
 import LatestNews from './components/LatestNews'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",
   description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across America.",
