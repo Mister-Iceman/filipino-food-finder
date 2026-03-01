@@ -107,23 +107,23 @@ export default function NewWaveFilipinoCuisinePage() {
         </p>
 
         {/* ── INTRO ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
-          <p>
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+          <p className="mb-6">
             Welcome back to the filipinofoodnearme.org cultural knowledge base! If you&rsquo;ve been following our culinary journey, you already know about the communal joy of Kamayan feasts and the hearty perfection of a morning Silog. But the story of Filipino food in America is evolving faster than ever before.
           </p>
-          <p>
+          <p className="mb-6">
             Often dubbed the &ldquo;original fusion cuisine&rdquo; due to its rich history of Malay, Chinese, Spanish, and American influences, Filipino food is experiencing a massive cultural renaissance. Today, a new generation of Filipino-American chefs, bakers, and food truck owners are taking the soulful, home-cooked dishes they grew up with and translating them for a worldwide audience.
           </p>
-          <p>
+          <p className="mb-6">
             Whether you&rsquo;re searching for the &ldquo;best Filipino food near me&rdquo; or looking to recreate these modern classics at home, let&rsquo;s explore the exciting new frontiers of Filipino-American cuisine.
           </p>
 
           {/* ── SECTION 1 ── */}
-          <h2>🍲 The Evolution: From Turo-Turo to Fine Dining</h2>
-          <p>
+          <h2 className="mt-10 mb-4">🍲 The Evolution: From Turo-Turo to Fine Dining</h2>
+          <p className="mb-6">
             For decades, the backbone of the Filipino-American dining experience has been the humble turo-turo joint. Translating literally to &ldquo;point-point&rdquo; in Tagalog, these casual, cafeteria-style eateries allow customers to simply point at the dishes they want from a hot steam table. They have been vital community hubs, serving comforting classics like Kare-Kare (peanut-based oxtail stew) and Dinuguan (savory pork blood stew) to diaspora families craving a taste of home.
           </p>
-          <p>
+          <p className="mb-6">
             However, the culinary landscape is shifting. In recent years, Filipino-American chefs have begun elevating traditional recipes using fine-dining techniques.
           </p>
           <ul>
@@ -134,19 +134,19 @@ export default function NewWaveFilipinoCuisinePage() {
               <strong>Award-Winning Flavors:</strong> Establishments like Bad Saint in Washington D.C. have garnered prestigious James Beard awards, while concepts like Lasa (now Lasita) in Los Angeles have redefined Filipino food as a modern, chef-driven experience.
             </li>
           </ul>
-          <p>
+          <p className="mb-6">
             These chefs aren&rsquo;t abandoning their roots; rather, they are sharing the personal histories behind every dish, giving diners a deeper connection to the culture.
           </p>
 
           {/* ── SECTION 2 ── */}
-          <h2>🍠 The Purple Takeover: Ube and Merienda Culture</h2>
-          <p>
+          <h2 className="mt-10 mb-4">🍠 The Purple Takeover: Ube and Merienda Culture</h2>
+          <p className="mb-6">
             If there is one Filipino ingredient that has truly conquered the American mainstream, it is Ube (pronounced <em>oo-beh</em>). This vibrant purple yam, traditionally used in Filipino desserts like halaya (mashed yam) and halo-halo (a shaved ice treat), has become a global sensation. Today, you can find ube flavoring everything from American brewery craft beers and artisanal donuts to Trader Joe&rsquo;s ice cream and pancake mixes.
           </p>
-          <p>
+          <p className="mb-6">
             The love for ube is deeply tied to the Filipino concept of <strong>Merienda</strong> — a light afternoon meal or snack tradition inherited from the Spanish. A proper merienda is the perfect excuse to pause your day and enjoy a sweet treat or a warm beverage.
           </p>
-          <p>
+          <p className="mb-6">
             A staple of the merienda table is <strong>Pandesal</strong> (salt bread), a pillowy, slightly sweet bread roll covered in fine crumbs, which is perfect for dunking into coffee or Tsokolate. Tsokolate is a rich, traditional Filipino hot chocolate made by melting tablea (pure roasted cacao tablets) into boiling water or milk, a practice brought over via the Manila-Acapulco galleon trade.
           </p>
         </div>
@@ -177,18 +177,18 @@ export default function NewWaveFilipinoCuisinePage() {
         </aside>
 
         {/* ── SECTION 3 ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
-          <h2>🍢 Street Food Sensations: Skewers and Sisig</h2>
-          <p>
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+          <h2 className="mt-10 mb-4">🍢 Street Food Sensations: Skewers and Sisig</h2>
+          <p className="mb-6">
             Another exciting development in the Filipino-American food scene is the embrace of gritty, flavorful street food. In the Philippines, the late afternoon brings out hawkers selling incredibly unique snacks.
           </p>
-          <p>
+          <p className="mb-6">
             One of the most beloved is <strong>Taho</strong>, a comforting, warm treat made of silken tofu, arnibal (a dark caramel syrup), and tapioca pearls. Vendors, known as <em>magtataho</em>, carry the ingredients in stainless steel buckets balanced on their shoulders, shouting &ldquo;Taho!&rdquo; to alert the neighborhood.
           </p>
-          <p>
+          <p className="mb-6">
             On the savory side, street grills light up with skewers of <strong>Isaw</strong> (barbecued chicken intestines) and <strong>Kwek-Kwek</strong> (hard-boiled quail eggs dipped in an orange batter and deep-fried).
           </p>
-          <p>
+          <p className="mb-6">
             In the U.S., these street-food sensibilities have birthed incredibly creative fusion movements. For instance, San Francisco&rsquo;s Señor Sisig food trucks have pioneered a wildly popular fusion of Filipino and Mexican cuisine. By taking <strong>Sisig</strong> — a sizzling, savory, and citrusy minced pork dish that originated in Pampanga — and wrapping it inside burritos or piling it onto nachos, they have successfully introduced Filipino flavor profiles to everyday American palates.
           </p>
         </div>
@@ -219,12 +219,12 @@ export default function NewWaveFilipinoCuisinePage() {
         </aside>
 
         {/* ── SECTION 4 ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
-          <h2>🍗 Regional Spotlight: Chicken Inasal</h2>
-          <p>
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+          <h2 className="mt-10 mb-4">🍗 Regional Spotlight: Chicken Inasal</h2>
+          <p className="mb-6">
             As diners look beyond the beloved national dish of Adobo, regional specialties are taking center stage. Enter <strong>Chicken Inasal</strong>. Originating from Bacolod City in the Visayas region, Inasal literally translates to &ldquo;cooked over fire.&rdquo;
           </p>
-          <p>
+          <p className="mb-6">
             Unlike standard barbecue, Chicken Inasal is marinated in a distinctly Southeast Asian blend of lemongrass, calamansi (Philippine lime), garlic, and vinegar. As it grills, it is continuously basted with an oil infused with achuete (annatto seeds), which gives the chicken its signature mouth-watering reddish-orange hue. It is smoky, tangy, and incredibly savory — an absolute must-try for any barbecue enthusiast.
           </p>
         </div>
