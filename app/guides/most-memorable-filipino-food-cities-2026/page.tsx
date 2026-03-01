@@ -145,6 +145,22 @@ const moreCities = [
     highlight: 'Filipino-Americans tied to military, government, and healthcare shape the capital region\'s cultural landscape',
     keyDistricts: 'Northern Virginia, Maryland suburbs, D.C.',
   },
+  {
+    name: 'Jersey City',
+    state: 'New Jersey',
+    slug: 'new-jersey/jersey-city',
+    population: '100,000+ Filipinos across North Jersey',
+    highlight: "A tight-knit, church-anchored community just a PATH train from NYC's Little Manila — where the East Coast Fil-Am story grows",
+    keyDistricts: 'Journal Square, Bergenline Avenue (Union City), Woodbridge and Edison corridors',
+  },
+  {
+    name: 'San Antonio',
+    state: 'Texas',
+    slug: 'texas/san-antonio',
+    population: '30,000–50,000 Filipinos, military-rooted',
+    highlight: 'Shaped by Lackland AFB and Fort Sam Houston — comfort food built for homecomings and fiestas, where military roots meet Tex-Mex soul',
+    keyDistricts: 'Near Lackland AFB, Fort Sam Houston corridor, Southwest and Northwest sides',
+  },
 ]
 
 export default function MostMemorableCitiesPage() {
@@ -261,7 +277,7 @@ export default function MostMemorableCitiesPage() {
         {/* NEW SECTION: 5 More Notable Cities */}
         <section className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">5 More Notable Filipino Food Cities</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">7 More Notable Filipino Food Cities</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Beyond the top 10, these cities represent the next wave of Filipino-American communities—
               growing hubs where families are building new chapters of the Filipino story in America.
@@ -376,8 +392,8 @@ export default function MostMemorableCitiesPage() {
             Explore Filipino Food Across America
           </h2>
           <p className="text-lg text-gray-700 mb-6">
-            Browse our complete directory of Filipino restaurants, bakeries, and grocery stores 
-            in all 15 cities and beyond.
+            Browse our complete directory of Filipino restaurants, bakeries, and grocery stores
+            across all 17 featured cities and beyond.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
