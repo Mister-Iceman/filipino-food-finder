@@ -105,6 +105,7 @@ export default function AdminPage() {
   const loadPendingClaims = async () => {
     const res = await fetch('/api/admin/get-claims/')
     const json = await res.json()
+    console.log('[loadPendingClaims] response:', json)
     setPendingClaims(json.claims ?? [])
   }
 
@@ -301,12 +302,14 @@ export default function AdminPage() {
         </div>
 
         {/* Pending Claims */}
-        {pendingClaims.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-amber-900 mb-1">
-              Pending Claims ({pendingClaims.length})
-            </h2>
-            <p className="text-amber-700 text-sm mb-4">Review and approve or reject listing ownership claims.</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold text-amber-900 mb-1">
+            Pending Claims ({pendingClaims.length})
+          </h2>
+          <p className="text-amber-700 text-sm mb-4">Review and approve or reject listing ownership claims.</p>
+          {pendingClaims.length === 0 ? (
+            <p className="text-amber-600 text-sm">No pending claims.</p>
+          ) : (
             <div className="space-y-4">
               {pendingClaims.map(claim => (
                 <div key={claim.id} className="bg-white border border-amber-200 rounded-lg p-4">
@@ -345,8 +348,8 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Community Partners */}
         <div className="bg-teal-50 border border-teal-200 rounded-lg shadow-lg p-6 mb-8">

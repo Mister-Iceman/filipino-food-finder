@@ -182,9 +182,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                   )}
                 </div>
                 </div>
-                {!listing.is_claimed && (
-                  <ClaimForm listingId={listing.id} listingName={listing.name} />
-                )}
+                <ClaimForm listingId={listing.id} listingName={listing.name} />
               <div className="bg-gray-50 border-l-4 border-gray-300 rounded-lg p-4 mb-8">
                 <p className="text-sm font-semibold text-gray-700 mb-2">Looking for something else?</p>
                 <div className="flex flex-wrap gap-2">

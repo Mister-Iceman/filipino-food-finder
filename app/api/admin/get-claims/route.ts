@@ -18,5 +18,6 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  console.log('[get-claims] returning', data?.length ?? 0, 'pending claims')
   return NextResponse.json({ claims: data ?? [] })
 }
