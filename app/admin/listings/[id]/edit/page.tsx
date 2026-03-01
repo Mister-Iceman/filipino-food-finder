@@ -105,7 +105,7 @@ export default function EditListingPage() {
     setError('')
     setSuccess('')
 
-    const res = await fetch(`/api/admin/edit-listing/${id}`, {
+    const res = await fetch(`/api/admin/edit-listing/${id}/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -124,14 +124,20 @@ export default function EditListingPage() {
 
   const handleDelete = async () => {
     setDeleting(true)
-    const res = await fetch(`/api/admin/edit-listing/${id}`, {
-      method: 'DELETE',
-    })
-    if (res.ok) {
-      router.push('/admin')
-    } else {
-      const data = await res.json()
-      setError(data.error || 'Failed to delete listing.')
+    try {
+      const res = await fetch(`/api/admin/edit-listing/${id}/`, {
+        method: 'DELETE',
+      })
+      if (res.ok) {
+        router.push('/admin')
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Failed to delete listing.')
+        setDeleting(false)
+        setShowDeleteConfirm(false)
+      }
+    } catch (err) {
+      setError('Delete failed: Network or server error.')
       setDeleting(false)
       setShowDeleteConfirm(false)
     }

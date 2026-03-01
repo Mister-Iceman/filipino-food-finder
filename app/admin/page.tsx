@@ -201,18 +201,20 @@ export default function AdminPage() {
 
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this restaurant?')) {
-      console.log('[handleDelete] sending DELETE to /api/admin/edit-listing/' + id)
-      const res = await fetch(`/api/admin/edit-listing/${id}`, { method: 'DELETE' })
-      const json = await res.json()
-      console.log('[handleDelete] response:', res.status, json)
-      if (res.ok) {
-        if (searchQuery.trim()) {
-          performSearch(searchQuery.trim(), currentPage)
+      try {
+        const res = await fetch(`/api/admin/edit-listing/${id}/`, { method: 'DELETE' })
+        const json = await res.json()
+        if (res.ok) {
+          if (searchQuery.trim()) {
+            performSearch(searchQuery.trim(), currentPage)
+          } else {
+            loadListings()
+          }
         } else {
-          loadListings()
+          alert('Delete failed: ' + (json.error ?? 'Unknown error'))
         }
-      } else {
-        alert('Delete failed: ' + (json.error ?? 'Unknown error'))
+      } catch (err) {
+        alert('Delete failed: Network or server error.')
       }
     }
   }
