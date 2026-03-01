@@ -27,7 +27,7 @@ export default function AboutPage() {
               searching for fresh lumpia, or hunting for the best halo-halo in your city, we're here to help.
             </p>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Built by the community, for the community, our directory showcases <strong>990+ Filipino restaurants, 
+              Built by the community, for the community, our directory showcases <strong>1,200+ Filipino restaurants, 
               bakeries, grocery stores, and food trucks</strong> across all 50 states.
             </p>
           </section>
