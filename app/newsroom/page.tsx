@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Newsroom | FilipinoFoodNearMe.org',
-  description: 'Press releases, announcements, and media resources for FilipinoFoodNearMe.org — the free, community-powered Filipino food directory across all 50 states.',
+  description: 'Press releases, announcements, and media resources for FilipinoFoodNearMe.org — the free, community-powered Filipino food directory across America.',
 }
 
 const supabase = createClient(

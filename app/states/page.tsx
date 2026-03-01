@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Browse Filipino Food by State | Filipino Food Near Me',
-  description: 'Explore Filipino restaurants, bakeries, and grocery stores across all 50 states. Find authentic Filipino food near you.',
+  description: 'Explore Filipino restaurants, bakeries, and grocery stores across America. Find authentic Filipino food near you.',
 }
 
 export default function StatesIndexPage() {

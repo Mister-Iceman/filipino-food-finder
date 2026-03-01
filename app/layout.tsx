@@ -9,7 +9,7 @@ import CookieConsent from "./components/CookieConsent"
 const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",
-  description: "The first and only community-driven Filipino food directory. Find authentic Filipino restaurants, bakeries, grocery stores, and food trucks across all 50 states. Built by the community, for the community.",
+  description: "The first and only community-driven Filipino food directory. Find authentic Filipino restaurants, bakeries, grocery stores, and food trucks across America. Built by the community, for the community.",
   keywords: [
     "filipino food near me",
     "filipino restaurant",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   publisher: "Filipino Food Near Me",
   openGraph: {
     title: "Filipino Food Near Me | First Community Filipino Food Directory",
-    description: "The first and only community-driven Filipino food directory in America. Discover authentic Filipino cuisine across all 50 states.",
+    description: "The first and only community-driven Filipino food directory in America. Discover authentic Filipino cuisine across America.",
     siteName: 'Filipino Food Near Me',
     locale: 'en_US',
     type: 'website',

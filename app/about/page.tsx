@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'About Us | Filipino Food Near Me',
-  description: 'Learn about the first and only community Filipino food directory in America. Our mission is connecting Filipino-American communities to authentic cuisine across all 50 states.',
+  description: 'Learn about the first and only community Filipino food directory in America. Our mission is connecting Filipino-American communities to authentic cuisine across America.',
 }
 
 export default function AboutPage() {
@@ -28,7 +28,7 @@ export default function AboutPage() {
             </p>
             <p className="text-lg text-gray-700 leading-relaxed">
               Built by the community, for the community, our directory showcases <strong>1,200+ Filipino restaurants, 
-              bakeries, grocery stores, and food trucks</strong> across all 50 states.
+              bakeries, grocery stores, and food trucks</strong> across America.
             </p>
           </section>
 
