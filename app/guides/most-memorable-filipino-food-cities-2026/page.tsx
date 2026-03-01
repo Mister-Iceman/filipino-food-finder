@@ -140,7 +140,7 @@ const moreCities = [
   {
     name: 'Washington D.C.',
     state: 'District of Columbia',
-    slug: 'washington-dc/washington-dc',
+    slug: 'district-of-columbia/washington',
     population: 'Large metro community',
     highlight: 'Filipino-Americans tied to military, government, and healthcare shape the capital region\'s cultural landscape',
     keyDistricts: 'Northern Virginia, Maryland suburbs, D.C.',

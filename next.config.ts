@@ -96,6 +96,10 @@ const nextConfig: NextConfig = {
       // Legacy WordPress restaurant directory wildcard → /directory/
       { source: '/restaurants/united-states/:path*', destination: '/directory/', permanent: true },
 
+      // Washington D.C. city guide — old slug used state as city segment
+      { source: '/washington-dc/washington-dc',  destination: '/district-of-columbia/washington/', permanent: true },
+      { source: '/washington-dc/washington-dc/', destination: '/district-of-columbia/washington/', permanent: true },
+
       // ── SPECIFIC REDIRECTS ───────────────────────────────────────────────────
 
       // Old WordPress pages
