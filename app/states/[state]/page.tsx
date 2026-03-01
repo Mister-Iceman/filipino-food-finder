@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: StatePageProps): Promise<Meta
   if (totalListings === 0) {
     return {
       title: `Filipino Food in ${stateInfo.full} | Filipino Food Near Me`,
-      description: `Help us build our directory of Filipino restaurants, bakeries, and grocery stores in ${stateInfo.full}. Know a Filipino business? Add it to our community directory.`,
+      description: `Help us build our directory of Filipino restaurants, bakeries, and grocery stores in ${stateInfo.full}. Know a Filipino food business? Add it to our community directory.`,
       openGraph: {
         title: `Filipino Food in ${stateInfo.full}`,
         description: `Building the Filipino food directory for ${stateInfo.full}`,
@@ -101,7 +101,7 @@ export async function generateMetadata({ params }: StatePageProps): Promise<Meta
     description: `Discover ${totalListings} Filipino restaurants, bakeries, and grocery stores across ${uniqueCities} cities in ${stateInfo.full}. Find authentic Filipino food near you.`,
     openGraph: {
       title: `Filipino Food in ${stateInfo.full}`,
-      description: `${totalListings} Filipino businesses across ${stateInfo.full}`,
+      description: `${totalListings} Filipino food businesses across ${stateInfo.full}`,
     },
   }
 }
@@ -272,7 +272,7 @@ export default async function StatePage({ params }: StatePageProps) {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">{city}</h2>
-                  <p className="text-gray-600">{citiesMap[city].length} Filipino businesses</p>
+                  <p className="text-gray-600">{citiesMap[city].length} Filipino food businesses</p>
                 </div>
                 {enhancedCities.has(city) && (
                   <Link
@@ -315,7 +315,7 @@ export default async function StatePage({ params }: StatePageProps) {
 
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-8 mt-12 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Know a Filipino business in {stateInfo.full}?
+            Know a Filipino food business in {stateInfo.full}?
           </h2>
           <p className="text-gray-700 mb-6">
             Help us build the most complete directory of Filipino food in America!

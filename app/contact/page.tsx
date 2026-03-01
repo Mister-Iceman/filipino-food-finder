@@ -227,7 +227,7 @@ export default function ContactPage() {
         <div className="bg-blue-600 text-white rounded-xl shadow-lg p-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Looking to Add Your Business?</h2>
           <p className="text-lg mb-6">
-            Join 990+ Filipino businesses already featured in our directory
+            Join 1,200+ Filipino food businesses already featured in our directory
           </p>
           <a 
             href="/add-business"

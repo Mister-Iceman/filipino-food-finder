@@ -126,7 +126,7 @@ export default async function CulturalKnowledgeBasePage() {
         {/* CTA */}
         <div className="mt-16 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-2">Ready to Find Filipino Food Near You?</h3>
-          <p className="text-purple-200 mb-6">Browse the directory and support Filipino businesses in your city.</p>
+          <p className="text-purple-200 mb-6">Browse the directory and support Filipino food businesses in your city.</p>
           <Link href="/directory" className="inline-block bg-white text-purple-800 font-bold px-8 py-3 rounded-lg hover:bg-purple-50 transition-colors">Explore the Directory</Link>
         </div>
       </div>
