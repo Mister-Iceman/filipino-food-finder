@@ -7,6 +7,7 @@ import AvailableDishesDisplay from '../../components/AvailableDishesDisplay'
 import AdSlot from '../../components/AdSlot'
 import SocialShare from '../../components/SocialShare'
 import PhoneReveal from '../../components/PhoneReveal'
+import ClaimForm from '../../components/ClaimForm'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -171,21 +172,18 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                   >
                     📝 Report incorrect info
                   </Link>
-                  <Link 
-                  href={`/claim-listing/${slug}`}
-                  className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-semibold px-3 py-1.5 rounded-full transition"
-                >
-                  🏪 Claim this business
-                  </Link>  
-                  </div>
+                  {listing.is_claimed && (
+                    <Link
+                      href={`/owner/edit/${slug}`}
+                      className="text-xs bg-green-100 hover:bg-green-200 text-green-700 font-semibold px-3 py-1.5 rounded-full transition"
+                    >
+                      ✏️ Update listing info
+                    </Link>
+                  )}
                 </div>
-                {listing.is_claimed && (
-                  <Link
-                    href={`/owner/edit/${slug}`}
-                    className="text-xs bg-green-100 hover:bg-green-200 text-green-700 font-semibold px-3 py-1.5 rounded-full transition"
-                  >
-                    ✏️ Update listing info
-                  </Link>
+                </div>
+                {!listing.is_claimed && (
+                  <ClaimForm listingId={listing.id} listingName={listing.name} />
                 )}
               <div className="bg-gray-50 border-l-4 border-gray-300 rounded-lg p-4 mb-8">
                 <p className="text-sm font-semibold text-gray-700 mb-2">Looking for something else?</p>

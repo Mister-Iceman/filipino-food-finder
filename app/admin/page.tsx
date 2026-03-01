@@ -20,14 +20,12 @@ interface Partner {
 
 interface PendingClaim {
   id: string
-  listing_id: number
+  listing_id: string
   listing_name: string
-  listing_city: string
-  listing_state: string
-  owner_name: string
-  owner_role: string
-  owner_email: string
-  message: string | null
+  claimant_name: string
+  claimant_email: string
+  claimant_phone: string
+  claimant_message: string
   status: string
   created_at: string
 }
@@ -105,30 +103,26 @@ export default function AdminPage() {
   }, [searchQuery, isAuthenticated])
 
   const loadPendingClaims = async () => {
-    const { data } = await supabase
-      .from('claims')
-      .select('id, listing_id, listing_name, listing_city, listing_state, owner_name, owner_role, owner_email, message, status, created_at')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false })
-    setPendingClaims(data ?? [])
+    const res = await fetch('/api/admin/get-claims/')
+    const json = await res.json()
+    setPendingClaims(json.claims ?? [])
   }
 
   const handleClaimAction = async (claimId: string, action: 'approve' | 'reject') => {
     setClaimActionLoading(claimId)
-    const { data: claim } = await supabase
-      .from('claims')
-      .select('token')
-      .eq('id', claimId)
-      .single()
-
-    if (!claim?.token) {
-      alert('Could not find claim token')
-      setClaimActionLoading(null)
-      return
+    try {
+      const res = await fetch('/api/admin/handle-claim/', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claimId, action }),
+      })
+      if (!res.ok) {
+        const json = await res.json()
+        alert('Error: ' + (json.error ?? 'Unknown error'))
+      }
+    } catch {
+      alert('Network error processing claim.')
     }
-
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
-    await fetch(`${baseUrl}/api/approve-claim?token=${claim.token}&action=${action}`)
     await loadPendingClaims()
     setClaimActionLoading(null)
   }
@@ -319,15 +313,14 @@ export default function AdminPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-900">{claim.listing_name}</p>
-                      <p className="text-sm text-gray-600">{claim.listing_city}, {claim.listing_state}</p>
                       <p className="text-sm text-gray-700 mt-1">
-                        <span className="font-medium">{claim.owner_name}</span>
-                        {claim.owner_role ? ` · ${claim.owner_role}` : ''}
+                        <span className="font-medium">{claim.claimant_name}</span>
+                        {' · '}
+                        <a href={`mailto:${claim.claimant_email}`} className="text-blue-600 hover:underline">{claim.claimant_email}</a>
+                        {' · '}
+                        {claim.claimant_phone}
                       </p>
-                      <p className="text-sm text-gray-600">{claim.owner_email}</p>
-                      {claim.message && (
-                        <p className="text-sm text-gray-500 mt-2 italic">"{claim.message}"</p>
-                      )}
+                      <p className="text-sm text-gray-500 mt-1 italic">"{claim.claimant_message}"</p>
                       <p className="text-xs text-gray-400 mt-1">
                         Submitted {new Date(claim.created_at).toLocaleDateString()}
                       </p>
