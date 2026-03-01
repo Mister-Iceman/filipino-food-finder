@@ -65,6 +65,10 @@ export async function POST(req: NextRequest) {
               <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Phone</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${claimant_phone}</td></tr>
               <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Message</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${claimant_message}</td></tr>
             </table>
+            <div style="background: #fff8e1; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; border-radius: 4px;">
+              <p style="margin: 0; font-size: 13px; font-weight: bold; color: #92400e;">⚠️ VERIFICATION REMINDER</p>
+              <p style="margin: 6px 0 0; font-size: 13px; color: #78350f;">Before approving, ask the claimant to email from their business email address or send a Google Business Profile dashboard screenshot to verify ownership.</p>
+            </div>
             <p style="color: #666; font-size: 13px;">
               Review this claim in the <a href="https://filipinofoodnearme.org/admin" style="color: #62438D;">Admin Dashboard</a>.
             </p>
