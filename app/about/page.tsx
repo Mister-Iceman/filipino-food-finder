@@ -39,7 +39,7 @@ export default function AboutPage() {
                 <span className="text-2xl" role="img" aria-label="Check mark">✅</span>
                 <div>
                   <strong className="text-gray-900">Comprehensive Directory:</strong>
-                  <p className="text-gray-700">About 1,200+ Filipino businesses across America</p>
+                  <p className="text-gray-700">About 1,200+ Filipino food businesses across America</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
