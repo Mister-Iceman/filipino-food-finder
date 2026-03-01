@@ -32,9 +32,20 @@ const supabase = createClient(
 )
 
 export default async function HomePage() {
+  // Fetch stats for hero bar
+  const { count: listingCount } = await supabase
+    .from('listings')
+    .select('*', { count: 'exact', head: true })
+
+  const { data: stateRows } = await supabase
+    .from('listings')
+    .select('state')
+
+  const stateCount = new Set(stateRows?.map(r => r.state).filter(Boolean)).size
+
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
-  
+
   const { data: upcomingEvents } = await supabase
     .from('events')
     .select('*')
@@ -83,6 +94,32 @@ export default async function HomePage() {
           </div>
         </section>
       </header>
+
+      {/* Stats Bar */}
+      <section className="bg-white py-12" aria-label="Directory statistics">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center sm:divide-x divide-gray-200">
+            <div className="text-center px-12 py-4 sm:py-0">
+              <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
+                {(listingCount ?? 0).toLocaleString()}+
+              </p>
+              <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Listings Nationwide</p>
+            </div>
+            <div className="text-center px-12 py-4 sm:py-0">
+              <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
+                {stateCount}
+              </p>
+              <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">States Covered</p>
+            </div>
+            <div className="text-center px-12 py-4 sm:py-0">
+              <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
+                5
+              </p>
+              <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Food Categories</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <main role="main">
         {/* Upcoming Events / Featured Section */}
