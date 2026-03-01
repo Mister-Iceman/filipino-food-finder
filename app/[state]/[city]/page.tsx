@@ -298,8 +298,102 @@ function CuratedCityGuide({ data, restaurants }: any) {
             </div>
           </div>
         </div>
+
+        <CityFAQ
+          city={data.city}
+          total={restaurants.length}
+          restaurants={restaurants}
+          communityPlaces={data.community_places}
+        />
       </div>
     </div>
+  )
+}
+
+function CityFAQ({ city, total, restaurants, communityPlaces }: {
+  city: string
+  total: number
+  restaurants: any[]
+  communityPlaces?: any[]
+}) {
+  const hasBakery = restaurants.some((r: any) =>
+    r.category_primary?.toLowerCase().includes('bakery') ||
+    r.category_primary?.toLowerCase().includes('dessert') ||
+    r.category_primary?.toLowerCase().includes('cafe')
+  )
+
+  const catCounts: Record<string, number> = {}
+  for (const r of restaurants) {
+    if (r.category_primary) catCounts[r.category_primary] = (catCounts[r.category_primary] || 0) + 1
+  }
+  const topCats = Object.entries(catCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([cat]) => CATEGORY_LABELS[cat] || cat)
+  const categoryList = topCats.length > 1
+    ? topCats.slice(0, -1).join(', ') + ' and ' + topCats[topCats.length - 1]
+    : topCats[0] || 'restaurants and bakeries'
+
+  const faqs = [
+    {
+      question: `Where can I find Filipino food in ${city}?`,
+      answer: `You can find Filipino food in ${city} through FilipinoFoodNearMe.org, which lists ${total} Filipino food ${total === 1 ? 'business' : 'businesses'} in the area — including ${categoryList}. Browse the full directory to find detailed listings with addresses, hours, and ratings.`,
+    },
+    {
+      question: `How many Filipino restaurants are in ${city}?`,
+      answer: `There are currently ${total} Filipino food ${total === 1 ? 'business' : 'businesses'} listed in ${city} on our directory. This includes restaurants, bakeries, grocery stores, food trucks, and other Filipino food businesses serving the community.`,
+    },
+    {
+      question: `What are the most popular Filipino dishes in ${city}?`,
+      answer: `Filipino restaurants in ${city} typically serve beloved classics like adobo, sinigang, lechon, pancit, lumpia, and halo-halo. Many spots also offer regional specialties and family recipes inspired by different Philippine provinces and the Filipino-American experience.`,
+    },
+    {
+      question: `Are there Filipino bakeries in ${city}?`,
+      answer: hasBakery
+        ? `Yes! Our directory lists Filipino bakeries and dessert cafés in ${city} where you can find pan de sal, ensaymada, bibingka, ube cake, leche flan, and other beloved Filipino baked goods and sweets.`
+        : `Our current directory for ${city} doesn't list a dedicated Filipino bakery yet, but several restaurants offer Filipino pastries and desserts. Know a great bakery? Help the community by adding it through our free listing form.`,
+    },
+    {
+      question: `What is the best area in ${city} for Filipino food?`,
+      answer: communityPlaces && communityPlaces.length > 0
+        ? `Some of the top spots to find Filipino food and community in ${city} include ${communityPlaces.slice(0, 3).map((p: any) => p.name).join(', ')}. Browse our full directory to explore listings across the city by neighborhood and category.`
+        : `Filipino restaurants in ${city} are spread across several neighborhoods. Browse our full directory to find listings nearest to you, with addresses and ratings for every business.`,
+    },
+  ]
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <section className="mt-12 bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-8">
+          Frequently Asked Questions
+        </h2>
+        <div className="space-y-6">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+              <h3 className="font-bold text-gray-900 mb-2">{faq.question}</h3>
+              <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
 

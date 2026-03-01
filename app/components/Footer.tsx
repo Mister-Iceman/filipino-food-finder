@@ -61,7 +61,7 @@ export default function Footer() {
 
       <div className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-8">
 
             {/* About */}
             <div>
@@ -109,6 +109,16 @@ export default function Footer() {
                 <li><a href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
                 <li><a href="/accessibility" className="text-gray-400 hover:text-white transition-colors">Accessibility</a></li>
                 <li><a href="/affiliate-disclosure" className="text-gray-400 hover:text-white transition-colors">Affiliate Disclosure</a></li>
+              </ul>
+            </div>
+
+            {/* For Business Owners */}
+            <div>
+              <h3 className="text-lg font-bold mb-4">For Business Owners</h3>
+              <ul className="space-y-2 list-none">
+                <li><a href="/why-list-with-us" className="text-gray-400 hover:text-white transition-colors">Why List With Us</a></li>
+                <li><a href="/add-business" className="text-gray-400 hover:text-white transition-colors">Add Your Business</a></li>
+                <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Claim a Listing</a></li>
               </ul>
             </div>
 
