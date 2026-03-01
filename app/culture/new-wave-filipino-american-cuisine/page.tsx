@@ -156,7 +156,7 @@ export default function NewWaveFilipinoCuisinePage() {
           <p className="text-gray-700 text-base leading-relaxed m-0">
             🛒 <strong>Bring It Home:</strong> Want to host your own Filipino Merienda? Bake ube treats at home using{' '}
             <a
-              href="https://www.amazon.com/s?k=ube+extract+flavoring&tag=filipinofoodn-20"
+              href="https://amzn.to/4tYK3wp"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
@@ -165,12 +165,12 @@ export default function NewWaveFilipinoCuisinePage() {
             </a>
             {' '}or make authentic hot chocolate with a{' '}
             <a
-              href="https://www.amazon.com/s?k=batirol+filipino+chocolate+frother&tag=filipinofoodn-20"
+              href="https://amzn.to/4r0eOOB"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
             >
-              Filipino wooden batirol/frother
+              milk frother
             </a>
             .
           </p>
@@ -198,7 +198,7 @@ export default function NewWaveFilipinoCuisinePage() {
           <p className="text-gray-700 text-base leading-relaxed m-0">
             🛒 <strong>Bring It Home:</strong> Recreate Filipino street food in your backyard! Grab{' '}
             <a
-              href="https://www.amazon.com/s?k=bamboo+grilling+skewers&tag=filipinofoodn-20"
+              href="https://amzn.to/4rK1peD"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
@@ -207,7 +207,7 @@ export default function NewWaveFilipinoCuisinePage() {
             </a>
             {' '}and a{' '}
             <a
-              href="https://www.amazon.com/s?k=cast+iron+sizzling+plate+sisig&tag=filipinofoodn-20"
+              href="https://amzn.to/4bmQf91"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
