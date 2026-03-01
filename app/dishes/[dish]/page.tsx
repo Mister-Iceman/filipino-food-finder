@@ -55,6 +55,30 @@ const DISH_INFO: Record<string, { name: string; description: string }> = {
     name: 'Silog',
     description: 'Silog is the beloved Filipino breakfast formula of sinangag (garlic fried rice) and itlog (fried egg) paired with a protein like tocino, tapa, or longganisa. Fast, filling, and infinitely customizable, it is the morning meal that powers Filipinos through the day.',
   },
+  dinuguan: {
+    name: 'Dinuguan (Pork Blood Stew)',
+    description: 'Dinuguan is a rich, dark Filipino stew of pork meat and offal simmered in a savory sauce of pork blood, vinegar, garlic, and chili — sometimes called "chocolate meat" by those unfamiliar with its origins. Its bold, deeply earthy flavor is beloved in Filipino homes and carinderias alike, a dish that rewards the adventurous with intense depth and comfort. Dinuguan is traditionally served alongside puto, soft steamed rice cakes whose mild sweetness perfectly balances the stew\'s sharp, savory heat.',
+  },
+  tapsilog: {
+    name: 'Tapsilog (Beef Tapa + Sinangag + Itlog)',
+    description: 'Tapsilog is one of the most iconic Filipino breakfast plates — sweet, garlicky cured beef tapa pan-fried until caramelized, served alongside sinangag (garlic fried rice) and a sunny-side-up itlog (egg). The name is a portmanteau of its three components, part of the beloved silog family of Filipino morning meals that spans tapsilogan diners to family breakfast tables. Humble in ingredients but deeply satisfying in flavor, tapsilog has anchored Filipino mornings for generations.',
+  },
+  palabok: {
+    name: 'Palabok (Filipino Noodles)',
+    description: 'Palabok is a festive Filipino noodle dish featuring thin rice noodles blanketed in a vibrant golden-orange shrimp sauce and piled high with toppings — smoked fish flakes, hard-boiled eggs, crushed chicharon, and scallions. Its striking color and layered flavors make it a fixture at fiestas and celebrations throughout the Philippines. Closely related to pancit luglug, palabok is one of the most visually arresting and flavor-packed dishes in the entire Filipino culinary tradition.',
+  },
+  turon: {
+    name: 'Turon (Banana Spring Rolls)',
+    description: 'Turon is a beloved Filipino street food and dessert — ripe saba banana and jackfruit wrapped in a lumpia wrapper, rolled in brown sugar, and deep-fried until caramelized and shatteringly golden. The crisp shell gives way to a tender, sweet interior, with the caramelized sugar coating adding an irresistible crunch unique to this Filipino treat. Found at street stalls, school cafeterias, and Filipino bakeries, turon is one of the most nostalgic snacks in the Filipino experience.',
+  },
+  'peach-mango-pie': {
+    name: 'Peach Mango Pie',
+    description: 'The Peach Mango Pie is a Filipino fast food icon — a deep-fried, flaky pastry filled with warm peach and mango jam that became a cult obsession at Jollibee locations across the Philippines and America. Its blistered golden crust and sweet fruit filling have made it one of the most craved Filipino desserts in the diaspora, a taste of home that transcends fast food. Biting into a fresh, hot Peach Mango Pie straight from the fryer is a deeply nostalgic moment for Filipinos everywhere.',
+  },
+  'garlic-rice': {
+    name: 'Garlic Rice (Sinangag)',
+    description: "Sinangag, or garlic rice, is one of the most essential staples in Filipino cuisine — day-old steamed rice stir-fried in generous amounts of golden toasted garlic until every grain is fragrant and lightly crisp. It is the backbone of the silog breakfast tradition and the perfect companion to virtually any Filipino ulam (main dish). Simple as it sounds, a well-made sinangag with its toasty garlic perfume is one of the most comforting and addictive things in all of Filipino cooking.",
+  },
 }
 
 export function generateStaticParams() {

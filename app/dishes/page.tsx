@@ -20,7 +20,13 @@ const DISHES = [
   { slug: 'sinigang',  name: 'Sinigang',  emoji: '🍲', tagline: 'Sour tamarind soup' },
   { slug: 'kare-kare', name: 'Kare-Kare', emoji: '🥜', tagline: 'Rich peanut oxtail stew' },
   { slug: 'ube',       name: 'Ube',       emoji: '🟣', tagline: 'Purple yam — the flavor of Filipino sweets' },
-  { slug: 'silog',     name: 'Silog',     emoji: '🍚', tagline: 'Garlic fried rice breakfast plates' },
+  { slug: 'silog',         name: 'Silog',             emoji: '🍚', tagline: 'Garlic fried rice breakfast plates' },
+  { slug: 'dinuguan',      name: 'Dinuguan',          emoji: '🖤', tagline: 'Dark savory pork blood stew' },
+  { slug: 'tapsilog',      name: 'Tapsilog',          emoji: '🥩', tagline: 'Beef tapa, garlic rice, and egg' },
+  { slug: 'palabok',       name: 'Palabok',           emoji: '🍝', tagline: 'Rice noodles in golden shrimp sauce' },
+  { slug: 'turon',         name: 'Turon',             emoji: '🍌', tagline: 'Caramelized banana spring rolls' },
+  { slug: 'peach-mango-pie', name: 'Peach Mango Pie', emoji: '🥧', tagline: 'The iconic Jollibee fried fruit pie' },
+  { slug: 'garlic-rice',   name: 'Garlic Rice',       emoji: '🧄', tagline: 'Toasted garlic sinangag' },
 ]
 
 export default function DishesIndexPage() {
