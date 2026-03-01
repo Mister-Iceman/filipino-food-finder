@@ -107,7 +107,7 @@ export default function NewWaveFilipinoCuisinePage() {
         </p>
 
         {/* ── INTRO ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
           <p>
             Welcome back to the filipinofoodnearme.org cultural knowledge base! If you&rsquo;ve been following our culinary journey, you already know about the communal joy of Kamayan feasts and the hearty perfection of a morning Silog. But the story of Filipino food in America is evolving faster than ever before.
           </p>
@@ -177,7 +177,7 @@ export default function NewWaveFilipinoCuisinePage() {
         </aside>
 
         {/* ── SECTION 3 ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
           <h2>🍢 Street Food Sensations: Skewers and Sisig</h2>
           <p>
             Another exciting development in the Filipino-American food scene is the embrace of gritty, flavorful street food. In the Philippines, the late afternoon brings out hawkers selling incredibly unique snacks.
@@ -219,7 +219,7 @@ export default function NewWaveFilipinoCuisinePage() {
         </aside>
 
         {/* ── SECTION 4 ── */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
           <h2>🍗 Regional Spotlight: Chicken Inasal</h2>
           <p>
             As diners look beyond the beloved national dish of Adobo, regional specialties are taking center stage. Enter <strong>Chicken Inasal</strong>. Originating from Bacolod City in the Visayas region, Inasal literally translates to &ldquo;cooked over fire.&rdquo;
