@@ -320,7 +320,7 @@ export default async function HomePage() {
             </p>
             
             <nav aria-label="Browse by popular city">
-              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 list-none">
+              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 list-none">
                 <li>
                   <Link
                     href="/california/los-angeles"
@@ -441,31 +441,13 @@ export default async function HomePage() {
                   </Link>
                 </li>
 
-                <li>
-                  <Link
-                    href="/new-jersey/jersey-city"
-                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
-                    aria-label="Explore Filipino food and culture in Jersey City, New Jersey"
-                  >
-                    <div className="text-6xl mb-4">🌆</div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Jersey City</h3>
-                    <p className="text-gray-600 text-sm">New Jersey</p>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href="/texas/san-antonio"
-                    className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-center block"
-                    aria-label="Explore Filipino food and culture in San Antonio, Texas"
-                  >
-                    <div className="text-6xl mb-4">🌮</div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">San Antonio</h3>
-                    <p className="text-gray-600 text-sm">Texas</p>
-                  </Link>
-                </li>
               </ul>
             </nav>
+            <div className="text-center mt-8">
+              <Link href="/guides" className="text-purple-700 hover:text-purple-900 font-semibold">
+                See all city guides →
+              </Link>
+            </div>
           </div>
         </section>
         <FeaturedArticles />
