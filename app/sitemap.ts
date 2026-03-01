@@ -78,6 +78,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Static culture pages (non-DB articles)
+  const staticCultureUrls = [
+    {
+      url: `${baseUrl}/culture/new-wave-filipino-american-cuisine/`,
+      lastModified: new Date('2026-03-01'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+  ]
+
   return [
     {
       url: `${baseUrl}/`,
@@ -128,6 +138,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     ...culturalKnowledgeUrls,
+    ...staticCultureUrls,
     ...cityUrls,
     ...listingUrls,
   ]

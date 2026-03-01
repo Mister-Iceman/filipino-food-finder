@@ -81,11 +81,28 @@ export default async function CulturalKnowledgeBasePage() {
         )}
 
         {/* All Articles */}
-        {rest.length > 0 && (
-          <div>
-            <h2 className="text-xs font-bold text-purple-700 uppercase tracking-widest mb-6">All Articles</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {rest.map(article => (
+        <div>
+          <h2 className="text-xs font-bold text-purple-700 uppercase tracking-widest mb-6">All Articles</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Static article: New Wave Filipino-American Cuisine */}
+            <Link href="/culture/new-wave-filipino-american-cuisine"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 bg-gradient-to-br from-[#62438D] to-[#BF2F26] flex items-center justify-center">
+                <span className="text-4xl">🍽️</span>
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">New Wave</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  The New Wave of Filipino-American Cuisine: From Turo-Turo to Michelin Stars
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  Explore how Filipino-American cuisine evolved from humble turo-turo counters to Michelin-starred restaurants. Discover ube culture, merienda traditions, and street food sensations.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">10 min read</p>
+              </div>
+            </Link>
+
+            {rest.map(article => (
                 <Link key={article.id} href={'/cultural-knowledge-base/' + article.slug}
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {article.hero_image_url && (
@@ -108,10 +125,9 @@ export default async function CulturalKnowledgeBasePage() {
                     {article.read_time_minutes && <p className="text-xs text-gray-400 mt-2">{article.read_time_minutes} min read</p>}
                   </div>
                 </Link>
-              ))}
-            </div>
+            ))}
           </div>
-        )}
+        </div>
 
         {/* Empty state */}
         {(!articles || articles.length === 0) && (
