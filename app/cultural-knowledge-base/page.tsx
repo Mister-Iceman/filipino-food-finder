@@ -87,8 +87,12 @@ export default async function CulturalKnowledgeBasePage() {
             {/* Static article: New Wave Filipino-American Cuisine */}
             <Link href="/culture/new-wave-filipino-american-cuisine"
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
-              <div className="h-40 bg-gradient-to-br from-[#62438D] to-[#BF2F26] flex items-center justify-center">
-                <span className="text-4xl">🍽️</span>
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/new-wave-filipino-american-cuisine-hero.png"
+                  alt="The New Wave of Filipino-American Cuisine: From Turo-Turo to Michelin Stars"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
               <div className="p-4">
                 <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">New Wave</span>
