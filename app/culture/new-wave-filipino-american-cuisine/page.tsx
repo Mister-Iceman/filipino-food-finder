@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     type: 'article',
     publishedTime: '2026-03-01',
     authors: ['FilipinoFoodNearMe.org'],
+    images: ['/images/new-wave-filipino-american-cuisine-hero.png'],
   },
 }
 
@@ -78,7 +79,13 @@ export default function NewWaveFilipinoCuisinePage() {
       </div>
 
       {/* Hero */}
-      <div className="w-full h-48 bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26]" />
+      <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
+        <img
+          src="/images/new-wave-filipino-american-cuisine-hero.png"
+          alt="Filipino dishes including skewers, sisig, ube donut, and tsokolate representing the new wave of Filipino-American cuisine — FilipinoFoodNearMe.org"
+          style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
+        />
+      </div>
 
       <div className="max-w-3xl mx-auto px-4 py-10">
 
