@@ -23,13 +23,27 @@ export default function AboutPage() {
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Story</h2>
             <p className="text-lg text-gray-700 leading-relaxed mb-4">
-              Finding authentic Filipino food shouldn't be a challenge. Whether you're craving your grandmother's adobo, 
-              searching for fresh lumpia, or hunting for the best halo-halo in your city, we're here to help.
+              For over a decade, I&rsquo;ve worked closely with Filipino businesses and community events across the United States — and I&rsquo;ve had a front-row seat to both the magic and the struggle.
             </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Built by the community, for the community, our directory showcases <strong>1,200+ Filipino restaurants, 
-              bakeries, grocery stores, and food trucks</strong> across America.
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              The magic is obvious: the food, the hospitality, the way a simple meal turns into a full-on reunion. The struggle is quieter. Even as Filipino cuisine finally steps into the mainstream spotlight it has always deserved, so many of our most authentic spots — the family-run turo-turo, the neighborhood bakery, the weekend pop-up — still rely on word-of-mouth to survive. I watched incredible Filipino business owners pour their hearts into every dish while fighting to be discovered, not just by kababayans, but by a broader American market that was finally ready to listen.
             </p>
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              And when I looked around for a place to send people, I realized something was missing: there was no single, trusted source that brought all of this together nationwide. Not just restaurants — but bakeries, markets, food trucks, dessert caf&eacute;s, and pop-ups. The full picture of how we actually eat.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              So I built FilipinoFoodNearMe.org — powered by bayanihan.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              I also wanted to build it differently. Mainstream review platforms can be brutal — a rough night, a misunderstanding, a single bad review can haunt a small business for years. That&rsquo;s not the community I wanted to create. Our rating system is built to uplift and inform, not tear down — because the businesses listed here deserve advocacy, not a trial by internet.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              And because food is never just food, I didn&rsquo;t want this to be only a directory. Filipino cuisine carries history, region, family, and identity. So we&rsquo;re building this into a cultural hub too — stories behind the dishes, guides for newcomers, and a growing events calendar where Filipino food does what it has always done best: bring people together.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <em>Flavor With Soul Deserves to Be Found.</em>
+            </p>
+            <p className="text-sm text-gray-500 italic">— The Founder</p>
           </section>
 
           <section>
