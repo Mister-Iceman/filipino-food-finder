@@ -87,28 +87,17 @@ export default function NewWaveFilipinoCuisinePage() {
         />
       </div>
 
+      {/*
+        ── STANDARD PATTERN: Cultural Knowledge Base Article ──────────────────
+        • Hero image: public/images/[article-slug]-hero.png
+        • Hero image has the article title baked in as text — NO separate h1
+        • Tags row, h1 title, and author/date/byline are intentionally absent
+        • Hero flows directly into the excerpt (italic blockquote) below
+        • Index card uses the hero image — NOT a gradient placeholder
+        ────────────────────────────────────────────────────────────────────── */}
       <div className="max-w-3xl mx-auto px-4 py-10">
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {['New Wave', 'Michelin Star', 'Ube Culture', 'Street Food', 'Filipino-American'].map(tag => (
-            <span key={tag} className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">{tag}</span>
-          ))}
-        </div>
-
-        {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-          The New Wave of Filipino-American Cuisine: From Turo-Turo Counters to Michelin Stars and Street Food Sensations
-        </h1>
-
-        {/* Byline */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8 pb-8 border-b border-gray-100">
-          <span className="font-medium text-gray-600">FilipinoFoodNearMe.org</span>
-          <span>March 1, 2026</span>
-          <span>10 min read</span>
-        </div>
-
-        {/* Excerpt */}
+        {/* Excerpt — first thing after hero, no title block above it */}
         <p className="text-xl text-gray-600 leading-relaxed mb-8 font-light border-l-4 border-purple-400 pl-4 italic">
           Often dubbed the &ldquo;original fusion cuisine,&rdquo; Filipino food is experiencing a massive cultural renaissance — from humble turo-turo counters to Michelin-starred dining rooms.
         </p>

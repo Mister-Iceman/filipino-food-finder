@@ -84,7 +84,14 @@ export default async function CulturalKnowledgeBasePage() {
         <div>
           <h2 className="text-xs font-bold text-purple-700 uppercase tracking-widest mb-6">All Articles</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Static article: New Wave Filipino-American Cuisine */}
+            {/*
+              ── STANDARD PATTERN: Static Cultural Knowledge Base Article Card ─
+              • Image: public/images/[article-slug]-hero.png (NOT a gradient)
+              • Card href points to /culture/[article-slug]
+              • Hero image on the article page has the title baked in — no h1
+              • To add future static articles: copy this card block and update
+                href, src, alt, title text, excerpt, and read time accordingly
+              ────────────────────────────────────────────────────────────────── */}
             <Link href="/culture/new-wave-filipino-american-cuisine"
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
