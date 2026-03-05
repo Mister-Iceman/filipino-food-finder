@@ -172,6 +172,38 @@ export default async function GuidesPage() {
           )}
         </div>
 
+        {/* Dishes to Know */}
+        <div className="mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">Dishes to Know</h2>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {[
+              { slug: 'adobo', name: 'Adobo' },
+              { slug: 'lechon', name: 'Lechon' },
+              { slug: 'sinigang', name: 'Sinigang' },
+              { slug: 'kare-kare', name: 'Kare-Kare' },
+              { slug: 'pancit', name: 'Pancit' },
+              { slug: 'lumpia', name: 'Lumpia' },
+              { slug: 'halo-halo', name: 'Halo-Halo' },
+              { slug: 'sisig', name: 'Sisig' },
+              { slug: 'ube', name: 'Ube' },
+              { slug: 'balut', name: 'Balut' },
+              { slug: 'bibingka', name: 'Bibingka' },
+              { slug: 'pan-desal', name: 'Pan de Sal' },
+              { slug: 'dinuguan', name: 'Dinuguan' },
+              { slug: 'tapsilog', name: 'Tapsilog' },
+              { slug: 'palabok', name: 'Palabok' },
+            ].map((dish) => (
+              <Link
+                key={dish.slug}
+                href={`/dishes/${dish.slug}`}
+                className="bg-white border border-gray-200 hover:border-blue-400 hover:text-blue-600 text-gray-700 font-medium px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all text-sm"
+              >
+                {dish.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Coming Soon */}
         <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

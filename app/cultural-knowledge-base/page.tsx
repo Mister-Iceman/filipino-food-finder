@@ -150,6 +150,38 @@ export default async function CulturalKnowledgeBasePage() {
           </div>
         )}
 
+        {/* Explore Filipino Dishes */}
+        <div className="mt-16 mb-16">
+          <h2 className="text-xs font-bold text-purple-700 uppercase tracking-widest mb-6">Explore Filipino Dishes</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            {[
+              { slug: 'adobo', name: 'Adobo' },
+              { slug: 'lechon', name: 'Lechon' },
+              { slug: 'sinigang', name: 'Sinigang' },
+              { slug: 'kare-kare', name: 'Kare-Kare' },
+              { slug: 'pancit', name: 'Pancit' },
+              { slug: 'lumpia', name: 'Lumpia' },
+              { slug: 'halo-halo', name: 'Halo-Halo' },
+              { slug: 'sisig', name: 'Sisig' },
+              { slug: 'ube', name: 'Ube' },
+              { slug: 'balut', name: 'Balut' },
+              { slug: 'bibingka', name: 'Bibingka' },
+              { slug: 'pan-desal', name: 'Pan de Sal' },
+              { slug: 'dinuguan', name: 'Dinuguan' },
+              { slug: 'tapsilog', name: 'Tapsilog' },
+              { slug: 'palabok', name: 'Palabok' },
+            ].map((dish) => (
+              <Link
+                key={dish.slug}
+                href={`/dishes/${dish.slug}`}
+                className="block text-center py-3 px-2 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-200 hover:text-purple-700 text-gray-700 font-medium text-sm transition-all"
+              >
+                {dish.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* CTA */}
         <div className="mt-16 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-2">Ready to Find Filipino Food Near You?</h3>
