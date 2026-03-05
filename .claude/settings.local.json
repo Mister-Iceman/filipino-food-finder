@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Bash(python -m json.tool:*)"
+      "Bash(python -m json.tool:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git diff:*)",
+      "Bash(find /c/Users/josep/Desktop/filipino-food-finder/app -name \"page.tsx\" | xargs grep -l \"submit-event\\\\|submit.*event\\\\|event.*submit\" 2>/dev/null)",
+      "Bash(cd:*)",
+      "Bash(find:*)",
+      "Bash(sed:*)",
+      "Bash(which node:*)",
+      "Bash(head:*)",
+      "Bash(cd \"C:/Users/josep/Desktop/filipino-food-finder\" && npx tsc --noEmit 2>&1)"
     ]
   }
 }

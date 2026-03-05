@@ -10,27 +10,6 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
-  const [foodCultureOpen, setFoodCultureOpen] = useState(false)
-
-  const DISHES = [
-    { slug: 'adobo',           name: 'Adobo' },
-    { slug: 'lechon',          name: 'Lechon' },
-    { slug: 'sisig',           name: 'Sisig' },
-    { slug: 'lumpia',          name: 'Lumpia' },
-    { slug: 'halo-halo',       name: 'Halo-Halo' },
-    { slug: 'pancit',          name: 'Pancit' },
-    { slug: 'sinigang',        name: 'Sinigang' },
-    { slug: 'kare-kare',       name: 'Kare-Kare' },
-    { slug: 'ube',             name: 'Ube' },
-    { slug: 'silog',           name: 'Silog' },
-    { slug: 'dinuguan',        name: 'Dinuguan' },
-    { slug: 'tapsilog',        name: 'Tapsilog' },
-    { slug: 'palabok',         name: 'Palabok' },
-    { slug: 'turon',           name: 'Turon' },
-    { slug: 'peach-mango-pie', name: 'Peach Mango Pie' },
-    { slug: 'garlic-rice',     name: 'Garlic Rice' },
-  ]
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     const q = searchValue.trim()
@@ -73,53 +52,10 @@ export default function Navigation() {
                   Guides
                 </Link>
               </li>
-              <li
-                className="relative"
-                onMouseEnter={() => setFoodCultureOpen(true)}
-                onMouseLeave={() => setFoodCultureOpen(false)}
-              >
-                <button
-                  className="flex items-center gap-1 text-gray-700 hover:text-purple-700 font-medium transition-colors whitespace-nowrap"
-                  aria-haspopup="true"
-                  aria-expanded={foodCultureOpen}
-                  onClick={() => setFoodCultureOpen(!foodCultureOpen)}
-                >
+              <li>
+                <Link href="/cultural-knowledge-base" className="text-gray-700 hover:text-purple-700 font-medium transition-colors whitespace-nowrap">
                   Food Culture
-                  <svg className={`h-3.5 w-3.5 transition-transform ${foodCultureOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {foodCultureOpen && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 p-4 w-80 z-50">
-                    <Link
-                      href="/cultural-knowledge-base"
-                      className="block text-sm font-semibold text-purple-700 hover:text-purple-900 mb-3 pb-3 border-b border-gray-100"
-                      onClick={() => setFoodCultureOpen(false)}
-                    >
-                      📚 Cultural Knowledge Base →
-                    </Link>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Browse by Dish</p>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-3">
-                      {DISHES.map((dish) => (
-                        <Link
-                          key={dish.slug}
-                          href={`/dishes/${dish.slug}`}
-                          className="text-sm text-gray-600 hover:text-purple-700 py-0.5 transition-colors"
-                          onClick={() => setFoodCultureOpen(false)}
-                        >
-                          {dish.name}
-                        </Link>
-                      ))}
-                    </div>
-                    <Link
-                      href="/dishes"
-                      className="block text-xs font-semibold text-[#0038A8] hover:text-blue-800 pt-2 border-t border-gray-100"
-                      onClick={() => setFoodCultureOpen(false)}
-                    >
-                      View All Dishes →
-                    </Link>
-                  </div>
-                )}
+                </Link>
               </li>
               <li>
                 <Link href="/newsroom" className="text-gray-700 hover:text-purple-700 font-medium transition-colors">
