@@ -14,7 +14,7 @@ const supabase = createClient(
   }
 )
 
-const DISH_INFO: Record<string, { name: string; description: string }> = {
+const DISH_INFO: Record<string, { name: string; description: string; category?: string; alsoKnownAs?: string }> = {
   adobo: {
     name: 'Adobo',
     description: 'Adobo is the unofficial national dish of the Philippines — meat braised in vinegar, soy sauce, garlic, and bay leaves until tender and deeply savory. Every family has their own version, from saucy chicken adobo to dry-style pork adobo flakes.',
@@ -79,6 +79,24 @@ const DISH_INFO: Record<string, { name: string; description: string }> = {
     name: 'Garlic Rice (Sinangag)',
     description: "Sinangag, or garlic rice, is one of the most essential staples in Filipino cuisine — day-old steamed rice stir-fried in generous amounts of golden toasted garlic until every grain is fragrant and lightly crisp. It is the backbone of the silog breakfast tradition and the perfect companion to virtually any Filipino ulam (main dish). Simple as it sounds, a well-made sinangag with its toasty garlic perfume is one of the most comforting and addictive things in all of Filipino cooking.",
   },
+  bibingka: {
+    name: 'Bibingka',
+    description: 'A traditional Filipino rice cake baked in clay pots lined with banana leaves, typically enjoyed during Christmas season and church festivals. Soft, slightly chewy, and topped with salted egg, kesong puti (white cheese), and grated coconut — bibingka is one of the most beloved holiday foods in Filipino culture.',
+    category: 'Dessert / Kakanin',
+    alsoKnownAs: 'Rice cake, Christmas cake',
+  },
+  pandesal: {
+    name: 'Pandesal',
+    description: 'The iconic Filipino bread roll — soft, slightly sweet, and dusted with breadcrumbs. Pandesal is eaten at breakfast across the Philippines and in Filipino-American households everywhere, often paired with coffee, kesong puti, or filled with everything from scrambled eggs to corned beef. It is the everyday bread of the Filipino people.',
+    category: 'Bread / Bakery',
+    alsoKnownAs: 'Pan de sal, Filipino bread roll',
+  },
+  balut: {
+    name: 'Balut',
+    description: 'A fertilized duck egg with a nearly developed embryo inside, boiled and eaten from the shell with salt, vinegar, or chili. Balut is one of the most iconic — and most talked about — Filipino street foods, beloved by locals and a rite of passage for adventurous eaters. Found at night markets, street stalls, and Filipino specialty stores across America.',
+    category: 'Street Food / Specialty',
+    alsoKnownAs: 'Fertilized duck egg, Filipino street food',
+  },
 }
 
 export function generateStaticParams() {
@@ -138,11 +156,16 @@ export default async function DishPage({
         </div>
 
         {!listings || listings.length === 0 ? (
-          <div className="bg-white rounded-xl shadow p-12 text-center">
-            <p className="text-5xl mb-4">🍽️</p>
-            <p className="text-xl text-gray-600 mb-6">No listings found for {info.name} yet.</p>
-            <Link href="/directory" className="text-blue-600 hover:underline font-medium">
-              Browse all Filipino restaurants →
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-10 text-center">
+            <p className="text-gray-700 text-lg font-medium mb-2">
+              No Filipino restaurants or businesses serving {info.name} are listed yet.
+            </p>
+            <p className="text-gray-500 mb-6">Know a spot? Help us grow the directory.</p>
+            <Link
+              href="/add-business"
+              className="inline-block bg-[#0038A8] hover:bg-[#002a80] text-white font-bold px-6 py-3 rounded-lg transition"
+            >
+              Add a Business →
             </Link>
           </div>
         ) : (
