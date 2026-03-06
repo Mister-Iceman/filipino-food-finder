@@ -61,7 +61,7 @@ export default function Footer() {
 
       <div className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-8">
 
             {/* About */}
             <div>
@@ -119,28 +119,6 @@ export default function Footer() {
                 <li><a href="/why-list-with-us" className="text-gray-400 hover:text-white transition-colors">Why List With Us</a></li>
                 <li><a href="/add-business" className="text-gray-400 hover:text-white transition-colors">Add Your Business</a></li>
                 <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Claim a Listing</a></li>
-              </ul>
-            </div>
-
-            {/* Dishes */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Dishes</h3>
-              <ul className="space-y-2 list-none">
-                <li><a href="/dishes/adobo" className="text-gray-400 hover:text-white transition-colors">Adobo</a></li>
-                <li><a href="/dishes/lechon" className="text-gray-400 hover:text-white transition-colors">Lechon</a></li>
-                <li><a href="/dishes/sinigang" className="text-gray-400 hover:text-white transition-colors">Sinigang</a></li>
-                <li><a href="/dishes/kare-kare" className="text-gray-400 hover:text-white transition-colors">Kare-Kare</a></li>
-                <li><a href="/dishes/pancit" className="text-gray-400 hover:text-white transition-colors">Pancit</a></li>
-                <li><a href="/dishes/lumpia" className="text-gray-400 hover:text-white transition-colors">Lumpia</a></li>
-                <li><a href="/dishes/halo-halo" className="text-gray-400 hover:text-white transition-colors">Halo-Halo</a></li>
-                <li><a href="/dishes/sisig" className="text-gray-400 hover:text-white transition-colors">Sisig</a></li>
-                <li><a href="/dishes/ube" className="text-gray-400 hover:text-white transition-colors">Ube</a></li>
-                <li><a href="/dishes/balut" className="text-gray-400 hover:text-white transition-colors">Balut</a></li>
-                <li><a href="/dishes/bibingka" className="text-gray-400 hover:text-white transition-colors">Bibingka</a></li>
-                <li><a href="/dishes/pan-desal" className="text-gray-400 hover:text-white transition-colors">Pan de Sal</a></li>
-                <li><a href="/dishes/dinuguan" className="text-gray-400 hover:text-white transition-colors">Dinuguan</a></li>
-                <li><a href="/dishes/tapsilog" className="text-gray-400 hover:text-white transition-colors">Tapsilog</a></li>
-                <li><a href="/dishes/palabok" className="text-gray-400 hover:text-white transition-colors">Palabok</a></li>
               </ul>
             </div>
 
