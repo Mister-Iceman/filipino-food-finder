@@ -68,3 +68,31 @@
   color: #62438D;
   text-decoration: underline;
 }
+
+/* ===== Analytics Dashboard Print Styles ===== */
+@media print {
+  .analytics-print-hidden {
+    display: none !important;
+  }
+  .analytics-print-title {
+    display: block !important;
+  }
+  nav,
+  header,
+  footer {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .bg-gray-50 {
+    background: white !important;
+  }
+  a[href]:after {
+    content: none !important;
+  }
+}
+
+.analytics-print-title {
+  display: none;
+}

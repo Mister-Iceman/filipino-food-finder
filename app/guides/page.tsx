@@ -26,7 +26,7 @@ export default async function GuidesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white py-20">
+      <div data-section="guides" className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             Guides to Filipino Food & Culture

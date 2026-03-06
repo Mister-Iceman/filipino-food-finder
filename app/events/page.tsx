@@ -95,7 +95,7 @@ export default async function EventsPage() {
         </div>
 
         {/* Upcoming Events */}
-        <section className="mb-12">
+        <section data-section="events" className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
           
           {!upcomingEvents || upcomingEvents.length === 0 ? (

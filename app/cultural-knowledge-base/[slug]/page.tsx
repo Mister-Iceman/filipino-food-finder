@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import MakeItAtHome from '../../components/MakeItAtHome'
+import ArticleReadTracker from '../../components/ArticleReadTracker'
 
 // ---------------------------------------------------------------------------
 // Affiliate links keyed by partial slug match.
@@ -77,6 +78,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="min-h-screen bg-white">
+      <ArticleReadTracker articleSlug={slug} />
       <div className="bg-gray-50 border-b border-gray-100 px-4 py-3">
         <div className="max-w-3xl mx-auto text-sm text-gray-500">
           <Link href="/" className="hover:text-purple-700">Home</Link>

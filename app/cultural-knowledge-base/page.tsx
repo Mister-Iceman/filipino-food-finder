@@ -28,7 +28,7 @@ export default async function CulturalKnowledgeBasePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26] py-16 px-4">
+      <div data-section="cultural-kb" className="bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26] py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-purple-200 text-sm font-semibold uppercase tracking-widest mb-3">FilipinoFoodNearMe.org</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Cultural Knowledge Base</h1>

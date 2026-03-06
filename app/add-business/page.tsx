@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import Link from 'next/link'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
+import { trackLeadAction } from '../../hooks/useAnalytics'
 
 export default function AddBusinessPage() {
   const [formData, setFormData] = useState({
@@ -57,6 +58,7 @@ export default function AddBusinessPage() {
       }
 
       setStatus('success')
+      try { trackLeadAction('add_business', null) } catch { /* fail silently */ }
       setCaptchaToken(null)
       setFormData({
         businessName: '',

@@ -10,7 +10,7 @@ import { createClient } from '@supabase/supabase-js'
 import AdSlot from '../components/AdSlot'
 import type { DishTag } from '../../lib/types/dish-tags'
 import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
-import { trackEvent } from '../../hooks/useAnalytics'
+import { trackEvent, trackLeadAction } from '../../hooks/useAnalytics'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -426,7 +426,7 @@ export default function DirectoryContent({ initialListings }: Props) {
         </div>
 
         {/* Search + Filter Panel */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div data-section="search" className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <form onSubmit={handleSearch}>
             <div className="grid md:grid-cols-4 gap-4 mb-4">
               <div className="md:col-span-2">
@@ -585,7 +585,7 @@ export default function DirectoryContent({ initialListings }: Props) {
 
         {!loading && paginatedListings.length > 0 && (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-section="directory" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {paginatedListings.map((listing, index) => {
                 const insight = communityInsights.get(listing.id)
 
@@ -692,7 +692,7 @@ export default function DirectoryContent({ initialListings }: Props) {
                       <div className="space-y-2 text-sm text-gray-600 mb-4">
                         <p>📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}</p>
                         {listing.phone && (
-                          <p><PhoneReveal phone={listing.phone} className="text-blue-600 hover:underline" /></p>
+                          <p><PhoneReveal phone={listing.phone} className="text-blue-600 hover:underline" listingId={listing.id} /></p>
                         )}
                         {listing.hours && <p className="text-xs">🕐 {listing.hours}</p>}
                       </div>
@@ -727,12 +727,12 @@ export default function DirectoryContent({ initialListings }: Props) {
 
                       <div className="flex gap-2">
                         {listing.google_maps_url && (
-                          <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm">
+                          <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => trackLeadAction('directions_click', listing.id)}>
                             Maps
                           </a>
                         )}
                         {listing.website && (
-                          <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center text-sm">
+                          <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => trackLeadAction('website_click', listing.id)}>
                             Website
                           </a>
                         )}

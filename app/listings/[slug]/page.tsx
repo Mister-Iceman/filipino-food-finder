@@ -8,6 +8,7 @@ import AdSlot from '../../components/AdSlot'
 import SocialShare from '../../components/SocialShare'
 import PhoneReveal from '../../components/PhoneReveal'
 import ClaimForm from '../../components/ClaimForm'
+import LeadLink from '../../components/LeadLink'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -146,7 +147,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 </p>
                 {listing.phone && (
                   <p className="text-gray-700">
-                    <PhoneReveal phone={listing.phone} className="hover:text-blue-600 underline" />
+                    <PhoneReveal phone={listing.phone} className="hover:text-blue-600 underline" listingId={listing.id} />
                   </p>
                 )}
                 {listing.hours && (
@@ -157,7 +158,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 )}
                 {listing.website && (
                   <p className="text-gray-700">
-                    🌐 <a href={listing.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Visit Website</a>
+                    🌐 <LeadLink href={listing.website} leadType="website_click" listingId={listing.id} className="text-blue-600 hover:underline">Visit Website</LeadLink>
                   </p>
                 )}
                 

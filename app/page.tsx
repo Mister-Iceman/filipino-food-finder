@@ -69,7 +69,7 @@ export default async function HomePage() {
       <WebsiteStructuredData />
       
       <header role="banner">
-        <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-red-600 to-yellow-500 text-white">
+        <section data-section="hero" className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-red-600 to-yellow-500 text-white">
           <div className="absolute inset-0 bg-black opacity-10"></div>
           <div className="relative max-w-7xl mx-auto px-4 py-24 sm:py-32">
             <div className="text-center">
@@ -123,7 +123,7 @@ export default async function HomePage() {
 
       <main role="main">
         {/* Upcoming Events / Featured Section */}
-        <section className="py-16 bg-gradient-to-br from-purple-50 to-blue-50">
+        <section data-section="events" className="py-16 bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
               <div>
@@ -454,7 +454,7 @@ export default async function HomePage() {
       <LatestNews />
         <NewsletterSignup />   
         <InstagramFeed />
-        <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-red-600 to-blue-600 text-white py-16">
+        <section data-section="add-business-cta" aria-labelledby="cta-heading" className="bg-gradient-to-r from-red-600 to-blue-600 text-white py-16">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 id="cta-heading" className="text-4xl font-bold mb-6">
               Find Your Next Favorite Filipino Spot

@@ -35,6 +35,10 @@ const ALLOWED_EVENT_TYPES = [
   'search',
   'add_business_start',
   'add_business_complete',
+  'engagement',
+  'impression',
+  'lead_action',
+  'article_read',
 ]
 
 function detectDeviceType(ua: string): string {
@@ -65,7 +69,10 @@ function getClientIp(req: NextRequest): string {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { event_type, page, referrer, search_query, listing_id, session_id } = body
+    const {
+      event_type, page, referrer, search_query, listing_id, session_id,
+      scroll_depth, active_time, total_time, section, article_slug, lead_type,
+    } = body
 
     if (!ALLOWED_EVENT_TYPES.includes(event_type)) {
       return NextResponse.json({ ok: false }, { status: 400 })
@@ -112,6 +119,12 @@ export async function POST(req: NextRequest) {
       search_query: search_query ?? null,
       listing_id: listing_id ? String(listing_id) : null,
       session_id: session_id ?? null,
+      scroll_depth: scroll_depth != null ? Number(scroll_depth) : null,
+      active_time: active_time != null ? Number(active_time) : null,
+      total_time: total_time != null ? Number(total_time) : null,
+      section: section ?? null,
+      article_slug: article_slug ?? null,
+      lead_type: lead_type ?? null,
     })
 
     return NextResponse.json({ ok: true })
