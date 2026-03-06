@@ -293,12 +293,20 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg font-bold"
-          >
-            {showForm ? 'Cancel' : '+ Add Restaurant'}
-          </button>
+          <div className="flex gap-3 flex-wrap">
+            <a
+              href="/admin/analytics"
+              className="bg-[#0038A8] hover:bg-[#002a80] text-white px-5 py-3 rounded-lg font-bold text-sm"
+            >
+              Analytics →
+            </a>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg font-bold"
+            >
+              {showForm ? 'Cancel' : '+ Add Restaurant'}
+            </button>
+          </div>
         </div>
 
         {/* Pending Claims */}

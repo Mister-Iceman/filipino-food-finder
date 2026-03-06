@@ -1,4 +1,5 @@
 import GoogleAnalytics from './components/GoogleAnalytics'
+import AnalyticsTracker from './components/AnalyticsTracker'
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Script from 'next/script'
@@ -89,6 +90,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <AnalyticsTracker />
         <Navigation />
         <main id="main-content">
           {children}

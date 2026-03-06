@@ -10,6 +10,7 @@ import { createClient } from '@supabase/supabase-js'
 import AdSlot from '../components/AdSlot'
 import type { DishTag } from '../../lib/types/dish-tags'
 import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
+import { trackEvent } from '../../hooks/useAnalytics'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -326,6 +327,9 @@ export default function DirectoryContent({ initialListings }: Props) {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    if (searchQuery.trim()) {
+      trackEvent('search', { search_query: searchQuery.trim(), page: '/directory' })
+    }
     filterAndSortListings()
   }
 
@@ -606,7 +610,7 @@ export default function DirectoryContent({ initialListings }: Props) {
                       </div>
                     )}
 
-                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow">
+                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow" onClick={() => trackEvent('listing_click', { listing_id: String(listing.id), page: '/directory' })}>
                       <Link href={`/listings/${listing.slug}`}>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer transition">
                           {listing.name}

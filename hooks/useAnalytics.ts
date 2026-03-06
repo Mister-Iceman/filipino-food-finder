@@ -1,0 +1,44 @@
+function getSessionId(): string {
+  try {
+    const key = 'ffnm_session_id'
+    let id = sessionStorage.getItem(key)
+    if (!id) {
+      id = crypto.randomUUID()
+      sessionStorage.setItem(key, id)
+    }
+    return id
+  } catch {
+    return 'unknown'
+  }
+}
+
+interface EventData {
+  page?: string
+  referrer?: string
+  search_query?: string
+  listing_id?: string | number
+}
+
+export function trackEvent(eventType: string, data: EventData = {}): void {
+  try {
+    const session_id = getSessionId()
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event_type: eventType, session_id, ...data }),
+      keepalive: true,
+    }).catch(() => {})
+  } catch {
+    // fail silently
+  }
+}
+
+export function trackPageView(): void {
+  try {
+    const page = window.location.pathname + window.location.search
+    const referrer = document.referrer || undefined
+    trackEvent('page_view', { page, referrer })
+  } catch {
+    // fail silently
+  }
+}

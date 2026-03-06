@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import SocialLinks from './SocialLinks';
+import SocialLinks from './SocialLinks'
+import { trackEvent } from '../../hooks/useAnalytics'
 
 export default function Navigation() {
   const router = useRouter()
@@ -14,6 +15,7 @@ export default function Navigation() {
     e.preventDefault()
     const q = searchValue.trim()
     if (q) {
+      trackEvent('search', { search_query: q, page: window.location.pathname })
       router.push(`/directory?q=${encodeURIComponent(q)}`)
       setMobileSearchOpen(false)
       setMobileMenuOpen(false)
