@@ -288,7 +288,7 @@ export default function AnalyticsDashboard() {
     const headers = ['event_type','page','section','referrer','device_type','browser','country','city','search_query','listing_id','article_slug','lead_type','scroll_depth','active_time','total_time','session_id','created_at']
     const rows = events.map(e =>
       headers.map(h => {
-        const val = (e as Record<string, unknown>)[h]
+        const val = (e as unknown as Record<string, unknown>)[h]
         if (val == null) return ''
         return `"${String(val).replace(/"/g, '""')}"`
       }).join(',')
