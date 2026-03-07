@@ -27,6 +27,15 @@ const stateAbbreviations: Record<string, string> = {
   'district-of-columbia': 'DC'
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ state: string; city: string }> }) {
+  const { state, city } = await params
+  return {
+    alternates: {
+      canonical: `https://filipinofoodnearme.org/${state}/${city}/`,
+    },
+  }
+}
+
 export default async function CityPage({ params }: any) {
   const { state, city } = await params
 

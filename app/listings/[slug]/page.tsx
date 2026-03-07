@@ -21,6 +21,15 @@ const supabase = createClient(
   }
 )
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  return {
+    alternates: {
+      canonical: `https://filipinofoodnearme.org/listings/${slug}/`,
+    },
+  }
+}
+
 export default async function ListingPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const { data: listing } = await supabase

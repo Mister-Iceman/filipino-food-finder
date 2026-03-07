@@ -13,7 +13,10 @@
       "Bash(sed:*)",
       "Bash(which node:*)",
       "Bash(head:*)",
-      "Bash(cd \"C:/Users/josep/Desktop/filipino-food-finder\" && npx tsc --noEmit 2>&1)"
+      "Bash(cd \"C:/Users/josep/Desktop/filipino-food-finder\" && npx tsc --noEmit 2>&1)",
+      "Bash(grep:*)",
+      "Bash(tail:*)",
+      "Bash(cd C:/Users/josep/Desktop/filipino-food-finder && npm run build 2>&12)"
     ]
   }
 }
