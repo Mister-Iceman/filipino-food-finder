@@ -133,8 +133,8 @@ export default function SupportPage() {
           <section className="border-t pt-6">
             <p className="text-sm text-gray-500">
               Questions about supporting us? Email us at{' '}
-              <a href="mailto:support@filipinofoodnearme.org" className="text-blue-600 hover:underline">
-                support@filipinofoodnearme.org
+              <a href="mailto:info@filipinofoodnearme.org" className="text-blue-600 hover:underline">
+                info@filipinofoodnearme.org
               </a>
             </p>
           </section>

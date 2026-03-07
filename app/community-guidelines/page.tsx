@@ -93,7 +93,7 @@ export default function CommunityGuidelines() {
             </p>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-gray-700">
-                <strong>Email:</strong> <a href="mailto:support@filipinofoodnearme.org" className="text-blue-600 hover:underline">support@filipinofoodnearme.org</a>
+                <strong>Email:</strong> <a href="mailto:info@filipinofoodnearme.org" className="text-blue-600 hover:underline">info@filipinofoodnearme.org</a>
               </p>
               <p className="text-gray-600 text-sm mt-2">
                 We review all reports within 24-48 hours
@@ -122,7 +122,7 @@ export default function CommunityGuidelines() {
               <strong>Last updated:</strong> February 9, 2026
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              Questions? Contact us at <a href="mailto:support@filipinofoodnearme.org" className="text-blue-600 hover:underline">support@filipinofoodnearme.org</a>
+              Questions? Contact us at <a href="mailto:info@filipinofoodnearme.org" className="text-blue-600 hover:underline">info@filipinofoodnearme.org</a>
             </p>
           </section>
         </div>
