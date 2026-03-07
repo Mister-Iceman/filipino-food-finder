@@ -96,6 +96,10 @@ const nextConfig: NextConfig = {
       // Legacy WordPress restaurant directory wildcard → /directory/
       { source: '/restaurants/united-states/:path*', destination: '/directory/', permanent: true },
 
+      // Old /states/ pattern
+      { source: '/states/:state',  destination: '/directory/', permanent: true },
+      { source: '/states/:state/', destination: '/directory/', permanent: true },
+
       // Washington D.C. city guide — old slug used state as city segment
       { source: '/washington-dc/washington-dc',  destination: '/district-of-columbia/washington/', permanent: true },
       { source: '/washington-dc/washington-dc/', destination: '/district-of-columbia/washington/', permanent: true },
@@ -119,16 +123,30 @@ const nextConfig: NextConfig = {
       { source: '/users/',          destination: '/', permanent: true },
       { source: '/user-list-item',  destination: '/', permanent: true },
       { source: '/user-list-item/', destination: '/', permanent: true },
+      { source: '/users-list-item',  destination: '/', permanent: true },
+      { source: '/users-list-item/', destination: '/', permanent: true },
+      { source: '/account-2',        destination: '/', permanent: true },
+      { source: '/account-2/',       destination: '/', permanent: true },
+      { source: '/profile-2',        destination: '/', permanent: true },
+      { source: '/profile-2/',       destination: '/', permanent: true },
+      { source: '/users-2',          destination: '/', permanent: true },
+      { source: '/users-2/',         destination: '/', permanent: true },
+      { source: '/tips-for-renting-a-house',  destination: '/', permanent: true },
+      { source: '/tips-for-renting-a-house/', destination: '/', permanent: true },
       { source: '/author/jcrb-hubspacegmail-com',  destination: '/', permanent: true },
       { source: '/author/jcrb-hubspacegmail-com/', destination: '/', permanent: true },
 
       // Old /listing/ (no s) junk URL
-      { source: '/listing/custom-carpentry-services',  destination: '/', permanent: true },
-      { source: '/listing/custom-carpentry-services/', destination: '/', permanent: true },
+      { source: '/listing/custom-carpentry-services',  destination: '/directory/', permanent: true },
+      { source: '/listing/custom-carpentry-services/', destination: '/directory/', permanent: true },
 
       // Other invalid/broken paths
-      { source: '/restaurants/category/hotels',  destination: '/directory/', permanent: true },
-      { source: '/restaurants/category/hotels/', destination: '/directory/', permanent: true },
+      { source: '/restaurants/category/hotels',    destination: '/directory/', permanent: true },
+      { source: '/restaurants/category/hotels/',   destination: '/directory/', permanent: true },
+      { source: '/restaurants/tags/restaurant',    destination: '/directory/', permanent: true },
+      { source: '/restaurants/tags/restaurant/',   destination: '/directory/', permanent: true },
+      { source: '/restaurants/tags/america',       destination: '/directory/', permanent: true },
+      { source: '/restaurants/tags/america/',      destination: '/directory/', permanent: true },
       { source: '/restaurants/tags/food',        destination: '/directory/', permanent: true },
       { source: '/restaurants/tags/food/',       destination: '/directory/', permanent: true },
       { source: '/$',                            destination: '/',           permanent: true },
