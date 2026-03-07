@@ -151,7 +151,7 @@ export default function SabawSeasonPage() {
           <p className="text-gray-700 text-base leading-relaxed m-0">
             🛒 <strong>Make It At Home:</strong> Kare-Kare is a low-and-slow showstopper. A heavy{' '}
             <a
-              href="[Insert Amazon Link]"
+              href="https://amzn.to/4cAlRtP"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
@@ -160,7 +160,7 @@ export default function SabawSeasonPage() {
             </a>
             {' '}is the ideal vessel for braising the oxtail to tender perfection. And don&rsquo;t forget to pick up authentic{' '}
             <a
-              href="[Insert Amazon Link]"
+              href="https://amzn.to/4cAlW0B"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
