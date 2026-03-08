@@ -109,6 +109,40 @@ function timeAgo(iso: string): string {
   return `${Math.floor(seconds / 86400)}d ago`
 }
 
+function isJunkPath(page: string | null | undefined): boolean {
+  return !!page && /[%\[\]$]/.test(page)
+}
+
+function toTitleCase(str: string): string {
+  return str.replace(/\b\w/g, c => c.toUpperCase())
+}
+
+function formatPagePath(path: string | null | undefined): string {
+  if (!path) return '—'
+  const junk = isJunkPath(path)
+  const prefix = junk ? '⚠️ ' : ''
+  const clean = path.replace(/\/$/, '')
+  const lc = clean.toLowerCase()
+
+  if (lc === '' || lc === '/') return 'Homepage'
+  if (lc === '/directory') return prefix + 'Directory'
+  if (lc === '/events') return prefix + 'Events'
+  if (lc === '/cultural-knowledge-base') return prefix + 'Cultural Knowledge Base'
+  if (lc === '/newsroom') return prefix + 'Newsroom'
+  if (lc === '/add-business') return prefix + 'Add Business'
+  if (lc === '/contact') return prefix + 'Contact'
+
+  if (lc.startsWith('/dishes/')) {
+    const dish = lc.replace('/dishes/', '')
+    return prefix + 'Dishes: ' + toTitleCase(dish.replace(/-/g, ' '))
+  }
+
+  // Take the last non-empty path segment, replace hyphens, title-case
+  const segments = clean.split('/').filter(Boolean)
+  const last = segments[segments.length - 1] ?? clean
+  return prefix + toTitleCase(last.replace(/-/g, ' '))
+}
+
 function CSSBarChart({ data, color = '#0038A8' }: { data: { label: string; count: number }[]; color?: string }) {
   const max = Math.max(...data.map(d => d.count), 1)
   return (
@@ -330,14 +364,15 @@ export default function AnalyticsDashboard() {
   }
 
   // ——— Derived data ———
-  const pageViews = events.filter(e => e.event_type === 'page_view')
-  const listingClicks = events.filter(e => e.event_type === 'listing_click')
-  const searches = events.filter(e => e.event_type === 'search')
-  const engagements = events.filter(e => e.event_type === 'engagement')
-  const impressions = events.filter(e => e.event_type === 'impression')
-  const leads = events.filter(e => e.event_type === 'lead_action')
-  const articleReads = events.filter(e => e.event_type === 'article_read')
-  const uniqueSessions = new Set(events.map(e => e.session_id).filter(Boolean)).size
+  const cleanEvents = events.filter(e => !isJunkPath(e.page))
+  const pageViews = cleanEvents.filter(e => e.event_type === 'page_view')
+  const listingClicks = cleanEvents.filter(e => e.event_type === 'listing_click')
+  const searches = cleanEvents.filter(e => e.event_type === 'search')
+  const engagements = cleanEvents.filter(e => e.event_type === 'engagement')
+  const impressions = cleanEvents.filter(e => e.event_type === 'impression')
+  const leads = cleanEvents.filter(e => e.event_type === 'lead_action')
+  const articleReads = cleanEvents.filter(e => e.event_type === 'article_read')
+  const uniqueSessions = new Set(cleanEvents.map(e => e.session_id).filter(Boolean)).size
 
   const topPages = topN(countBy(pageViews, e => e.page), 10)
   const topSearches = topN(countBy(searches, e => e.search_query), 10)
@@ -466,7 +501,7 @@ export default function AnalyticsDashboard() {
                 <h2 className="text-lg font-bold text-gray-800 mb-4">Top 10 Pages</h2>
                 {topPages.length === 0
                   ? <p className="text-gray-400 text-sm">No data yet.</p>
-                  : <CSSBarChart data={topPages.map(([label, count]) => ({ label: label.length > 22 ? '…' + label.slice(-20) : label, count }))} />
+                  : <CSSBarChart data={topPages.map(([label, count]) => ({ label: formatPagePath(label), count }))} />
                 }
               </div>
               {/* Device breakdown */}
@@ -537,7 +572,7 @@ export default function AnalyticsDashboard() {
                 <h3 className="text-base font-bold text-gray-700 mb-3">Avg Scroll Depth by Page</h3>
                 <DataTable
                   headers={['Page', 'Avg %', 'N']}
-                  rows={avgScrollByPage.map(([p, avg, n]) => [p.length > 20 ? '…' + p.slice(-18) : p, `${avg}%`, n])}
+                  rows={avgScrollByPage.map(([p, avg, n]) => [formatPagePath(p), `${avg}%`, n])}
                   empty="No engagement data yet."
                 />
               </div>
@@ -545,7 +580,7 @@ export default function AnalyticsDashboard() {
                 <h3 className="text-base font-bold text-gray-700 mb-3">Avg Active Time by Page</h3>
                 <DataTable
                   headers={['Page', 'Avg s', 'N']}
-                  rows={avgActiveByPage.map(([p, avg, n]) => [p.length > 20 ? '…' + p.slice(-18) : p, `${avg}s`, n])}
+                  rows={avgActiveByPage.map(([p, avg, n]) => [formatPagePath(p), `${avg}s`, n])}
                   empty="No engagement data yet."
                 />
               </div>
@@ -553,7 +588,7 @@ export default function AnalyticsDashboard() {
                 <h3 className="text-base font-bold text-gray-700 mb-3">Avg Total Time by Page</h3>
                 <DataTable
                   headers={['Page', 'Avg s', 'N']}
-                  rows={avgTotalByPage.map(([p, avg, n]) => [p.length > 20 ? '…' + p.slice(-18) : p, `${avg}s`, n])}
+                  rows={avgTotalByPage.map(([p, avg, n]) => [formatPagePath(p), `${avg}s`, n])}
                   empty="No engagement data yet."
                 />
               </div>
@@ -573,7 +608,7 @@ export default function AnalyticsDashboard() {
                 <h3 className="text-base font-bold text-gray-700 mb-3">Top Pages by Impressions</h3>
                 <DataTable
                   headers={['Page', 'Impressions']}
-                  rows={topN(countBy(impressions, e => e.page), 10).map(([p, n]) => [p.length > 28 ? '…' + p.slice(-26) : p, n])}
+                  rows={topN(countBy(impressions, e => e.page), 10).map(([p, n]) => [formatPagePath(p), n])}
                   empty="No impression data yet."
                 />
               </div>
@@ -719,7 +754,7 @@ export default function AnalyticsDashboard() {
                                 ? `[${e.section}]`
                                 : e.listing_id
                                 ? `#${e.listing_id}`
-                                : e.page?.replace(/^\/listings\//, '')?.slice(0, 30) ?? '—'
+                                : formatPagePath(e.page)
                               }
                             </td>
                             <td className="py-1.5 pr-3 text-gray-500">{e.device_type ?? '—'}</td>
