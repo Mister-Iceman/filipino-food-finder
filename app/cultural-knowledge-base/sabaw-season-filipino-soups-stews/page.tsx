@@ -114,6 +114,13 @@ export default function SabawSeasonPage() {
 
           {/* ── SECTION 1: SINIGANG ── */}
           <h2 className="mt-10 mb-4">🍋 Sinigang: The Sour Soul of Filipino Cooking</h2>
+          <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
+            <img
+              src="/images/sinigang-sour-soul.png"
+              alt="A steaming bowl of Sinigang — Filipino sour soup with pork belly and vegetables"
+              style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
           <p className="mb-6">
             If there is one dish that every Filipino household has its own version of, it is <strong>Sinigang</strong>. This beloved sour soup is a masterclass in balance — a tart, savory broth loaded with vegetables and your choice of protein, served piping hot with a mountain of white rice. Every spoonful is bright, bold, and unmistakably Filipino.
           </p>
@@ -135,6 +142,13 @@ export default function SabawSeasonPage() {
 
           {/* ── SECTION 2: KARE-KARE ── */}
           <h2 className="mt-10 mb-4">🥜 Kare-Kare: The Peanut Stew That Demands Bagoong</h2>
+          <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
+            <img
+              src="/images/kare-kare.png"
+              alt="Kare-Kare — Filipino peanut stew with oxtail, eggplant, string beans, and bagoong"
+              style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
           <p className="mb-6">
             <strong>Kare-Kare</strong> is the kind of dish that stops conversations. Its thick, golden-orange peanut sauce clings to fall-off-the-bone oxtail, tender tripe, and an assortment of vegetables — banana blossom, long beans, eggplant, and bok choy — in a way that feels almost impossibly rich. This is celebratory food, Sunday food, the stew that signals something special is happening.
           </p>
@@ -174,6 +188,13 @@ export default function SabawSeasonPage() {
         {/* ── SECTION 3: ARROZ CALDO & GOTO ── */}
         <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
           <h2 className="mt-10 mb-4">🍚 Arroz Caldo &amp; Goto: The Healing Porridge</h2>
+          <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
+            <img
+              src="/images/arrozcaldo.png"
+              alt="Arroz Caldo — Filipino rice porridge topped with toasted garlic, scallions, egg, and calamansi"
+              style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
           <p className="mb-6">
             When someone in a Filipino household is sick, the first thing that gets made is <strong>Arroz Caldo</strong>. This silky rice porridge — a cousin to Chinese congee and the Spanish arroz caldoso — is the ultimate comfort food for the unwell, the exhausted, and the homesick. Its name literally means &ldquo;broth rice&rdquo; in Spanish, a reminder of the centuries of culinary exchange baked into Filipino food.
           </p>
@@ -196,6 +217,13 @@ export default function SabawSeasonPage() {
 
           {/* ── SECTION 4: BULALO ── */}
           <h2 className="mt-10 mb-4">🦴 Bulalo: The Bone Marrow Soup of Batangas</h2>
+          <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
+            <img
+              src="/images/bulalo.png"
+              alt="Bulalo — rich Filipino beef bone marrow soup with corn, cabbage, and potatoes"
+              style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
           <p className="mb-6">
             <strong>Bulalo</strong> is simplicity elevated to an art form. This iconic Filipino beef soup requires minimal ingredients — just beef shank with the marrow bone intact, corn on the cob, cabbage, and green onions — but demands hours of patience. The long, slow simmer extracts every bit of collagen, gelatin, and rich marrow fat from the bone, producing a broth that is clear yet impossibly deep, clean yet intensely beefy.
           </p>
