@@ -21,6 +21,7 @@ const ContentSecurityPolicy = [
     "https://placehold.co",
     "https://streetviewpixels-pa.googleapis.com",
     "https://imgs.hcaptcha.com",
+    "https://upload.wikimedia.org",
   ].join(" "),
   "font-src 'self' data: https://cdnjs.cloudflare.com",
   // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API, hCaptcha, Sentry
@@ -72,6 +73,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'placehold.co' },
       { protocol: 'https', hostname: 'streetviewpixels-pa.googleapis.com' },
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
     ],
   },
 
