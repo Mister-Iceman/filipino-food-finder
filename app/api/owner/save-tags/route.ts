@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { toSlug, stateHintFromSlug } from '@/lib/listing-slug'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,12 +32,15 @@ export async function POST(req: NextRequest) {
     .maybeSingle()
 
   if (session && !session.used && new Date(session.expires_at) >= new Date()) {
-    const { data: listing } = await supabase
-      .from('listings')
-      .select('id')
-      .eq('slug', session.listing_slug)
-      .single()
-    if (listing) businessId = listing.id
+    const slugToFind = session.listing_slug
+    const stateHint = stateHintFromSlug(slugToFind)
+    const q = supabase.from('listings').select('id, name, city, state')
+    const { data: candidates } = stateHint ? await q.ilike('state', stateHint) : await q
+    const match = (candidates ?? []).find(
+      (l: { name: string; city: string; state: string }) =>
+        toSlug(l.name ?? '', l.city ?? '', l.state ?? '') === slugToFind
+    )
+    if (match) businessId = match.id
   }
 
   if (businessId === null) {

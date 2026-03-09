@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import * as brevo from '@getbrevo/brevo'
+import { toSlug, stateHintFromSlug } from '@/lib/listing-slug'
 
 const OK = NextResponse.json({ success: true })
 
@@ -20,12 +21,21 @@ export async function POST(request: NextRequest) {
   const { email, listingSlug } = body
   if (!email || !email.includes('@') || !listingSlug) return OK
 
-  // Find listing by slug
-  const { data: listing } = await supabase
+  // Find listing by reconstructing slug from name+city+state (no slug column in DB)
+  const normalizedSlug = listingSlug.toLowerCase().trim()
+  const stateHint = stateHintFromSlug(normalizedSlug)
+
+  const candidateQuery = supabase
     .from('listings')
-    .select('id, name, slug')
-    .eq('slug', listingSlug.toLowerCase().trim())
-    .single()
+    .select('id, name, city, state')
+  const { data: candidates } = stateHint
+    ? await candidateQuery.ilike('state', stateHint)
+    : await candidateQuery
+
+  const listing = (candidates ?? []).find(
+    (l: { name: string; city: string; state: string }) =>
+      toSlug(l.name ?? '', l.city ?? '', l.state ?? '') === normalizedSlug
+  ) ?? null
 
   if (!listing) return OK
 

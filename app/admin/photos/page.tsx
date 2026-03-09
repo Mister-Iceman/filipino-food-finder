@@ -3,6 +3,18 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
+function toSlug(name: string, city: string, state: string): string {
+  return `${name} ${city} ${state}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function stateHintFromSlug(slug: string): string | null {
+  const last = slug.split('-').at(-1) ?? ''
+  return /^[a-z]{2}$/.test(last) ? last.toUpperCase() : null
+}
+
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
 interface PendingPhoto {
@@ -43,17 +55,29 @@ export default function AdminPhotosPage() {
       return
     }
 
-    // Get signed URLs and listing names in parallel
+    // Get signed URLs; batch listing name lookup by state to avoid per-photo queries
+    const slugs = [...new Set(rawPhotos.map(p => p.listing_id as string))]
+    const listingNameMap: Record<string, string> = {}
+    for (const slug of slugs) {
+      const hint = stateHintFromSlug(slug)
+      const q = supabase.from('listings').select('name, city, state')
+      const { data: cands } = hint ? await q.ilike('state', hint) : await q
+      const match = (cands ?? []).find(
+        (l: { name: string; city: string; state: string }) =>
+          toSlug(l.name ?? '', l.city ?? '', l.state ?? '') === slug
+      )
+      listingNameMap[slug] = match?.name ?? slug
+    }
+
     const enriched = await Promise.all(
       rawPhotos.map(async (photo) => {
-        const [{ data: signed }, { data: listing }] = await Promise.all([
-          supabase.storage.from('listing-photos').createSignedUrl(photo.storage_path, 3600),
-          supabase.from('listings').select('name').eq('slug', photo.listing_id).single(),
-        ])
+        const { data: signed } = await supabase.storage
+          .from('listing-photos')
+          .createSignedUrl(photo.storage_path, 3600)
         return {
           ...photo,
           url: signed?.signedUrl ?? null,
-          listing_name: listing?.name ?? photo.listing_id,
+          listing_name: listingNameMap[photo.listing_id] ?? photo.listing_id,
         }
       })
     )

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import type { OwnerDashboardData } from '@/lib/types/owner'
+import { toSlug, stateHintFromSlug } from '@/lib/listing-slug'
 
 function makeSupabase() {
   return createClient(
@@ -66,11 +67,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'This link has expired. Please request a new one.' }, { status: 401 })
     }
 
-    const { data: listing } = await supabase
+    // No slug column — reconstruct slug from name+city+state and match in memory
+    const slugToFind = session.listing_slug
+    const stateHint = stateHintFromSlug(slugToFind)
+    const listingQuery = supabase
       .from('listings')
-      .select('id, name, slug, address_street, city, state, zip, category_primary, is_claimed')
-      .eq('slug', session.listing_slug)
-      .single()
+      .select('id, name, address_street, city, state, zip, category_primary, is_claimed')
+    const { data: listingCandidates } = stateHint
+      ? await listingQuery.ilike('state', stateHint)
+      : await listingQuery
+    const listing = (listingCandidates ?? []).find(
+      (l: { name: string; city: string; state: string }) =>
+        toSlug(l.name ?? '', l.city ?? '', l.state ?? '') === slugToFind
+    ) ?? null
 
     if (!listing) return NextResponse.json({ error: 'Listing not found.' }, { status: 404 })
 
@@ -97,7 +106,7 @@ export async function POST(request: NextRequest) {
       listing: {
         id: listing.id,
         name: listing.name,
-        slug: listing.slug,
+        slug: toSlug(listing.name ?? '', listing.city ?? '', listing.state ?? ''),
         address_street: listing.address_street ?? '',
         city: listing.city ?? '',
         state: listing.state ?? '',
@@ -127,7 +136,7 @@ export async function POST(request: NextRequest) {
 
   const { data: listing } = await supabase
     .from('listings')
-    .select('id, name, slug, address_street, city, state, zip, category_primary, is_claimed')
+    .select('id, name, address_street, city, state, zip, category_primary, is_claimed')
     .eq('id', owner.listing_id)
     .single()
 
@@ -146,7 +155,7 @@ export async function POST(request: NextRequest) {
     listing: {
       id: listing.id,
       name: listing.name,
-      slug: listing.slug,
+      slug: toSlug(listing.name ?? '', listing.city ?? '', listing.state ?? ''),
       address_street: listing.address_street ?? '',
       city: listing.city ?? '',
       state: listing.state ?? '',

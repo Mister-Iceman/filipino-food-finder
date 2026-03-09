@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import * as brevo from '@getbrevo/brevo'
+import { toSlug, stateHintFromSlug } from '@/lib/listing-slug'
 
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
@@ -38,14 +39,16 @@ export async function POST(request: NextRequest) {
   // Send rejection email via Brevo
   if (action === 'reject') {
     try {
-      // Get listing name for the email
-      const { data: listing } = await supabase
-        .from('listings')
-        .select('name')
-        .eq('slug', photo.listing_id)
-        .single()
-
-      const listingName = listing?.name ?? photo.listing_id
+      // Get listing name for the email (no slug column — match by name+city+state)
+      const slugToFind = photo.listing_id
+      const stateHint = stateHintFromSlug(slugToFind)
+      const q = supabase.from('listings').select('name, city, state')
+      const { data: candidates } = stateHint ? await q.ilike('state', stateHint) : await q
+      const listingMatch = (candidates ?? []).find(
+        (l: { name: string; city: string; state: string }) =>
+          toSlug(l.name ?? '', l.city ?? '', l.state ?? '') === slugToFind
+      )
+      const listingName = listingMatch?.name ?? slugToFind
 
       const apiInstance = new brevo.TransactionalEmailsApi()
       apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!)
