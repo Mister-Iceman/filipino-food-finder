@@ -6,6 +6,7 @@ import NewsletterSignup from './components/NewsletterSignup'
 import InstagramFeed from './components/InstagramFeed'
 import FeaturedArticles from './components/FeaturedArticles'
 import LatestNews from './components/LatestNews'
+import HeroImageCarousel from './components/HeroImageCarousel'
 
 export const revalidate = 3600
 
@@ -70,7 +71,7 @@ export default async function HomePage() {
       
       <header role="banner">
         <section data-section="hero" className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-red-600 to-yellow-500 text-white">
-          <div className="absolute inset-0 bg-black opacity-10"></div>
+          <HeroImageCarousel />
           <div className="relative max-w-7xl mx-auto px-4 py-24 sm:py-32">
             <div className="text-center">
               <h1 className="text-5xl sm:text-7xl font-bold mb-4 drop-shadow-lg">
