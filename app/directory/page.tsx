@@ -42,8 +42,17 @@ async function fetchAllListings() {
   return allData
 }
 
+async function fetchPhotoSlugs(): Promise<string[]> {
+  const { data } = await supabase
+    .from('listing_photos')
+    .select('listing_id')
+    .eq('status', 'approved')
+  const slugs = [...new Set((data ?? []).map((r: { listing_id: string }) => r.listing_id))]
+  return slugs
+}
+
 export default async function DirectoryPage() {
-  const listings = await fetchAllListings()
+  const [listings, photoSlugs] = await Promise.all([fetchAllListings(), fetchPhotoSlugs()])
 
   return (
     <Suspense fallback={
@@ -55,7 +64,7 @@ export default async function DirectoryPage() {
         </div>
       </div>
     }>
-      <DirectoryContent initialListings={listings} />
+      <DirectoryContent initialListings={listings} photoSlugs={photoSlugs} />
     </Suspense>
   )
 }

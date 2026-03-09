@@ -40,6 +40,7 @@ export default function AdminPage() {
   const [totalCount, setTotalCount] = useState(0)
   const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([])
   const [claimActionLoading, setClaimActionLoading] = useState<string | null>(null)
+  const [pendingPhotosCount, setPendingPhotosCount] = useState<number | null>(null)
   const [partners, setPartners] = useState<Partner[]>([])
   const [partnerActionLoading, setPartnerActionLoading] = useState<string | null>(null)
   const [showPartnerForm, setShowPartnerForm] = useState(false)
@@ -78,13 +79,23 @@ export default function AdminPage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
+  const loadPendingPhotosCount = async () => {
+    const { count } = await supabase
+      .from('listing_photos')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending')
+    setPendingPhotosCount(count ?? 0)
+  }
+
   // Initial load — fires immediately when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       loadListings()
       loadPendingClaims()
       loadPartners()
+      loadPendingPhotosCount()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated])
 
   // Debounced search — only fires when searchQuery changes after auth
@@ -294,6 +305,16 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
           <div className="flex gap-3 flex-wrap">
+            <a
+              href="/admin/photos"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-bold text-sm relative"
+            >
+              Photos{pendingPhotosCount !== null && pendingPhotosCount > 0 && (
+                <span className="ml-2 bg-white text-purple-700 text-xs font-bold px-1.5 py-0.5 rounded-full">
+                  {pendingPhotosCount}
+                </span>
+              )} →
+            </a>
             <a
               href="/admin/analytics"
               className="bg-[#0038A8] hover:bg-[#002a80] text-white px-5 py-3 rounded-lg font-bold text-sm"

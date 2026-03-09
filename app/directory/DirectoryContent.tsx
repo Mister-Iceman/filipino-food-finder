@@ -31,9 +31,11 @@ const ITEMS_PER_PAGE = 24
 
 interface Props {
   initialListings: any[]
+  photoSlugs?: string[]
 }
 
-export default function DirectoryContent({ initialListings }: Props) {
+export default function DirectoryContent({ initialListings, photoSlugs = [] }: Props) {
+  const photoSlugSet = new Set(photoSlugs)
   const searchParams = useSearchParams()
 
   const [listings] = useState<any[]>(initialListings)
@@ -621,9 +623,14 @@ export default function DirectoryContent({ initialListings }: Props) {
                         {listing.category_secondary && ` • ${listing.category_secondary}`}
                       </p>
 
-                      {listing.is_pickup_only && (
-                        <div className="mb-3">
-                          <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                      {(listing.is_pickup_only || photoSlugSet.has(listing.slug)) && (
+                        <div className="flex gap-2 flex-wrap mb-3">
+                          {listing.is_pickup_only && (
+                            <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">🛍️ Pickup & Pre-Order</span>
+                          )}
+                          {photoSlugSet.has(listing.slug) && (
+                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-1 rounded-full">📷 Photos</span>
+                          )}
                         </div>
                       )}
 

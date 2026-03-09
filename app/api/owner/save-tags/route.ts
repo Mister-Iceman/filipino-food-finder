@@ -21,18 +21,36 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing token' }, { status: 400 })
   }
 
-  // Validate token
-  const { data: owner, error: ownerError } = await supabase
-    .from('business_owners')
-    .select('listing_id')
-    .eq('dashboard_token', token)
-    .single()
+  // Validate token — try owner_sessions first, then business_owners
+  let businessId: number | null = null
 
-  if (ownerError || !owner) {
-    return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 })
+  const { data: session } = await supabase
+    .from('owner_sessions')
+    .select('listing_slug, used, expires_at')
+    .eq('token', token)
+    .maybeSingle()
+
+  if (session && !session.used && new Date(session.expires_at) >= new Date()) {
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('id')
+      .eq('slug', session.listing_slug)
+      .single()
+    if (listing) businessId = listing.id
   }
 
-  const businessId = owner.listing_id
+  if (businessId === null) {
+    const { data: owner } = await supabase
+      .from('business_owners')
+      .select('listing_id')
+      .eq('dashboard_token', token)
+      .single()
+    if (owner) businessId = owner.listing_id
+  }
+
+  if (businessId === null) {
+    return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 })
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const calls: Array<ReturnType<typeof supabase.rpc>> = []

@@ -38,6 +38,25 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     .eq('slug', slug)
     .single()
 
+  // Fetch approved photos (service role for signed URLs)
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const { data: rawPhotos } = await supabaseAdmin
+    .from('listing_photos')
+    .select('id, storage_path')
+    .eq('listing_id', slug)
+    .eq('status', 'approved')
+    .order('created_at', { ascending: true })
+  const photoUrls: string[] = []
+  for (const p of rawPhotos ?? []) {
+    const { data: signed } = await supabaseAdmin.storage
+      .from('listing-photos')
+      .createSignedUrl(p.storage_path, 3600)
+    if (signed?.signedUrl) photoUrls.push(signed.signedUrl)
+  }
+
   if (!listing) {
     // Legacy WordPress slugs not in DB get a permanent 308 redirect to the
     // directory rather than a 404. App Router page routes intercept before
@@ -193,6 +212,35 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 </div>
                 </div>
                 <ClaimForm listingId={listing.id} listingName={listing.name} />
+
+              {/* Photos gallery */}
+              {photoUrls.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-lg font-bold text-gray-900 mb-3">Photos</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {photoUrls.map((url, i) => (
+                      <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                        <img
+                          src={url}
+                          alt={`${listing.name} photo ${i + 1}`}
+                          className="w-full h-36 object-cover rounded-lg border border-gray-100 hover:opacity-90 transition-opacity"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Owner photo CTA */}
+              {listing.is_claimed && photoUrls.length === 0 && (
+                <div className="mb-6 bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-800">
+                  Is this your business?{' '}
+                  <Link href={`/owner/login?slug=${slug}`} className="font-semibold underline hover:text-blue-900">
+                    Log in to add photos →
+                  </Link>
+                </div>
+              )}
+
               <div className="bg-gray-50 border-l-4 border-gray-300 rounded-lg p-4 mb-8">
                 <p className="text-sm font-semibold text-gray-700 mb-2">Looking for something else?</p>
                 <div className="flex flex-wrap gap-2">

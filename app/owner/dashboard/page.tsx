@@ -32,6 +32,14 @@ interface UniversalTag {
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
+interface ListingPhoto {
+  id: string
+  storage_path: string
+  status: 'pending' | 'approved' | 'rejected'
+  created_at: string
+  url: string | null
+}
+
 export default function OwnerDashboardPage() {
   const [token, setToken] = useState<string | null>(null)
   const [data, setData] = useState<OwnerDashboardData | null>(null)
@@ -55,6 +63,13 @@ export default function OwnerDashboardPage() {
 
   const [dishSaveStatus, setDishSaveStatus] = useState<SaveStatus>('idle')
   const [featureSaveStatus, setFeatureSaveStatus] = useState<SaveStatus>('idle')
+
+  // Photos
+  const [photos, setPhotos] = useState<ListingPhoto[]>([])
+  const [photosLoading, setPhotosLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Step 1: Extract token from URL or localStorage (runs once on mount)
   useEffect(() => {
@@ -217,6 +232,54 @@ export default function OwnerDashboardPage() {
       setTimeout(() => setFeatureSaveStatus('idle'), 3000)
     } else {
       setFeatureSaveStatus('error')
+    }
+  }
+
+  const loadPhotos = async (tok: string) => {
+    setPhotosLoading(true)
+    const res = await fetch(`/api/owner/photos?token=${encodeURIComponent(tok)}`)
+    if (res.ok) {
+      const json = await res.json()
+      setPhotos(json.photos ?? [])
+    }
+    setPhotosLoading(false)
+  }
+
+  // Load photos whenever token and data are ready
+  useEffect(() => {
+    if (token && data) loadPhotos(token)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, data])
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !token || !data) return
+    setUploading(true)
+    setUploadError(null)
+    const form = new FormData()
+    form.append('token', token)
+    form.append('listingSlug', data.listing.slug)
+    form.append('file', file)
+    const res = await fetch('/api/owner/upload-photo', { method: 'POST', body: form })
+    const json = await res.json()
+    if (!res.ok) {
+      setUploadError(json.error ?? 'Upload failed')
+    } else {
+      await loadPhotos(token)
+    }
+    setUploading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const handleDeletePhoto = async (photoId: string) => {
+    if (!token) return
+    const res = await fetch('/api/owner/delete-photo', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, photoId }),
+    })
+    if (res.ok) {
+      setPhotos(prev => prev.filter(p => p.id !== photoId))
     }
   }
 
@@ -501,6 +564,76 @@ export default function OwnerDashboardPage() {
           >
             {saveButtonLabel(featureSaveStatus)}
           </button>
+        </div>
+
+        {/* Section 4: Photos */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-1">Your Photos</h2>
+          <p className="text-sm text-gray-500 mb-5">
+            Upload up to 5 photos of your business, food, or team. Photos are reviewed before going live.
+          </p>
+
+          {photosLoading ? (
+            <p className="text-sm text-gray-400">Loading photos…</p>
+          ) : (
+            <>
+              {photos.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+                  {photos.map(photo => (
+                    <div key={photo.id} className="relative group rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                      {photo.url ? (
+                        <img
+                          src={photo.url}
+                          alt="Business photo"
+                          className="w-full h-28 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-28 bg-gray-200 flex items-center justify-center text-gray-400 text-xs">No preview</div>
+                      )}
+                      <div className="p-2 flex items-center justify-between">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          photo.status === 'approved'
+                            ? 'bg-green-100 text-green-700'
+                            : photo.status === 'pending'
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {photo.status === 'approved' ? 'Live' : photo.status === 'pending' ? 'Under Review' : 'Rejected'}
+                        </span>
+                        <button
+                          onClick={() => handleDeletePhoto(photo.id)}
+                          className="text-xs text-red-500 hover:text-red-700 font-medium"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {photos.filter(p => p.status !== 'rejected').length < 5 ? (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Add a Photo
+                  </label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleUpload}
+                    disabled={uploading}
+                    className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">JPEG, PNG, or WebP · max 5 MB</p>
+                  {uploading && <p className="text-xs text-blue-600 mt-2">Uploading…</p>}
+                  {uploadError && <p className="text-xs text-red-600 mt-2">{uploadError}</p>}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">You&apos;ve reached the 5-photo limit. Delete a photo to upload a new one.</p>
+              )}
+            </>
+          )}
         </div>
 
         {/* Footer */}
