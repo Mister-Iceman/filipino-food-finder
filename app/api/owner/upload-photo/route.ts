@@ -1,3 +1,5 @@
+// SQL: alter table listing_photos add column if not exists caption text;
+
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import sharp from 'sharp'

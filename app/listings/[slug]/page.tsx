@@ -45,16 +45,16 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
   )
   const { data: rawPhotos } = await supabaseAdmin
     .from('listing_photos')
-    .select('id, storage_path')
+    .select('id, storage_path, caption')
     .eq('listing_id', slug)
     .eq('status', 'approved')
     .order('created_at', { ascending: true })
-  const photoUrls: string[] = []
+  const photos: { url: string; caption: string | null }[] = []
   for (const p of rawPhotos ?? []) {
     const { data: signed } = await supabaseAdmin.storage
       .from('listing-photos')
       .createSignedUrl(p.storage_path, 3600)
-    if (signed?.signedUrl) photoUrls.push(signed.signedUrl)
+    if (signed?.signedUrl) photos.push({ url: signed.signedUrl, caption: p.caption ?? null })
   }
 
   if (!listing) {
@@ -214,25 +214,30 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 <ClaimForm listingId={listing.id} listingName={listing.name} />
 
               {/* Photos gallery */}
-              {photoUrls.length > 0 && (
+              {photos.length > 0 && (
                 <div className="mb-8">
                   <h2 className="text-lg font-bold text-gray-900 mb-3">Photos</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {photoUrls.map((url, i) => (
-                      <a key={i} href={url} target="_blank" rel="noopener noreferrer">
-                        <img
-                          src={url}
-                          alt={`${listing.name} photo ${i + 1}`}
-                          className="w-full h-36 object-cover rounded-lg border border-gray-100 hover:opacity-90 transition-opacity"
-                        />
-                      </a>
+                    {photos.map((photo, i) => (
+                      <div key={i}>
+                        <a href={photo.url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={photo.url}
+                            alt={`${listing.name} photo ${i + 1}`}
+                            className="w-full h-36 object-cover rounded-lg border border-gray-100 hover:opacity-90 transition-opacity"
+                          />
+                        </a>
+                        {photo.caption && (
+                          <p className="text-xs text-gray-500 mt-1 px-0.5">{photo.caption}</p>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
               {/* Owner photo CTA */}
-              {listing.is_claimed && photoUrls.length === 0 && (
+              {listing.is_claimed && photos.length === 0 && (
                 <div className="mb-6 bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-800">
                   Is this your business?{' '}
                   <Link href={`/owner/login?slug=${slug}`} className="font-semibold underline hover:text-blue-900">

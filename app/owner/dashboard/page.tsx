@@ -38,6 +38,51 @@ interface ListingPhoto {
   status: 'pending' | 'approved' | 'rejected'
   created_at: string
   url: string | null
+  caption: string | null
+}
+
+interface PhotoSlot {
+  label: string
+  desc: string
+}
+
+function getPhotoSlots(categoryPrimary: string): PhotoSlot[] {
+  const cat = (categoryPrimary ?? '').toLowerCase()
+  if (cat.includes('bakery') || cat.includes('dessert') || cat.includes('cafe') || cat.includes('café')) {
+    return [
+      { label: 'Best-Selling Pastry', desc: 'Lead with your star item — the pandesal, ensaymada, or ube cake people come for.' },
+      { label: 'Storefront / Exterior', desc: 'Help people recognize you. Shoot during the day so your signage is legible.' },
+      { label: 'Assortment Display', desc: 'Show your full tray or display case — variety attracts walk-in customers.' },
+      { label: 'Interior / Display Case', desc: 'Help visitors picture the experience — your counter, case, or seating area.' },
+      { label: 'Baker / Team', desc: 'Put a face behind the food. Decorating in action or hands shaping dough work great.' },
+    ]
+  }
+  if (cat.includes('truck') || cat.includes('pop-up') || cat.includes('popup')) {
+    return [
+      { label: 'Truck or Cart Setup', desc: 'Show the full vehicle or setup so customers can spot you at events.' },
+      { label: 'Signature Item', desc: 'Your best-looking menu item. Make it obvious why people should wait in line.' },
+      { label: 'Food Spread', desc: 'Show your range — a combo plate or lineup of your top sellers.' },
+      { label: 'Service / Setup Shot', desc: 'Action shots from service, plating, or your setup at a market or event.' },
+      { label: 'Owner / Team', desc: 'The face behind the truck. A candid during service or prep works well.' },
+    ]
+  }
+  if (cat.includes('supermarket') || cat.includes('grocery') || cat.includes('market')) {
+    return [
+      { label: 'Storefront / Exterior', desc: 'Help shoppers find you. A clear shot with visible signage is ideal.' },
+      { label: 'Filipino Products Section', desc: 'Show the aisle or shelf that makes you distinctly Filipino.' },
+      { label: 'Product Variety', desc: 'A styled shot of products — rice bags, bagoong, vinegar, RTG packs.' },
+      { label: 'Interior / Aisle', desc: 'Help customers understand the scale — a market feel or full grocery layout.' },
+      { label: 'Owner / Team', desc: 'The people who keep the shelves stocked. A candid works great.' },
+    ]
+  }
+  // Default: Restaurant / Café
+  return [
+    { label: 'Signature Dish / Bestseller', desc: 'Your strongest food photo. One dish that says "this is what we\'re known for."' },
+    { label: 'Storefront / Exterior', desc: 'Help people recognize you when they arrive. Shoot during the day so your signage is legible.' },
+    { label: 'Food Spread / Variety', desc: 'Show your range. A bilao, kamayan set, or assortment shot works great.' },
+    { label: 'Interior / Dining Area', desc: 'Help visitors understand the vibe — turo-turo, bistro, or dining room layout.' },
+    { label: 'Owner / Team / Service Moment', desc: 'The face behind the food. A kitchen prep shot or hands wrapping lumpia works too.' },
+  ]
 }
 
 export default function OwnerDashboardPage() {
@@ -70,6 +115,8 @@ export default function OwnerDashboardPage() {
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [captions, setCaptions] = useState<Record<string, string>>({})
+  const [captionSaved, setCaptionSaved] = useState<Record<string, boolean>>({})
 
   // Step 1: Extract token from URL or localStorage (runs once on mount)
   useEffect(() => {
@@ -240,9 +287,25 @@ export default function OwnerDashboardPage() {
     const res = await fetch(`/api/owner/photos?token=${encodeURIComponent(tok)}`)
     if (res.ok) {
       const json = await res.json()
-      setPhotos(json.photos ?? [])
+      const loaded: ListingPhoto[] = json.photos ?? []
+      setPhotos(loaded)
+      const initCaptions: Record<string, string> = {}
+      loaded.forEach(p => { initCaptions[p.id] = p.caption ?? '' })
+      setCaptions(initCaptions)
     }
     setPhotosLoading(false)
+  }
+
+  const handleSaveCaption = async (photoId: string) => {
+    if (!token) return
+    const caption = (captions[photoId] ?? '').trim()
+    await fetch('/api/owner/update-caption', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, photoId, caption }),
+    })
+    setCaptionSaved(prev => ({ ...prev, [photoId]: true }))
+    setTimeout(() => setCaptionSaved(prev => ({ ...prev, [photoId]: false })), 2000)
   }
 
   // Load photos whenever token and data are ready
@@ -567,74 +630,154 @@ export default function OwnerDashboardPage() {
         </div>
 
         {/* Section 4: Photos */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-1">Your Photos</h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Upload up to 5 photos of your business, food, or team. Photos are reviewed before going live.
-          </p>
+        {(() => {
+          const slots = getPhotoSlots(listing.category_primary)
+          const activePhotos = photos.filter(p => p.status !== 'rejected')
+          const canUpload = activePhotos.length < 5
 
-          {photosLoading ? (
-            <p className="text-sm text-gray-400">Loading photos…</p>
-          ) : (
-            <>
-              {photos.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-                  {photos.map(photo => (
-                    <div key={photo.id} className="relative group rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                      {photo.url ? (
-                        <img
-                          src={photo.url}
-                          alt="Business photo"
-                          className="w-full h-28 object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-28 bg-gray-200 flex items-center justify-center text-gray-400 text-xs">No preview</div>
-                      )}
-                      <div className="p-2 flex items-center justify-between">
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                          photo.status === 'approved'
-                            ? 'bg-green-100 text-green-700'
-                            : photo.status === 'pending'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          {photo.status === 'approved' ? 'Live' : photo.status === 'pending' ? 'Under Review' : 'Rejected'}
-                        </span>
-                        <button
-                          onClick={() => handleDeletePhoto(photo.id)}
-                          className="text-xs text-red-500 hover:text-red-700 font-medium"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+          return (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Your Photos</h2>
+              <p className="text-sm text-gray-500 mb-1">
+                Up to 5 photos · reviewed before going live · your first photo is your featured image
+              </p>
+              <p className="text-xs text-gray-400 mb-6">
+                Lead with food, not your facade — a great dish photo gets more clicks than a storefront shot.
+              </p>
 
-              {photos.filter(p => p.status !== 'rejected').length < 5 ? (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Add a Photo
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleUpload}
-                    disabled={uploading}
-                    className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
-                  />
-                  <p className="text-xs text-gray-400 mt-1">JPEG, PNG, or WebP · max 5 MB</p>
-                  {uploading && <p className="text-xs text-blue-600 mt-2">Uploading…</p>}
-                  {uploadError && <p className="text-xs text-red-600 mt-2">{uploadError}</p>}
-                </div>
+              {photosLoading ? (
+                <p className="text-sm text-gray-400">Loading photos…</p>
               ) : (
-                <p className="text-sm text-gray-500">You&apos;ve reached the 5-photo limit. Delete a photo to upload a new one.</p>
+                <>
+                  {/* Photo slots */}
+                  <div className="space-y-4 mb-6">
+                    {slots.map((slot, i) => {
+                      const photo = photos.filter(p => p.status !== 'rejected')[i] ?? null
+                      const slotNum = i + 1
+
+                      return (
+                        <div key={i} className={`rounded-xl border ${photo ? 'border-gray-200 bg-white' : 'border-dashed border-gray-200 bg-gray-50'}`}>
+                          {/* Slot header */}
+                          <div className="flex items-center gap-2 px-4 pt-3 pb-1">
+                            <span className={`flex-shrink-0 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${photo ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                              {slotNum}
+                            </span>
+                            <span className="text-sm font-semibold text-gray-800">{slot.label}</span>
+                            {photo && (
+                              <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full ${
+                                photo.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                              }`}>
+                                {photo.status === 'approved' ? 'Live' : 'Under Review'}
+                              </span>
+                            )}
+                          </div>
+
+                          {photo ? (
+                            /* Filled slot */
+                            <div className="px-4 pb-4">
+                              <div className="flex gap-4 mt-2">
+                                <div className="shrink-0 w-32 h-24 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                                  {photo.url ? (
+                                    <img src={photo.url} alt={slot.label} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No preview</div>
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  {/* Caption */}
+                                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                                    Caption <span className="text-gray-400">(optional · 50 chars)</span>
+                                  </label>
+                                  <div className="flex gap-2">
+                                    <input
+                                      type="text"
+                                      maxLength={50}
+                                      value={captions[photo.id] ?? ''}
+                                      onChange={e => setCaptions(prev => ({ ...prev, [photo.id]: e.target.value }))}
+                                      placeholder={`e.g. "Our house-made ${slot.label.toLowerCase().split('/')[0].trim()}"`}
+                                      className="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-blue-400"
+                                    />
+                                    <button
+                                      onClick={() => handleSaveCaption(photo.id)}
+                                      className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                                        captionSaved[photo.id]
+                                          ? 'bg-green-100 text-green-700'
+                                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                                      }`}
+                                    >
+                                      {captionSaved[photo.id] ? '✓ Saved' : 'Save'}
+                                    </button>
+                                  </div>
+                                  <p className="text-xs text-gray-400 mt-1">
+                                    {(captions[photo.id] ?? '').length}/50 characters
+                                  </p>
+                                  <button
+                                    onClick={() => handleDeletePhoto(photo.id)}
+                                    className="text-xs text-red-500 hover:text-red-700 font-medium mt-2"
+                                  >
+                                    Delete photo
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            /* Empty slot */
+                            <div className="px-4 pb-4 pt-1">
+                              <p className="text-xs text-gray-500">{slot.desc}</p>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  {/* Upload area */}
+                  {canUpload ? (
+                    <div className="border border-dashed border-blue-200 bg-blue-50 rounded-xl p-4 mb-6">
+                      <p className="text-sm font-semibold text-blue-800 mb-2">
+                        Upload Next Photo — Slot {activePhotos.length + 1} of 5
+                      </p>
+                      <p className="text-xs text-blue-700 mb-3">
+                        <strong>{slots[activePhotos.length]?.label}</strong> — {slots[activePhotos.length]?.desc}
+                      </p>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleUpload}
+                        disabled={uploading}
+                        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 disabled:opacity-50"
+                      />
+                      <p className="text-xs text-gray-400 mt-2">JPEG, PNG, or WebP · max 5 MB</p>
+                      {uploading && <p className="text-xs text-blue-600 mt-2">Uploading…</p>}
+                      {uploadError && <p className="text-xs text-red-600 mt-2">{uploadError}</p>}
+                    </div>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+                      <p className="text-sm font-semibold text-green-800">All 5 slots filled</p>
+                      <p className="text-xs text-green-700 mt-1">Delete a photo above to replace it with a new one.</p>
+                    </div>
+                  )}
+
+                  {/* Best Practices */}
+                  <div className="border-t border-gray-100 pt-5">
+                    <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Best Practices</h3>
+                    <ul className="space-y-1.5 text-sm text-gray-600 mb-4">
+                      <li className="flex gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span> Use bright, clear, real photos of your business and food.</li>
+                      <li className="flex gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span> Natural lighting is best — avoid dark, blurry, or heavily filtered images.</li>
+                      <li className="flex gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span> Your first photo is your featured image — make it your strongest.</li>
+                      <li className="flex gap-2"><span className="text-red-400 font-bold mt-0.5">✗</span> Avoid flyers, posters, screenshots, or text-heavy menu photos.</li>
+                      <li className="flex gap-2"><span className="text-red-400 font-bold mt-0.5">✗</span> Avoid images that don&apos;t clearly represent your food or business.</li>
+                    </ul>
+                    <p className="text-xs text-gray-400 italic">
+                      Have a menu or QR code? Skip the blurry laminated photo — a clean graphic of your top sellers works much better on mobile.
+                    </p>
+                  </div>
+                </>
               )}
-            </>
-          )}
-        </div>
+            </div>
+          )
+        })()}
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 pb-4">

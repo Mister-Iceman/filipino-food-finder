@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
   const { data: photos, error } = await supabase
     .from('listing_photos')
-    .select('id, storage_path, status, created_at')
+    .select('id, storage_path, status, created_at, caption')
     .eq('listing_id', session.listingSlug)
     .order('created_at', { ascending: true })
 
