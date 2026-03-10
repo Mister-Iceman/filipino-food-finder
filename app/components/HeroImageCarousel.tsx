@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 const IMAGES = [
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Sinigang_na_baboy.jpg/1280px-Sinigang_na_baboy.jpg', alt: 'Sinigang na baboy - Filipino pork tamarind soup' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Chicken_adobo.jpg/1280px-Chicken_adobo.jpg',         alt: 'Filipino chicken adobo' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Lechon_de_leche.jpg/1280px-Lechon_de_leche.jpg',     alt: 'Filipino lechon roasted pig' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Halo-halo.jpg/1280px-Halo-halo.jpg',                 alt: 'Halo-halo Filipino dessert' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Pancit_canton.jpg/1280px-Pancit_canton.jpg',         alt: 'Pancit canton Filipino noodles' },
+  { src: '/images/hero/hero-1.png', alt: 'Sinigang na baboy - Filipino pork tamarind soup' },
+  { src: '/images/hero/hero-2.png', alt: 'Chicken adobo - Filipino braised chicken' },
+  { src: '/images/hero/hero-3.png', alt: 'Lechon kawali - Filipino crispy pork belly' },
+  { src: '/images/hero/hero-4.png', alt: 'Halo-halo - Filipino shaved ice dessert' },
+  { src: '/images/hero/hero-5.png', alt: 'Kamayan feast on banana leaves' },
+  { src: '/images/hero/hero-6.png', alt: 'Lumpia Shanghai - Filipino crispy spring rolls' },
 ]
 
 export default function HeroImageCarousel() {
