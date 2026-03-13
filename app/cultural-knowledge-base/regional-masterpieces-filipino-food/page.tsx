@@ -119,7 +119,34 @@ export default function RegionalMasterpiecesPage() {
           <p className="mb-6">
             Moving to Central Luzon, the province of Pampanga is widely recognized as the &ldquo;Culinary Capital of the Philippines.&rdquo; Pampanga is the birthplace of <strong>Sisig</strong> &mdash; originally conceived as a resourceful way to utilize boiled pig&rsquo;s head, the meat is finely chopped, grilled, and served on a sizzling cast-iron platter, dressed with calamansi juice, onions, chicken liver, and chili. Anthony Bourdain famously predicted it would take the world by storm.
           </p>
+        </div>
 
+        {/* ── AFFILIATE CALLOUT: LUZON ── */}
+        <aside className="my-8 rounded-xl bg-purple-50 border border-purple-200 p-6">
+          <p className="text-gray-700 text-base leading-relaxed m-0">
+            🛒 <strong>Make It At Home:</strong> Pinakbet and Sisig both reward the right tools. A well-seasoned{' '}
+            <a
+              href="https://amzn.to/4rt4UFq"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Carbon Steel Wok
+            </a>
+            {' '}delivers the intense, high-heat sear that gives Pinakbet its smoky depth. For crushing ginger, garlic, and aromatics the traditional way, a{' '}
+            <a
+              href="https://amzn.to/3P5nGoZ"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Granite Mortar &amp; Pestle
+            </a>
+            {' '}is indispensable.
+          </p>
+        </aside>
+
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
           {/* ── SECTION 2: VISAYAS ── */}
           <h2 className="mt-10 mb-4">🌊 Visayas: The Purity of the Sea and the Art of Roasting</h2>
           <p className="mb-6">
@@ -139,7 +166,30 @@ export default function RegionalMasterpiecesPage() {
           </p>
         </div>
 
-        {/* TODO: Add Amazon affiliate links for Carbon Steel Wok and Granite Mortar and Pestle */}
+        {/* ── AFFILIATE CALLOUT: MINDANAO ── */}
+        <aside className="my-8 rounded-xl bg-purple-50 border border-purple-200 p-6">
+          <p className="text-gray-700 text-base leading-relaxed m-0">
+            🛒 <strong>Make It At Home:</strong> Mindanao-style curries start with the right pantry staples. High-quality{' '}
+            <a
+              href="https://amzn.to/4rvV8Cq"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Turmeric Powder
+            </a>
+            {' '}gives your curry paste its golden color and earthy warmth. And always reach for{' '}
+            <a
+              href="https://amzn.to/4urZRb1"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Premium Canned Coconut Milk
+            </a>
+            {' '}&mdash; the richness of the coconut makes or breaks these slow-cooked dishes.
+          </p>
+        </aside>
 
         {/* ── CLOSING CTA ── */}
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">

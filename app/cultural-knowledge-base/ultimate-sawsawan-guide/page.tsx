@@ -131,7 +131,30 @@ export default function UltimateSawsawanGuidePage() {
           </p>
         </div>
 
-        {/* TODO: Add Amazon affiliate links for Ceramic Condiment Dipping Bowls and Filipino Coconut Vinegar */}
+        {/* ── AFFILIATE CALLOUT: SUKA ── */}
+        <aside className="my-8 rounded-xl bg-purple-50 border border-purple-200 p-6">
+          <p className="text-gray-700 text-base leading-relaxed m-0">
+            🛒 <strong>Make It At Home:</strong> Set up your own sawsawan station at home. A set of{' '}
+            <a
+              href="https://amzn.to/4saLhmU"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Ceramic Condiment Dipping Bowls
+            </a>
+            {' '}keeps your sauces neatly separated and looks beautiful on the table. Stock up on authentic{' '}
+            <a
+              href="https://amzn.to/4sJMYaL"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Filipino Coconut Vinegar / Pinakurat
+            </a>
+            {' '}&mdash; once you taste the real thing, regular vinegar won&rsquo;t cut it.
+          </p>
+        </aside>
 
         <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
 
@@ -154,7 +177,21 @@ export default function UltimateSawsawanGuidePage() {
           </p>
         </div>
 
-        {/* TODO: Add Amazon affiliate link for Jufran or UFC Banana Ketchup */}
+        {/* ── AFFILIATE CALLOUT: BANANA KETCHUP ── */}
+        <aside className="my-8 rounded-xl bg-purple-50 border border-purple-200 p-6">
+          <p className="text-gray-700 text-base leading-relaxed m-0">
+            🛒 <strong>Make It At Home:</strong> No Filipino pantry is complete without a bottle of{' '}
+            <a
+              href="https://amzn.to/4bE0Q0p"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Jufran Banana Ketchup
+            </a>
+            {' '}&mdash; the essential dipping sauce for Lumpiang Shanghai and the secret ingredient in Filipino spaghetti.
+          </p>
+        </aside>
 
         <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
 

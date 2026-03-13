@@ -120,7 +120,30 @@ export default function FilipinoSweetToothPage() {
           </p>
         </div>
 
-        {/* TODO: Add Amazon affiliate links for Electric Ice Shaver and Tall Halo-Halo Glasses */}
+        {/* ── AFFILIATE CALLOUT: HALO-HALO ── */}
+        <aside className="my-8 rounded-xl bg-purple-50 border border-purple-200 p-6">
+          <p className="text-gray-700 text-base leading-relaxed m-0">
+            🛒 <strong>Make It At Home:</strong> Halo-halo is surprisingly easy to recreate at home with the right equipment. An{' '}
+            <a
+              href="https://amzn.to/4dm24i5"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Electric Ice Shaver/Crusher
+            </a>
+            {' '}produces the perfectly fluffy, fine-shaved ice that defines the real thing. And{' '}
+            <a
+              href="https://amzn.to/4rt6zLa"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-purple-700 font-semibold underline hover:text-purple-900"
+            >
+              Tall Halo-Halo Glasses
+            </a>
+            {' '}let you show off all those gorgeous, colorful layers before you mix.
+          </p>
+        </aside>
 
         <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700">
 
