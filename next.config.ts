@@ -167,6 +167,23 @@ const nextConfig: NextConfig = {
       { source: '/feed',           destination: '/', permanent: true },
       { source: '/feed/',          destination: '/', permanent: true },
 
+      // GSC 404 cleanup — added 2026-03-13
+      { source: '/states/:state/:city*',                 destination: '/directory', permanent: true },
+      { source: '/restaurants/category/:slug*',          destination: '/directory', permanent: true },
+      { source: '/classifieds-archive-item/',            destination: '/', permanent: true },
+      { source: '/starting-a-small-business/',           destination: '/', permanent: true },
+      { source: '/contrary-to-popular-belief-lorem-ipsum-is-not-simply-random-text/', destination: '/', permanent: true },
+      { source: '/register-2/',                          destination: '/', permanent: true },
+      { source: '/aenean-sed-pulvinar-et-diam/',         destination: '/', permanent: true },
+      { source: '/register/',                            destination: '/', permanent: true },
+      { source: '/terms-and-conditions-2/',              destination: '/', permanent: true },
+      { source: '/terms-and-conditions/',                destination: '/', permanent: true },
+      { source: '/there-are-many-variations-of-passages-of-lorem-ipsum-available-but-the/', destination: '/', permanent: true },
+      { source: '/advertising-dashboard/',               destination: '/', permanent: true },
+      { source: '/orci-varius-natoque-penatibus/',       destination: '/', permanent: true },
+      { source: '/what-is-lorem-ipsum/',                 destination: '/', permanent: true },
+      { source: '/profile/',                             destination: '/', permanent: true },
+
     ];
   },
 
