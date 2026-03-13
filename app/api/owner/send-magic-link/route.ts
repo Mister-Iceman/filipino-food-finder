@@ -39,18 +39,6 @@ export async function POST(request: NextRequest) {
 
   if (!listing) return OK
 
-  // Check for an approved claim matching this listing + email
-  const { data: claim } = await supabase
-    .from('claim_requests')
-    .select('id')
-    .eq('claimant_email', email)
-    .eq('listing_name', listing.name)
-    .eq('status', 'approved')
-    .limit(1)
-    .maybeSingle()
-
-  if (!claim) return OK
-
   // Generate token + store session
   const token = crypto.randomUUID()
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
