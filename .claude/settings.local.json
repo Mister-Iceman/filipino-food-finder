@@ -18,7 +18,16 @@
       "Bash(tail:*)",
       "Bash(cd C:/Users/josep/Desktop/filipino-food-finder && npm run build 2>&12)",
       "Bash(cat:*)",
-      "Bash(cd /c/Users/josep/Desktop/filipino-food-finder && npx tsc --noEmit 2>&1)"
+      "Bash(cd /c/Users/josep/Desktop/filipino-food-finder && npx tsc --noEmit 2>&1)",
+      "WebFetch(domain:unsplash.com)",
+      "WebSearch",
+      "WebFetch(domain:images.unsplash.com)",
+      "WebFetch(domain:www.hungryhuy.com)",
+      "WebFetch(domain:outoftownblog.com)",
+      "WebFetch(domain:stories.baboo.travel)",
+      "WebFetch(domain:www.wazzup.ph)",
+      "WebFetch(domain:jocyls.com)",
+      "WebFetch(domain:www.thekitchn.com)"
     ]
   }
 }

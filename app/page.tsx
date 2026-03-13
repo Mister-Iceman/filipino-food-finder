@@ -44,6 +44,12 @@ export default async function HomePage() {
 
   const stateCount = new Set(stateRows?.map(r => r.state).filter(Boolean)).size
 
+  const { data: cityRows } = await supabase
+    .from('listings')
+    .select('city')
+
+  const cityCount = new Set(cityRows?.map(r => r.city).filter(Boolean)).size
+
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
 
@@ -111,6 +117,12 @@ export default async function HomePage() {
                 {stateCount}
               </p>
               <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">States Covered</p>
+            </div>
+            <div className="text-center px-12 py-4 sm:py-0">
+              <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
+                {cityCount}+
+              </p>
+              <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Cities</p>
             </div>
             <div className="text-center px-12 py-4 sm:py-0">
               <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
