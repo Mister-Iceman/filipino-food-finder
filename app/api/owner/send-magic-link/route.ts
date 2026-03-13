@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   const stateHint = stateHintFromSlug(normalizedSlug)
 
   const candidateQuery = supabase
-    .from('listings')
+    .from('restaurants')
     .select('id, name, city, state')
   const { data: candidates } = stateHint
     ? await candidateQuery.ilike('state', stateHint)
