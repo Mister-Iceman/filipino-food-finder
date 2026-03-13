@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react';
 
 const images = [
-  { src: '/images/hero/hero-1.png', alt: 'Filipino food' },
-  { src: '/images/hero/hero-2.png', alt: 'Filipino food' },
-  { src: '/images/hero/hero-3.png', alt: 'Filipino food' },
-  { src: '/images/hero/hero-4.png', alt: 'Filipino food' },
-  { src: '/images/hero/hero-5.png', alt: 'Filipino food' },
-  { src: '/images/hero/hero-6.png', alt: 'Filipino food' },
+  { src: '/images/hero/hero-1.jpg', alt: 'Filipino food' },
+  { src: '/images/hero/hero-2.jpg', alt: 'Filipino food' },
+  { src: '/images/hero/hero-3.jpg', alt: 'Filipino food' },
+  { src: '/images/hero/hero-4.jpg', alt: 'Filipino food' },
+  { src: '/images/hero/hero-5.jpg', alt: 'Filipino food' },
+  { src: '/images/hero/hero-6.jpg', alt: 'Filipino food' },
 ];
 
 export default function HeroImageCarousel() {
