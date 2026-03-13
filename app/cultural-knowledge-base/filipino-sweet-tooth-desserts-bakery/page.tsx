@@ -82,8 +82,8 @@ export default function FilipinoSweetToothPage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/filipino-sweet-tooth-desserts-bakery-hero.png"
-          alt="Filipino desserts — halo-halo, bibingka, pandesal, ensaymada, and kapeng barako — Beyond Ube — FilipinoFoodNearMe.org"
+          src="/images/Beyond_Ube.png"
+          alt="Beyond Ube - Filipino desserts, kakanin, and Kapeng Barako"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />
       </div>

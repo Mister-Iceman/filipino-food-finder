@@ -81,8 +81,8 @@ export default function RegionalMasterpiecesPage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/regional-masterpieces-filipino-food-hero.png"
-          alt="Regional Filipino dishes from Luzon, Visayas, and Mindanao — Sisig, Lechon Cebu, Pinapaitan, and Pyanggang Manok — FilipinoFoodNearMe.org"
+          src="/images/Regional_Masterpieces.png"
+          alt="Regional Masterpieces - Filipino food from Luzon, Visayas, and Mindanao"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />
       </div>

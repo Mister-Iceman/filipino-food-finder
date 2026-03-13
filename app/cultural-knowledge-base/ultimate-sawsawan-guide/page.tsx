@@ -81,8 +81,8 @@ export default function UltimateSawsawanGuidePage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/ultimate-sawsawan-guide-hero.png"
-          alt="Filipino sawsawan dipping sauces — vinegar, toyomansi, bagoong, banana ketchup — The Ultimate Sawsawan Guide — FilipinoFoodNearMe.org"
+          src="/images/Ultimate_Sawsawan_Guide.png"
+          alt="The Ultimate Sawsawan Guide - Filipino dipping sauces"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />
       </div>
