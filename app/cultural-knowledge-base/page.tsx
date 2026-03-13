@@ -138,7 +138,7 @@ export default async function CulturalKnowledgeBasePage() {
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
                 <img
-                  src="/images/regional-masterpieces-filipino-food-hero.png"
+                  src="/images/regional-masterpieces.jpg"
                   alt="Regional Masterpieces: Discovering Filipino Food from Pampanga to Mindanao"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -159,7 +159,7 @@ export default async function CulturalKnowledgeBasePage() {
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
                 <img
-                  src="/images/ultimate-sawsawan-guide-hero.png"
+                  src="/images/ultimate-sawsawan-guide.jpg"
                   alt="The Ultimate Sawsawan Guide: How Condiments and Dipping Sauces Define Filipino Cuisine"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -180,7 +180,7 @@ export default async function CulturalKnowledgeBasePage() {
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
                 <img
-                  src="/images/filipino-sweet-tooth-desserts-bakery-hero.png"
+                  src="/images/beyond-ube.jpg"
                   alt="Beyond Ube: The Ultimate Guide to Filipino Desserts, Kakanin, and Kapeng Barako"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
