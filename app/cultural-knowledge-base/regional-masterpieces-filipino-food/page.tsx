@@ -81,7 +81,7 @@ export default function RegionalMasterpiecesPage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/Regional_Masterpieces.png"
+          src="/images/regional-masterpieces.png"
           alt="Regional Masterpieces - Filipino food from Luzon, Visayas, and Mindanao"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />

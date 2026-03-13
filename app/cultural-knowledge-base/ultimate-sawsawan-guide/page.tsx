@@ -81,7 +81,7 @@ export default function UltimateSawsawanGuidePage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/Ultimate_Sawsawan_Guide.png"
+          src="/images/ultimate-sawsawan-guide.png"
           alt="The Ultimate Sawsawan Guide - Filipino dipping sauces"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />
