@@ -134,6 +134,69 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/regional-masterpieces-filipino-food"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/regional-masterpieces-filipino-food-hero.png"
+                  alt="Regional Masterpieces: Discovering Filipino Food from Pampanga to Mindanao"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Regional Food</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  Regional Masterpieces: Discovering Filipino Food from Pampanga to Mindanao
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  A culinary journey across Luzon, Visayas, and Mindanao &mdash; exploring the regional dishes that go far beyond adobo and pancit.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">9 min read</p>
+              </div>
+            </Link>
+
+            <Link href="/cultural-knowledge-base/ultimate-sawsawan-guide"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/ultimate-sawsawan-guide-hero.png"
+                  alt="The Ultimate Sawsawan Guide: How Condiments and Dipping Sauces Define Filipino Cuisine"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; Food</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  The Ultimate Sawsawan Guide: How Condiments and Dipping Sauces Define Filipino Cuisine
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  Discover sawsawan &mdash; the Filipino art of dipping sauces that puts flavor in the hands of the diner.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
+            <Link href="/cultural-knowledge-base/filipino-sweet-tooth-desserts-bakery"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/filipino-sweet-tooth-desserts-bakery-hero.png"
+                  alt="Beyond Ube: The Ultimate Guide to Filipino Desserts, Kakanin, and Kapeng Barako"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Desserts &amp; Bakery</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  Beyond Ube: The Ultimate Guide to Filipino Desserts, Kakanin, and Kapeng Barako
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From halo-halo to pandesal, explore the vibrant world of Filipino sweets, sticky rice cakes, and bakery culture across America.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
             {rest.map(article => (
                 <Link key={article.id} href={'/cultural-knowledge-base/' + article.slug}
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
