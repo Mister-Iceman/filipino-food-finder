@@ -11,6 +11,7 @@ import AdSlot from '../components/AdSlot'
 import type { DishTag } from '../../lib/types/dish-tags'
 import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
 import { trackEvent, trackLeadAction } from '../../hooks/useAnalytics'
+import { useTracker } from '../components/analytics/Tracker'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,6 +38,7 @@ interface Props {
 export default function DirectoryContent({ initialListings, photoSlugs = [] }: Props) {
   const photoSlugSet = new Set(photoSlugs)
   const searchParams = useSearchParams()
+  const { trackInteraction, trackSearch, trackOutbound } = useTracker()
 
   const [listings] = useState<any[]>(initialListings)
   const [filteredListings, setFilteredListings] = useState<any[]>([])
@@ -331,6 +333,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     e.preventDefault()
     if (searchQuery.trim()) {
       trackEvent('search', { search_query: searchQuery.trim(), page: '/directory' })
+      trackSearch({ query: searchQuery.trim(), filters_used: { category: categoryFilter, state: stateFilter, city: cityFilter } })
     }
     filterAndSortListings()
   }
@@ -612,7 +615,10 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
                       </div>
                     )}
 
-                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow" onClick={() => trackEvent('listing_click', { listing_id: String(listing.id), page: '/directory' })}>
+                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow" onClick={() => {
+                      trackEvent('listing_click', { listing_id: String(listing.id), page: '/directory' })
+                      trackInteraction({ interaction_type: 'listing_click', listing_id: listing.id, listing_name: listing.name, listing_category: listing.category_primary, listing_city: listing.city })
+                    }}>
                       <Link href={`/listings/${listing.slug}`}>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer transition">
                           {listing.name}
@@ -734,12 +740,12 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
 
                       <div className="flex gap-2">
                         {listing.google_maps_url && (
-                          <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => trackLeadAction('directions_click', listing.id)}>
+                          <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => { trackLeadAction('directions_click', listing.id); trackOutbound({ destination_url: listing.google_maps_url, link_type: 'directions', source_page: '/directory', listing_id: listing.id }) }}>
                             Maps
                           </a>
                         )}
                         {listing.website && (
-                          <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => trackLeadAction('website_click', listing.id)}>
+                          <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => { trackLeadAction('website_click', listing.id); trackOutbound({ destination_url: listing.website, link_type: 'website', source_page: '/directory', listing_id: listing.id }) }}>
                             Website
                           </a>
                         )}

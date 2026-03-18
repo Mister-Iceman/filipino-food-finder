@@ -495,6 +495,10 @@ export default function AnalyticsDashboard() {
   const [ga4, setGa4] = useState<GA4Data | null>(null)
   const [ga4Loading, setGa4Loading] = useState(false)
 
+  // First-party analytics
+  const [fp, setFp] = useState<Record<string, any> | null>(null)
+  const [fpLoading, setFpLoading] = useState(false)
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -524,6 +528,15 @@ export default function AnalyticsDashboard() {
     setGa4Loading(false)
   }, [])
 
+  const loadFP = useCallback(async () => {
+    setFpLoading(true)
+    try {
+      const res = await fetch('/api/admin/analytics-fp?days=30')
+      if (res.ok) setFp(await res.json())
+    } catch { /* fail silently */ }
+    setFpLoading(false)
+  }, [])
+
   const loadEvents = useCallback(async () => {
     setLoading(true)
     try {
@@ -551,6 +564,7 @@ export default function AnalyticsDashboard() {
     if (!isAuthenticated) return
     loadKPIs()
     loadGA4()
+    loadFP()
     loadEvents()
     loadLiveEvents()
   }, [isAuthenticated, loadEvents])
@@ -719,6 +733,137 @@ export default function AnalyticsDashboard() {
             <div className="col-span-6 text-center text-gray-400 text-sm py-4">Unable to load KPIs</div>
           )}
         </div>
+
+        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            SECTION A — FIRST-PARTY REAL-TIME & OVERVIEW
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+        <SectionHeading>First-Party Analytics · Last 30 Days</SectionHeading>
+        {fpLoading ? (
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+            {Array.from({ length: 5 }).map((_, i) => <div key={i} className="rounded-xl border bg-gray-50 p-5"><Skeleton h="h-4" w="w-20" /><div className="mt-2"><Skeleton h="h-8" /></div></div>)}
+          </div>
+        ) : fp ? (
+          <>
+            {/* A1 — Overview KPIs */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+              <KPICard label="Sessions (30d)" value={fp.overview?.totalSessions ?? 0} color="bg-blue-50 border-blue-200" />
+              <KPICard label="Unique Visitors" value={fp.overview?.uniqueVisitors ?? 0} color="bg-purple-50 border-purple-200" />
+              <KPICard label="New Visitors" value={fp.overview?.newVisitors ?? 0} color="bg-green-50 border-green-200" />
+              <KPICard label="Avg Session Duration" value={`${fp.overview?.avgDuration ?? 0}s`} color="bg-yellow-50 border-yellow-200" />
+              <KPICard label="Avg Pages / Session" value={fp.overview?.avgPageCount ?? '0'} color="bg-orange-50 border-orange-200"
+                badge={<span className="ml-1 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Live: {fp.realtimeSessions ?? 0} active</span>}
+              />
+            </div>
+
+            {/* A2 — Daily Sessions Chart */}
+            {fp.dailyChart?.length > 0 && (
+              <Card className="mb-6">
+                <h3 className="text-base font-semibold text-gray-700 mb-4">Daily Sessions (First-Party)</h3>
+                <div className="flex items-end gap-1 h-32">
+                  {fp.dailyChart.slice(-30).map((d: any, i: number) => {
+                    const max = Math.max(...fp.dailyChart.slice(-30).map((x: any) => x.sessions ?? 0), 1)
+                    const h = Math.round(((d.sessions ?? 0) / max) * 100)
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-1" title={`${d.date}: ${d.sessions ?? 0} sessions`}>
+                        <div className="w-full rounded-t" style={{ height: `${h}%`, backgroundColor: '#0038A8', minHeight: '2px' }} />
+                      </div>
+                    )
+                  })}
+                </div>
+                <p className="text-xs text-gray-400 mt-2 text-right">Last 30 days · First-party sessions table</p>
+              </Card>
+            )}
+
+            {/* A3 — Top Pages */}
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Top Pages (First-Party)</h3>
+                <DataTable
+                  headers={['Page', 'Views']}
+                  rows={(fp.topPages ?? []).slice(0, 10).map((p: any) => [formatPagePath(p.page), p.views])}
+                />
+              </Card>
+
+              {/* A4 — Top Entry Pages */}
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Top Entry Pages</h3>
+                <DataTable
+                  headers={['Entry Page', 'Sessions']}
+                  rows={(fp.topEntries ?? []).slice(0, 10).map((p: any) => [formatPagePath(p.page), p.count])}
+                />
+              </Card>
+            </div>
+
+            {/* A5 — Search Analytics */}
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Top Search Queries (First-Party)</h3>
+                <DataTable
+                  headers={['Query', 'Searches']}
+                  rows={(fp.topSearches ?? []).slice(0, 15).map((s: any) => [s.query, s.count])}
+                />
+              </Card>
+
+              {/* A6 — Listing Interactions */}
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Listing Interactions by Type</h3>
+                <DataTable
+                  headers={['Interaction', 'Count']}
+                  rows={(fp.interactionTypes ?? []).map((i: any) => [i.type, i.count])}
+                />
+              </Card>
+            </div>
+
+            {/* A7 — Top Listings */}
+            <Card className="mb-6">
+              <h3 className="text-base font-semibold text-gray-700 mb-3">Top Listings by Interactions</h3>
+              <DataTable
+                headers={['Listing', 'Views', 'Other Interactions']}
+                rows={(fp.topListings ?? []).slice(0, 15).map((l: any) => [l.name, l.views, l.clicks])}
+              />
+            </Card>
+
+            {/* A8 — Traffic Sources + Device + Geo */}
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Traffic Sources (First-Party)</h3>
+                <DataTable
+                  headers={['Source', 'Sessions']}
+                  rows={(fp.topReferrers ?? []).slice(0, 8).map((r: any) => [r.source, r.count])}
+                />
+              </Card>
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Device Breakdown</h3>
+                <DonutChart data={Object.entries(fp.deviceBreakdown ?? {}).sort((a, b) => (b[1] as number) - (a[1] as number)) as [string, number][]} />
+              </Card>
+              <Card>
+                <h3 className="text-base font-semibold text-gray-700 mb-3">Top Countries</h3>
+                <DataTable
+                  headers={['Country', 'Sessions']}
+                  rows={(fp.topCountries ?? []).slice(0, 8).map((c: any) => [c.country, c.count])}
+                />
+              </Card>
+            </div>
+
+            {/* A9 — Outbound Clicks */}
+            <Card className="mb-8">
+              <h3 className="text-base font-semibold text-gray-700 mb-3">Top Outbound Clicks</h3>
+              <DataTable
+                headers={['Destination', 'Type', 'Clicks']}
+                rows={(fp.topOutbound ?? []).slice(0, 15).map((o: any) => [
+                  o.url.length > 60 ? o.url.slice(0, 57) + '…' : o.url,
+                  o.type,
+                  o.count,
+                ])}
+              />
+            </Card>
+          </>
+        ) : (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
+            <p className="text-amber-800 text-sm font-medium">First-party analytics tables not yet set up.</p>
+            <p className="text-amber-700 text-xs mt-1">Run the SQL migration: <code>supabase/migrations/20260317_first_party_analytics.sql</code></p>
+          </div>
+        )}
 
         {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             SECTION 2 — TRAFFIC OVERVIEW (GA4)

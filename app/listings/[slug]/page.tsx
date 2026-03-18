@@ -9,6 +9,7 @@ import SocialShare from '../../components/SocialShare'
 import PhoneReveal from '../../components/PhoneReveal'
 import ClaimForm from '../../components/ClaimForm'
 import LeadLink from '../../components/LeadLink'
+import ListingDetailTracker from '../../components/analytics/ListingDetailTracker'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -119,6 +120,12 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <ListingDetailTracker
+        listingId={listing.id}
+        listingName={listing.name}
+        listingCategory={listing.category_primary ?? ''}
+        listingCity={listing.city ?? ''}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

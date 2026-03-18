@@ -4,8 +4,10 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { trackLeadAction } from '../../hooks/useAnalytics'
+import { useTracker } from '../components/analytics/Tracker'
 
 export default function AddBusinessPage() {
+  const { trackInteraction } = useTracker()
   const [formData, setFormData] = useState({
     businessName: '',
     categoryPrimary: '',
@@ -59,6 +61,7 @@ export default function AddBusinessPage() {
 
       setStatus('success')
       try { trackLeadAction('add_business', null) } catch { /* fail silently */ }
+      trackInteraction({ interaction_type: 'business_submitted', metadata: { category: formData.categoryPrimary, city: formData.city, state: formData.state } })
       setCaptchaToken(null)
       setFormData({
         businessName: '',
