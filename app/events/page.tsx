@@ -19,19 +19,32 @@ export default async function EventsPage() {
   // Fetch upcoming events
   const today = new Date().toISOString().split('T')[0]
   
-  const { data: upcomingEvents } = await supabase
-    .from('events')
+  const mapEvent = (e: any) => ({
+    ...e,
+    event_date: e.start_date,
+    event_time: e.start_time,
+    location_name: e.venue_name,
+    address_street: e.address,
+  })
+
+  const { data: upcomingRaw } = await supabase
+    .from('fenm_events')
     .select('*')
-    .gte('event_date', today)
-    .order('event_date', { ascending: true })
+    .eq('show_on_ffnm', true)
+    .gte('start_date', today)
+    .order('start_date', { ascending: true })
     .limit(50)
 
-  const { data: pastEvents } = await supabase
-    .from('events')
+  const { data: pastRaw } = await supabase
+    .from('fenm_events')
     .select('*')
-    .lt('event_date', today)
-    .order('event_date', { ascending: false })
+    .eq('show_on_ffnm', true)
+    .lt('start_date', today)
+    .order('start_date', { ascending: false })
     .limit(10)
+
+  const upcomingEvents = upcomingRaw?.map(mapEvent)
+  const pastEvents = pastRaw?.map(mapEvent)
 
   const categoryColors: any = {
     'festival': 'bg-purple-100 text-purple-800',

@@ -12,17 +12,20 @@ const supabase = createClient(
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   
-  const { data: event } = await supabase
-    .from('events')
+  const { data: raw } = await supabase
+    .from('fenm_events')
     .select('*')
+    .eq('show_on_ffnm', true)
     .eq('id', id)
     .single()
 
-  if (!event) {
+  if (!raw) {
     return {
       title: 'Event Not Found'
     }
   }
+
+  const event = { ...raw, event_date: raw.start_date, event_time: raw.start_time, location_name: raw.venue_name, address_street: raw.address }
 
   return {
     title: `${event.title} | Filipino Food Events`,
@@ -33,15 +36,18 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   
-  const { data: event } = await supabase
-    .from('events')
+  const { data: raw } = await supabase
+    .from('fenm_events')
     .select('*')
+    .eq('show_on_ffnm', true)
     .eq('id', id)
     .single()
 
-  if (!event) {
+  if (!raw) {
     notFound()
   }
+
+  const event = { ...raw, event_date: raw.start_date, event_time: raw.start_time, location_name: raw.venue_name, address_street: raw.address }
 
   const categoryLabels: any = {
     'festival': '🎉 Festival',

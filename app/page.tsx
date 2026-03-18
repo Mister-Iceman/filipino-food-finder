@@ -53,12 +53,21 @@ export default async function HomePage() {
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
 
-  const { data: upcomingEvents } = await supabase
-    .from('events')
+  const { data: upcomingRaw } = await supabase
+    .from('fenm_events')
     .select('*')
-    .gte('event_date', today)
-    .order('event_date', { ascending: true })
+    .eq('show_on_ffnm', true)
+    .gte('start_date', today)
+    .order('start_date', { ascending: true })
     .limit(3)
+
+  const upcomingEvents = upcomingRaw?.map((e: any) => ({
+    ...e,
+    event_date: e.start_date,
+    event_time: e.start_time,
+    location_name: e.venue_name,
+    address_street: e.address,
+  }))
 
   const formatDate = (date: string) => {
     const [year, month, day] = date.split('-').map(Number)
