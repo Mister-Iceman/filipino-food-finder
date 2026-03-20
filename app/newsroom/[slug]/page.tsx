@@ -7,7 +7,20 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export const revalidate = 3600
+export const revalidate = 86400
+
+export async function generateStaticParams() {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const { data } = await supabaseAdmin
+    .from('articles')
+    .select('slug')
+    .eq('category', 'newsroom')
+    .eq('status', 'published')
+  return (data ?? []).map(({ slug }) => ({ slug }))
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

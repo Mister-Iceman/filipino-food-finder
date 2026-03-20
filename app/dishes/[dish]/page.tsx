@@ -3,15 +3,11 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
+export const dynamic = 'force-static'
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  {
-    global: {
-      fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: 3600 } }),
-    },
-  }
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
 const DISH_INFO: Record<string, { name: string; description: string; category?: string; alsoKnownAs?: string }> = {
