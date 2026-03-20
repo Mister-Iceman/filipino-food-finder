@@ -386,7 +386,7 @@ export default function AdminPage() {
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-900">{submission.business_name}</p>
                       <p className="text-sm text-gray-700 mt-1">
-                        <span className="font-medium">{submission.category_primary}</span>
+                        <span className="font-medium">{submission.category_primary?.replace(/&amp;/g, '&')}</span>
                         {' · '}
                         {submission.city}, {submission.state}
                       </p>
