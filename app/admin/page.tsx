@@ -18,6 +18,17 @@ interface Partner {
   created_at: string
 }
 
+interface PendingSubmission {
+  id: string
+  business_name: string
+  category_primary: string
+  city: string
+  state: string
+  contact_email: string
+  website: string | null
+  created_at: string
+}
+
 interface PendingClaim {
   id: string
   listing_id: string
@@ -38,6 +49,8 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
+  const [pendingSubmissions, setPendingSubmissions] = useState<PendingSubmission[]>([])
+  const [submissionActionLoading, setSubmissionActionLoading] = useState<string | null>(null)
   const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([])
   const [claimActionLoading, setClaimActionLoading] = useState<string | null>(null)
   const [pendingPhotosCount, setPendingPhotosCount] = useState<number | null>(null)
@@ -91,6 +104,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (isAuthenticated) {
       loadListings()
+      loadPendingSubmissions()
       loadPendingClaims()
       loadPartners()
       loadPendingPhotosCount()
@@ -112,6 +126,32 @@ export default function AdminPage() {
     }, 300)
     return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
   }, [searchQuery, isAuthenticated])
+
+  const loadPendingSubmissions = async () => {
+    const res = await fetch('/api/admin/get-submissions?status=pending')
+    const json = await res.json()
+    setPendingSubmissions(json.submissions ?? [])
+  }
+
+  const handleSubmissionAction = async (id: string, action: 'approve' | 'reject') => {
+    setSubmissionActionLoading(id)
+    try {
+      const route = action === 'approve' ? '/api/admin/approve-submission' : '/api/admin/reject-submission'
+      const res = await fetch(route, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submissionId: id }),
+      })
+      if (!res.ok) {
+        const json = await res.json()
+        alert('Error: ' + (json.error ?? 'Unknown error'))
+      }
+    } catch {
+      alert('Network error processing submission.')
+    }
+    await loadPendingSubmissions()
+    setSubmissionActionLoading(null)
+  }
 
   const loadPendingClaims = async () => {
     const res = await fetch('/api/admin/get-claims/')
@@ -328,6 +368,62 @@ export default function AdminPage() {
               {showForm ? 'Cancel' : '+ Add Restaurant'}
             </button>
           </div>
+        </div>
+
+        {/* Pending Business Submissions */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold text-blue-900 mb-1">
+            Pending Business Submissions ({pendingSubmissions.length})
+          </h2>
+          <p className="text-blue-700 text-sm mb-4">Review and approve or reject new business listing submissions.</p>
+          {pendingSubmissions.length === 0 ? (
+            <p className="text-blue-600 text-sm">No pending submissions.</p>
+          ) : (
+            <div className="space-y-4">
+              {pendingSubmissions.map(submission => (
+                <div key={submission.id} className="bg-white border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-900">{submission.business_name}</p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        <span className="font-medium">{submission.category_primary}</span>
+                        {' · '}
+                        {submission.city}, {submission.state}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        <a href={`mailto:${submission.contact_email}`} className="text-blue-600 hover:underline">{submission.contact_email}</a>
+                        {submission.website && (
+                          <>
+                            {' · '}
+                            <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs">{submission.website}</a>
+                          </>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Submitted {new Date(submission.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        onClick={() => handleSubmissionAction(submission.id, 'approve')}
+                        disabled={submissionActionLoading === submission.id}
+                        className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                      >
+                        {submissionActionLoading === submission.id ? '...' : 'Approve'}
+                      </button>
+                      <button
+                        onClick={() => handleSubmissionAction(submission.id, 'reject')}
+                        disabled={submissionActionLoading === submission.id}
+                        className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-bold"
+                      >
+                        {submissionActionLoading === submission.id ? '...' : 'Reject'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Pending Claims */}
