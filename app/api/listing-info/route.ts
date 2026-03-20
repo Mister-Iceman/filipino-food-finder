@@ -16,5 +16,7 @@ export async function GET(req: NextRequest) {
     .eq('slug', slug)
     .single()
   if (error || !listing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  return NextResponse.json(listing)
+  return NextResponse.json(listing, {
+    headers: { 'Cache-Control': 's-maxage=300, stale-while-revalidate=600' },
+  })
 }
