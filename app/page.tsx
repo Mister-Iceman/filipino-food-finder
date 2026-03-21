@@ -185,16 +185,6 @@ export default async function HomePage() {
               <div className="grid md:grid-cols-3 gap-6">
                 {upcomingEvents.map((event) => (
                   <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
-                    {event.image_url && (
-                      <div className="h-40 overflow-hidden">
-                        <img
-                          src={event.image_url}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    
                     <div className="p-6">
                       {event.is_featured && (
                         <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">
