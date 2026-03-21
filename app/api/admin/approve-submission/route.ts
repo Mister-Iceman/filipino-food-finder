@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
       .insert([{
         name: submission.business_name,
         slug: slug,
-        category_primary: submission.category_primary,
-        category_secondary: submission.category_secondary,
+        category_primary: submission.category_primary?.replace(/&amp;/g, '&'),
+        category_secondary: submission.category_secondary?.replace(/&amp;/g, '&'),
         address_street: submission.address_street,
         city: submission.city,
         state: submission.state,
