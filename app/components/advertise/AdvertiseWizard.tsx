@@ -252,6 +252,295 @@ function ImageUploadSlot({
   )
 }
 
+// ── Placement preview helpers ──────────────────────────────────────────────
+
+function YourAdSlot({ label, twoLine }: { label: string; twoLine?: boolean }) {
+  return (
+    <div
+      className="rounded border-2 border-dashed flex items-center justify-center p-1.5 min-h-[48px]"
+      style={{ borderColor: '#D1880D', background: '#FFFBEB' }}
+    >
+      <span
+        className={`font-bold text-center leading-tight ${twoLine ? 'text-[9px]' : 'text-[10px]'}`}
+        style={{ color: '#D1880D' }}
+      >
+        {label}
+      </span>
+    </div>
+  )
+}
+
+function SampleCard({ name, accent }: { name: string; accent: string }) {
+  return (
+    <div className="rounded border border-gray-200 overflow-hidden">
+      <div className="h-7" style={{ background: accent, opacity: 0.85 }} />
+      <div className="px-1.5 py-1">
+        <div className="text-[9px] font-semibold text-gray-700 truncate">{name}</div>
+        <div className="w-6 h-0.5 rounded mt-0.5 bg-gray-200" />
+      </div>
+    </div>
+  )
+}
+
+function MockupTopbar({ site }: { site: 'ffnm' | 'fenm' }) {
+  const bg =
+    site === 'ffnm'
+      ? 'linear-gradient(135deg,#62438D,#92345A,#BF2F26)'
+      : 'linear-gradient(135deg,#085041,#1D9E75)'
+  return (
+    <div className="flex items-center gap-1 px-2 py-1.5" style={{ background: bg }}>
+      <div className="flex gap-0.5 mr-1">
+        <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+        <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+        <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+      </div>
+      <span className="text-[9px] font-bold text-white truncate">
+        {site === 'ffnm' ? 'FilipinoFoodNearMe.org' : 'FilipinoEventsNearMe.org'}
+      </span>
+    </div>
+  )
+}
+
+function MockupHero({
+  site,
+  page,
+}: {
+  site: 'ffnm' | 'fenm'
+  page: 'home' | 'city'
+}) {
+  if (page === 'home') {
+    const bg =
+      site === 'ffnm'
+        ? 'linear-gradient(135deg,#62438D,#BF2F26)'
+        : 'linear-gradient(135deg,#085041,#1D9E75)'
+    return (
+      <div className="px-2 py-3 flex items-center justify-center" style={{ background: bg }}>
+        <span className="text-[9px] font-bold text-white text-center">
+          {site === 'ffnm' ? 'The Filipino Food Directory' : 'Filipino Events Near You'}
+        </span>
+      </div>
+    )
+  }
+  const bgColor = site === 'ffnm' ? '#F3EEFF' : '#ECFDF5'
+  const color = site === 'ffnm' ? '#62438D' : '#085041'
+  return (
+    <div className="px-2 py-2" style={{ background: bgColor }}>
+      <div className="text-[9px] font-bold" style={{ color }}>
+        Filipino {site === 'ffnm' ? 'Food' : 'Events'} in Los Angeles
+      </div>
+      <div className="text-[8px] text-gray-400">Discover the best spots near you</div>
+    </div>
+  )
+}
+
+function MockupBody({
+  site,
+  page,
+  isMobile,
+}: {
+  site: 'ffnm' | 'fenm'
+  page: 'home' | 'city'
+  isMobile: boolean
+}) {
+  const accent = site === 'ffnm' ? '#62438D' : '#085041'
+  const adLabel = site === 'ffnm' ? 'Your ad here' : 'Your event here'
+  const stripLabel =
+    page === 'home'
+      ? site === 'ffnm'
+        ? 'Featured Businesses'
+        : 'Featured Events'
+      : site === 'ffnm'
+      ? 'Featured in Los Angeles'
+      : 'Featured Events in LA'
+  const samples =
+    site === 'ffnm'
+      ? ["Nanay Gloria's", 'Manila Sunset']
+      : ['Barrio Fiesta', 'Kapamilya Fest']
+  const cols = isMobile ? 1 : page === 'home' ? 3 : 2
+
+  return (
+    <div className="px-2 py-2 bg-gray-50">
+      {/* Featured strip */}
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-[9px] font-bold text-gray-700">{stripLabel}</span>
+        <span
+          className="text-[7px] font-bold px-1.5 py-0.5 rounded-full text-white"
+          style={{ background: accent }}
+        >
+          Sponsored
+        </span>
+      </div>
+
+      <div
+        className="grid gap-1 mb-1.5"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      >
+        <YourAdSlot label={adLabel} twoLine={cols === 3} />
+        {cols >= 2 && <SampleCard name={samples[0]} accent={accent} />}
+        {cols >= 3 && <SampleCard name={samples[1]} accent={accent} />}
+      </div>
+
+      {/* Swipe dots on mobile */}
+      {isMobile && (
+        <div className="flex justify-center gap-1 mb-1.5">
+          <div className="w-2 h-1 rounded-full" style={{ background: '#D1880D' }} />
+          <div className="w-1 h-1 rounded-full bg-gray-300" />
+          <div className="w-1 h-1 rounded-full bg-gray-300" />
+        </div>
+      )}
+
+      {/* Organic results — homepage only */}
+      {page === 'home' && (
+        <>
+          <div className="border-t border-gray-200 my-1.5" />
+          <p className="text-[7px] text-gray-400 mb-1">
+            Organic results — not affected by sponsorship
+          </p>
+          <div className="grid grid-cols-3 gap-1">
+            {[0, 1, 2].map((k) => (
+              <div key={k} className="rounded border border-gray-200 h-7 bg-white" />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+const MOCKUP_CONFIGS = [
+  {
+    label: 'Homepage placement',
+    site: 'ffnm' as const,
+    page: 'home' as const,
+    packages: 'Regional Spotlight + National Partner',
+  },
+  {
+    label: 'City page placement',
+    site: 'ffnm' as const,
+    page: 'city' as const,
+    packages: 'Local Hero + Regional Spotlight',
+  },
+  {
+    label: 'Events homepage',
+    site: 'fenm' as const,
+    page: 'home' as const,
+    packages: 'City Spotlight + Headliner',
+  },
+  {
+    label: 'City events page',
+    site: 'fenm' as const,
+    page: 'city' as const,
+    packages: 'Local Boost + City Spotlight',
+  },
+]
+
+function PlacementPreviews() {
+  const [open, setOpen] = useState(false)
+  const [mobileViews, setMobileViews] = useState([false, false, false, false])
+
+  const setView = (i: number, mobile: boolean) =>
+    setMobileViews((prev) => prev.map((v, idx) => (idx === i ? mobile : v)))
+
+  return (
+    <div className="mb-8">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left transition-all"
+        style={{
+          background: '#fff',
+          border: '1px solid #e5e7eb',
+          borderRadius: open ? '12px 12px 0 0' : '12px',
+          borderBottom: open ? '1px solid #f3f4f6' : '1px solid #e5e7eb',
+        }}
+      >
+        <span className="font-semibold text-gray-800">
+          See where your ad appears {open ? '▴' : '→'}
+        </span>
+        <span className="text-xs text-gray-400">{open ? 'Collapse' : 'Expand'}</span>
+      </button>
+
+      {open && (
+        <div
+          className="p-6"
+          style={{
+            background: '#fff',
+            border: '1px solid #e5e7eb',
+            borderTop: 'none',
+            borderRadius: '0 0 12px 12px',
+          }}
+        >
+          <p className="text-sm text-gray-500 mb-5">
+            Your featured ad appears in dedicated sponsored slots — always clearly above organic results.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {MOCKUP_CONFIGS.map((m, i) => {
+              const isMobile = mobileViews[i]
+              const accent = m.site === 'ffnm' ? '#62438D' : '#085041'
+              const siteLabel =
+                m.site === 'ffnm' ? '🍽️ FilipinoFoodNearMe.org' : '📅 FilipinoEventsNearMe.org'
+
+              return (
+                <div key={i} className="flex flex-col gap-2">
+                  {/* Header row */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                        {siteLabel}
+                      </p>
+                      <p className="text-sm font-semibold text-gray-800">{m.label}</p>
+                    </div>
+                    {/* Desktop / Mobile toggle */}
+                    <div className="flex gap-1 shrink-0 mt-0.5">
+                      {(['Desktop', 'Mobile'] as const).map((view) => {
+                        const active = view === 'Mobile' ? isMobile : !isMobile
+                        return (
+                          <button
+                            key={view}
+                            type="button"
+                            onClick={() => setView(i, view === 'Mobile')}
+                            className="text-[10px] px-2 py-1 rounded-full font-semibold border transition-all"
+                            style={{
+                              background: active ? accent : 'transparent',
+                              color: active ? '#fff' : '#6b7280',
+                              borderColor: active ? accent : '#e5e7eb',
+                            }}
+                          >
+                            {view}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Mockup frame */}
+                  <div
+                    className="rounded-xl border-2 border-gray-200 overflow-hidden shadow-sm transition-all duration-200 mx-auto w-full"
+                    style={{ maxWidth: isMobile ? '200px' : '100%' }}
+                  >
+                    <MockupTopbar site={m.site} />
+                    <MockupHero site={m.site} page={m.page} />
+                    <MockupBody site={m.site} page={m.page} isMobile={isMobile} />
+                  </div>
+
+                  {/* Package badge */}
+                  <p className="text-xs text-gray-500">
+                    <span className="font-semibold" style={{ color: accent }}>
+                      Included in:
+                    </span>{' '}
+                    {m.packages}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Main wizard ────────────────────────────────────────────────────────────
+
 export default function AdvertiseWizard() {
   const [step, setStep] = useState(1)
   const [site, setSite] = useState<Site>(null)
@@ -477,6 +766,9 @@ export default function AdvertiseWizard() {
             </div>
           )}
         </div>
+
+        {/* Placement preview */}
+        <PlacementPreviews />
 
         {/* Wizard card */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
