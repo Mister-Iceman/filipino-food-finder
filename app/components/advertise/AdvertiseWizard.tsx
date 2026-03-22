@@ -37,7 +37,7 @@ const LINK_TYPES = ['Website', 'Instagram', 'Facebook', 'TikTok', 'X (Twitter)',
 
 const OUTREACH_TEMPLATE = `Hey [name] 👋
 
-We'd love to feature [Business Name] on FilipinoFoodNearMe.org — a Filipino food directory with 1,237+ listings across all 50 states.
+We'd love to feature [Business Name] on FilipinoFoodNearMe.org — a Filipino food directory with 1,237+ listings nationwide across the U.S.
 
 Check out our quick page showing exactly how it works, what your featured ad looks like, and our current Founding Advertiser pricing (30% off, locked in for life):
 
@@ -256,7 +256,7 @@ function ImageUploadSlot({
 
 const STATS = [
   { icon: '🍽️', number: '1,237+', label: 'Filipino food businesses listed' },
-  { icon: '🗺️', number: '50',     label: 'States covered' },
+  { icon: '🗺️', number: '34',     label: 'States with listings' },
   { icon: '📍', number: '423+',   label: 'Cities represented' },
   { icon: '👥', number: '4.2M+',  label: 'Filipino-Americans in the U.S.' },
 ]
@@ -295,7 +295,7 @@ function WhyAdvertise() {
         </h2>
         <p className="text-sm text-gray-500 max-w-lg mx-auto">
           FilipinoFoodNearMe.org is the only nationwide Filipino food directory built community-first.
-          1,237+ businesses. All 50 states. Zero pay-to-rank.
+          1,237+ businesses. Nationwide coverage across the U.S. Zero pay-to-rank.
         </p>
       </div>
 
