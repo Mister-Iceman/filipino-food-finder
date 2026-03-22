@@ -35,15 +35,6 @@ const IMAGE_SLOTS = [
 
 const LINK_TYPES = ['Website', 'Instagram', 'Facebook', 'TikTok', 'X (Twitter)', 'Ticket link'] as const
 
-const OUTREACH_TEMPLATE = `Hey [name] 👋
-
-We'd love to feature [Business Name] on FilipinoFoodNearMe.org — a Filipino food directory with 1,237+ listings nationwide across the U.S.
-
-Check out our quick page showing exactly how it works, what your featured ad looks like, and our current Founding Advertiser pricing (30% off, locked in for life):
-
-filipinofoodnearme.org/advertise
-
-Takes 5 minutes to set up, no commitment, no sales call needed. Salamat! 🙏`
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -677,9 +668,6 @@ export default function AdvertiseWizard() {
   const [contactPhone, setContactPhone] = useState('')
 
   // UI state
-  const [copied, setCopied] = useState(false)
-  const [templateOpen, setTemplateOpen] = useState(false)
-  const [templateCopied, setTemplateCopied] = useState(false)
   const [stepError, setStepError] = useState('')
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
@@ -691,17 +679,6 @@ export default function AdvertiseWizard() {
     isBundle
   )
 
-  const copyLink = async () => {
-    await navigator.clipboard.writeText('https://filipinofoodnearme.org/advertise')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const copyTemplate = async () => {
-    await navigator.clipboard.writeText(OUTREACH_TEMPLATE)
-    setTemplateCopied(true)
-    setTimeout(() => setTemplateCopied(false), 2000)
-  }
 
   const validate = () => {
     if (step === 1 && !site) {
@@ -834,42 +811,6 @@ export default function AdvertiseWizard() {
           <p className="font-semibold text-sm" style={{ color: '#FEF3C7' }}>
             🏅 Founding Advertiser Pricing — 30% off, locked in for life as long as your subscription stays active. Available for early supporters only.
           </p>
-        </div>
-
-        {/* Share bar */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 mb-8 flex flex-col gap-3">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm text-gray-600 font-mono flex-1 min-w-0 truncate">
-              filipinofoodnearme.org/advertise
-            </span>
-            <button
-              onClick={copyLink}
-              className="text-sm font-semibold px-4 py-1.5 rounded-full border-2 transition-all"
-              style={{ borderColor: '#62438D', color: copied ? '#fff' : '#62438D', background: copied ? '#62438D' : 'transparent' }}
-            >
-              {copied ? 'Copied!' : 'Copy link'}
-            </button>
-            <button
-              onClick={() => setTemplateOpen(!templateOpen)}
-              className="text-sm font-semibold"
-              style={{ color: '#62438D' }}
-            >
-              Get outreach template {templateOpen ? '▴' : '▾'}
-            </button>
-          </div>
-
-          {templateOpen && (
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <pre className="text-xs text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">{OUTREACH_TEMPLATE}</pre>
-              <button
-                onClick={copyTemplate}
-                className="mt-3 text-sm font-semibold px-4 py-1.5 rounded-full border-2 transition-all"
-                style={{ borderColor: '#62438D', color: templateCopied ? '#fff' : '#62438D', background: templateCopied ? '#62438D' : 'transparent' }}
-              >
-                {templateCopied ? 'Copied!' : 'Copy template'}
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Why advertise */}

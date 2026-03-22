@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import AdSubmissionsTable from './AdSubmissionsTable'
+import OutreachTools from './OutreachTools'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -44,6 +45,7 @@ export default async function AdminAdsPage() {
           </div>
         </div>
 
+        <OutreachTools />
         <AdSubmissionsTable submissions={rows} />
       </div>
     </div>
