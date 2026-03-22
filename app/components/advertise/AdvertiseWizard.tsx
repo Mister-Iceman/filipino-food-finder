@@ -252,6 +252,88 @@ function ImageUploadSlot({
   )
 }
 
+// ── Why advertise section ──────────────────────────────────────────────────
+
+const STATS = [
+  { icon: '🍽️', number: '1,237+', label: 'Filipino food businesses listed' },
+  { icon: '🗺️', number: '50',     label: 'States covered' },
+  { icon: '📍', number: '423+',   label: 'Cities represented' },
+  { icon: '👥', number: '4.2M+',  label: 'Filipino-Americans in the U.S.' },
+]
+
+const VALUE_PROPS = [
+  {
+    icon: '🎯',
+    title: 'Highly intentional audience',
+    body: 'People who visit FilipinoFoodNearMe.org are actively searching for Filipino food — not passively scrolling. Your ad reaches people ready to eat, visit, and spend.',
+  },
+  {
+    icon: '🏘️',
+    title: 'Community-first, not pay-to-rank',
+    body: 'Your free listing stays in the organic directory regardless. Featured placement is optional promotion — never a penalty for not paying. Community trust is our most valuable asset.',
+  },
+  {
+    icon: '📊',
+    title: 'Full transparency',
+    body: 'Every ad run includes a delivery report: impressions, clicks, CTR, and a screenshot of your live placement. Plus automatic UTM tracking so you can measure results in your own analytics.',
+  },
+]
+
+function WhyAdvertise() {
+  return (
+    <div className="mb-8">
+      {/* Section header */}
+      <div className="text-center mb-6">
+        <span
+          className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
+          style={{ background: '#FEF3C7', color: '#D1880D' }}
+        >
+          Why advertise with us
+        </span>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">
+          The most focused Filipino food audience in America
+        </h2>
+        <p className="text-sm text-gray-500 max-w-lg mx-auto">
+          FilipinoFoodNearMe.org is the only nationwide Filipino food directory built community-first.
+          1,237+ businesses. All 50 states. Zero pay-to-rank.
+        </p>
+      </div>
+
+      {/* Stats grid — 2×2 mobile, 4-col desktop */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        {STATS.map((s) => (
+          <div
+            key={s.label}
+            className="bg-white border border-gray-200 rounded-xl p-4 text-center"
+          >
+            <div className="text-2xl mb-1">{s.icon}</div>
+            <div className="text-2xl font-semibold mb-0.5" style={{ color: '#62438D' }}>
+              {s.number}
+            </div>
+            <div className="text-xs text-gray-500 leading-tight">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Value props — stacked mobile, 3-col desktop */}
+      <div className="grid md:grid-cols-3 gap-3">
+        {VALUE_PROPS.map((v) => (
+          <div
+            key={v.title}
+            className="bg-white border border-gray-200 rounded-xl p-5"
+            style={{ borderLeft: '3px solid #62438D' }}
+          >
+            <p className="font-bold text-gray-900 mb-2">
+              {v.icon} {v.title}
+            </p>
+            <p className="text-sm text-gray-500 leading-relaxed">{v.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Placement preview helpers ──────────────────────────────────────────────
 
 function YourAdSlot({ label, twoLine }: { label: string; twoLine?: boolean }) {
@@ -789,6 +871,9 @@ export default function AdvertiseWizard() {
             </div>
           )}
         </div>
+
+        {/* Why advertise */}
+        <WhyAdvertise />
 
         {/* Placement preview */}
         <PlacementPreviews />
