@@ -282,11 +282,11 @@ function WhyAdvertise() {
           Why advertise with us
         </span>
         <h2 className="text-xl font-bold text-gray-900 mb-2">
-          The most focused Filipino food audience in America
+          The most trusted Filipino-American platform in the U.S.
         </h2>
         <p className="text-sm text-gray-500 max-w-lg mx-auto">
-          FilipinoFoodNearMe.org is the only nationwide Filipino food directory built community-first.
-          1,237+ businesses. Nationwide coverage across the U.S. Zero pay-to-rank.
+          The FilAm Network connects Filipino-Americans to food, events, and culture across the U.S. — through
+          FilipinoFoodNearMe.org and FilipinoEventsNearMe.org. 1,237+ food businesses. 64+ events. Community-built. Zero pay-to-rank.
         </p>
       </div>
 
