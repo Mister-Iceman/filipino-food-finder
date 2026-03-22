@@ -70,6 +70,11 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
+                <Link href="/advertise" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                  Advertise
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
                   About
                 </Link>
@@ -213,6 +218,11 @@ export default function Navigation() {
               <li>
                 <Link href="/events" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   Events
+                </Link>
+              </li>
+              <li>
+                <Link href="/advertise" className="block text-gray-700 hover:text-red-600 hover:bg-gray-50 px-4 py-2 rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  Advertise
                 </Link>
               </li>
               <li>
