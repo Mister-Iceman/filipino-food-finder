@@ -22,6 +22,7 @@ const ContentSecurityPolicy = [
     "https://streetviewpixels-pa.googleapis.com",
     "https://imgs.hcaptcha.com",
     "https://upload.wikimedia.org",
+    "https://res.cloudinary.com",
   ].join(" "),
   "font-src 'self' data: https://cdnjs.cloudflare.com",
   // API / WebSocket connections: Supabase REST + Realtime, Google Maps JS API, hCaptcha, Sentry
@@ -35,6 +36,8 @@ const ContentSecurityPolicy = [
     "https://www.googletagmanager.com",
     "https://*.ingest.sentry.io",
     "https://*.ingest.us.sentry.io",
+    "https://api.cloudinary.com",
+    "https://res.cloudinary.com",
   ].join(" "),
   // hCaptcha renders its challenge inside an iframe on newassets.hcaptcha.com
   "frame-src https://newassets.hcaptcha.com",
