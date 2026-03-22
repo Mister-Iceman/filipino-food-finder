@@ -33,7 +33,7 @@ const IMAGE_SLOTS = [
   },
 ]
 
-const LINK_TYPES = ['Website', 'Instagram', 'Facebook', 'Ticket link'] as const
+const LINK_TYPES = ['Website', 'Instagram', 'Facebook', 'TikTok', 'X (Twitter)', 'Ticket link'] as const
 
 const OUTREACH_TEMPLATE = `Hey [name] 👋
 
@@ -47,6 +47,18 @@ Takes 5 minutes to set up, no commitment, no sales call needed. Salamat! 🙏`
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+const GEO_HINTS_FFNM: Record<string, string> = {
+  local: 'Enter your city and state — e.g. Los Angeles, CA or Daly City, CA',
+  regional: 'Enter your state or up to 3 cities — e.g. California or Los Angeles, San Diego, Riverside',
+  national: 'Leave blank for nationwide coverage, or enter target regions — e.g. West Coast, Texas, East Coast',
+}
+
+const GEO_HINTS_FENM: Record<string, string> = {
+  boost: 'Enter your event city and state — e.g. Los Angeles, CA',
+  spotlight: 'Enter your state or region — e.g. California or Pacific Northwest',
+  headliner: 'Leave blank for nationwide, or enter target regions',
 }
 
 function StepIndicator({ step }: { step: number }) {
@@ -128,13 +140,46 @@ function PackageCard({
   )
 }
 
+async function uploadToCloudinary(file: File, slotIndex: number): Promise<{ url?: string; error?: string }> {
+  const maxSize = slotIndex === 3 ? 5 * 1024 * 1024 : 2 * 1024 * 1024
+  if (file.size > maxSize) {
+    return { error: `File too large. Max ${slotIndex === 3 ? '5MB' : '2MB'}.` }
+  }
+  const allowed = slotIndex === 3
+    ? ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+    : ['image/jpeg', 'image/png', 'image/webp']
+  if (!allowed.includes(file.type)) {
+    return { error: 'Invalid file type.' }
+  }
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'ffnm_ads')
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/dwpbqhyrm/upload',
+      { method: 'POST', body: formData }
+    )
+    const data = await res.json()
+    if (data.error) {
+      console.error('Cloudinary error:', data.error)
+      return { error: data.error.message }
+    }
+    return { url: data.secure_url }
+  } catch (err) {
+    console.error('Upload exception:', err)
+    return { error: 'Upload failed. Please try again.' }
+  }
+}
+
 function ImageUploadSlot({
   slot,
+  slotIndex,
   url,
   onUpload,
   onRemove,
 }: {
   slot: typeof IMAGE_SLOTS[0]
+  slotIndex: number
   url: string
   onUpload: (url: string) => void
   onRemove: () => void
@@ -147,52 +192,15 @@ function ImageUploadSlot({
     const file = e.target.files?.[0]
     if (!file) return
     setError('')
-
-    // File type validation
-    const isPdf = file.type === 'application/pdf'
-    const isImage = file.type.startsWith('image/')
-    const allowsPdf = slot.accept.includes('application/pdf')
-    if (!isImage && !(isPdf && allowsPdf)) {
-      setError(`Invalid file type. Accepted: ${slot.accept.replace('application/pdf', 'PDF').replace('image/jpeg,image/png', 'JPG or PNG')}`)
-      if (inputRef.current) inputRef.current.value = ''
-      return
-    }
-
-    // File size validation
-    const maxBytes = slot.maxMB * 1024 * 1024
-    if (file.size > maxBytes) {
-      setError(`File too large. Max size is ${slot.maxMB}MB (this file is ${(file.size / 1024 / 1024).toFixed(1)}MB).`)
-      if (inputRef.current) inputRef.current.value = ''
-      return
-    }
-
     setUploading(true)
-
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('upload_preset', 'ffnm_ads')
-
-      const uploadUrl = 'https://api.cloudinary.com/v1_1/dwpbqhyrm/upload'
-
-      const res = await fetch(uploadUrl, { method: 'POST', body: formData })
-      const data = await res.json()
-
-      if (!res.ok || !data.secure_url) {
-        console.error('Cloudinary upload error:', JSON.stringify(data, null, 2))
-        const msg = data?.error?.message || `Upload failed (HTTP ${res.status})`
-        throw new Error(msg)
-      }
-
-      onUpload(data.secure_url as string)
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Upload failed, please try again'
-      console.error('Cloudinary upload exception:', err)
-      setError(msg)
-    } finally {
-      setUploading(false)
-      if (inputRef.current) inputRef.current.value = ''
+    const result = await uploadToCloudinary(file, slotIndex)
+    if (result.error) {
+      setError(result.error)
+    } else if (result.url) {
+      onUpload(result.url)
     }
+    setUploading(false)
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   return (
@@ -717,6 +725,7 @@ export default function AdvertiseWizard() {
                         <ImageUploadSlot
                           key={i}
                           slot={slot}
+                          slotIndex={i}
                           url={imagesFfnm[i]}
                           onUpload={(url) => updateImageFfnm(i, url)}
                           onRemove={() => updateImageFfnm(i, '')}
@@ -799,6 +808,7 @@ export default function AdvertiseWizard() {
                           <ImageUploadSlot
                             key={i}
                             slot={slot}
+                            slotIndex={i}
                             url={imagesFenm[i]}
                             onUpload={(url) => updateImageFenm(i, url)}
                             onRemove={() => updateImageFenm(i, '')}
@@ -879,6 +889,9 @@ export default function AdvertiseWizard() {
                       placeholder="e.g. Los Angeles, CA"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
                     />
+                    {selectedFfnm && GEO_HINTS_FFNM[selectedFfnm.val] && (
+                      <p className="text-xs text-gray-400 mt-1">{GEO_HINTS_FFNM[selectedFfnm.val]}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -937,6 +950,9 @@ export default function AdvertiseWizard() {
                       placeholder="e.g. San Francisco Bay Area"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                     />
+                    {selectedFenm && GEO_HINTS_FENM[selectedFenm.val] && (
+                      <p className="text-xs text-gray-400 mt-1">{GEO_HINTS_FENM[selectedFenm.val]}</p>
+                    )}
                   </div>
                 </div>
               )}
