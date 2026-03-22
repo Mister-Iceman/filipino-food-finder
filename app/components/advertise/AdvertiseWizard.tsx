@@ -125,7 +125,7 @@ function PackageCard({
       </ul>
 
       <p className="text-xs font-semibold" style={{ color: '#D1880D' }}>
-        🔒 Founding rate — yours for life
+        🔒 Founding rate locked in — stays this price as long as your subscription remains active
       </p>
     </div>
   )
@@ -1455,7 +1455,7 @@ export default function AdvertiseWizard() {
               )}
 
               <p className="text-sm font-semibold mb-6" style={{ color: '#D1880D' }}>
-                🔒 Founding rate locked in for the life of your subscription
+                🔒 Founding rate locked in — stays this price as long as your subscription remains active
               </p>
 
               {checkoutError && (

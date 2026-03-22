@@ -67,7 +67,7 @@ export const PACKAGES = {
         'Featured on 1 category events page',
         'Featured badge on event card',
         'Click report at end of run',
-        'Runs 14 days or until event date'
+        'Runs for 14 days, ending on or before your event date'
       ]
     },
     {
@@ -85,7 +85,7 @@ export const PACKAGES = {
         'City + category events page placement',
         'Priority in featured events module',
         'Performance report',
-        'Runs 30 days or until event date'
+        'Runs for 30 days, ending on or before your event date'
       ]
     },
     {
@@ -103,7 +103,7 @@ export const PACKAGES = {
         'City + category events pages',
         'Optional cross-post to FilipinoFoodNearMe.org',
         'Priority reporting + screenshot proof',
-        'Runs 45 days or until event date'
+        'Runs for 45 days, ending on or before your event date'
       ]
     }
   ]
