@@ -147,25 +147,48 @@ function ImageUploadSlot({
     const file = e.target.files?.[0]
     if (!file) return
     setError('')
+
+    // File type validation
+    const isPdf = file.type === 'application/pdf'
+    const isImage = file.type.startsWith('image/')
+    const allowsPdf = slot.accept.includes('application/pdf')
+    if (!isImage && !(isPdf && allowsPdf)) {
+      setError(`Invalid file type. Accepted: ${slot.accept.replace('application/pdf', 'PDF').replace('image/jpeg,image/png', 'JPG or PNG')}`)
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    }
+
+    // File size validation
+    const maxBytes = slot.maxMB * 1024 * 1024
+    if (file.size > maxBytes) {
+      setError(`File too large. Max size is ${slot.maxMB}MB (this file is ${(file.size / 1024 / 1024).toFixed(1)}MB).`)
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    }
+
     setUploading(true)
 
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!)
+      formData.append('upload_preset', 'ffnm_ads')
 
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
-        { method: 'POST', body: formData }
-      )
+      const uploadUrl = 'https://api.cloudinary.com/v1_1/dwpbqhyrm/upload'
+
+      const res = await fetch(uploadUrl, { method: 'POST', body: formData })
       const data = await res.json()
 
       if (!res.ok || !data.secure_url) {
-        throw new Error('Upload failed')
+        console.error('Cloudinary upload error:', JSON.stringify(data, null, 2))
+        const msg = data?.error?.message || `Upload failed (HTTP ${res.status})`
+        throw new Error(msg)
       }
+
       onUpload(data.secure_url as string)
-    } catch {
-      setError('Upload failed, please try again')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Upload failed, please try again'
+      console.error('Cloudinary upload exception:', err)
+      setError(msg)
     } finally {
       setUploading(false)
       if (inputRef.current) inputRef.current.value = ''
