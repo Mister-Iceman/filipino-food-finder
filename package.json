@@ -13,13 +13,15 @@
     "@getbrevo/brevo": "^3.0.1",
     "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@sentry/nextjs": "^10.40.0",
+    "@stripe/stripe-js": "^8.11.0",
     "@supabase/ssr": "^0.8.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0",
     "sanitize-html": "^2.17.1",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@types/node": "^20",
