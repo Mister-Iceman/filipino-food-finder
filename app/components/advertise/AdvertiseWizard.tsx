@@ -443,20 +443,43 @@ function PlacementPreviews() {
 
   return (
     <div className="mb-8">
+      {/* Gold badge above banner */}
+      <div className="flex mb-2">
+        <span
+          className="text-xs font-bold px-3 py-1 rounded-full"
+          style={{ background: '#D1880D', color: '#fff' }}
+        >
+          Preview your placement
+        </span>
+      </div>
+
+      {/* Banner toggle */}
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-5 py-4 text-left transition-all"
         style={{
-          background: '#fff',
-          border: '1px solid #e5e7eb',
+          background: 'linear-gradient(135deg,#62438D,#92345A)',
           borderRadius: open ? '12px 12px 0 0' : '12px',
-          borderBottom: open ? '1px solid #f3f4f6' : '1px solid #e5e7eb',
+          filter: 'brightness(1)',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(1.1)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.filter = 'brightness(1)' }}
       >
-        <span className="font-semibold text-gray-800">
-          See where your ad appears {open ? '▴' : '→'}
+        <span className="text-base font-semibold text-white">
+          👁️ See where your ad appears — click to preview
         </span>
-        <span className="text-xs text-gray-400">{open ? 'Collapse' : 'Expand'}</span>
+        {open ? (
+          <span
+            className="text-xs font-bold px-3 py-1 rounded-full shrink-0 ml-3"
+            style={{ background: '#62438D', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}
+          >
+            Collapse ▴
+          </span>
+        ) : (
+          <span className="text-xl font-bold shrink-0 ml-3" style={{ color: '#D1880D' }}>
+            ›
+          </span>
+        )}
       </button>
 
       {open && (
@@ -465,7 +488,7 @@ function PlacementPreviews() {
           style={{
             background: '#fff',
             border: '1px solid #e5e7eb',
-            borderTop: 'none',
+            borderTop: '3px solid #D1880D',
             borderRadius: '0 0 12px 12px',
           }}
         >
