@@ -4,6 +4,15 @@ import { checkRateLimit, getIP } from '@/lib/rate-limit'
 import { cleanText, cleanUrl } from '@/lib/sanitize'
 import * as Sentry from '@sentry/nextjs'
 
+function toSlug(title: string, city: string, date: string): string {
+  return [title, city, date]
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -27,21 +36,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    // hCaptcha verification
-    if (!body.captchaToken) {
-      return NextResponse.json({ error: 'Please complete the captcha.' }, { status: 400 })
-    }
-    const captchaRes = await fetch('https://api.hcaptcha.com/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        secret:   process.env.HCAPTCHA_SECRET_KEY ?? '',
-        response: body.captchaToken,
-      }),
-    })
-    const captchaData = await captchaRes.json()
-    if (!captchaData.success) {
-      return NextResponse.json({ error: 'Captcha verification failed. Please try again.' }, { status: 400 })
+    const isAdminBypass = body.admin_bypass === true
+
+    // hCaptcha verification (skipped for admin bypass)
+    if (!isAdminBypass) {
+      if (!body.captchaToken) {
+        return NextResponse.json({ error: 'Please complete the captcha.' }, { status: 400 })
+      }
+      const captchaRes = await fetch('https://api.hcaptcha.com/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          secret:   process.env.HCAPTCHA_SECRET_KEY ?? '',
+          response: body.captchaToken,
+        }),
+      })
+      const captchaData = await captchaRes.json()
+      if (!captchaData.success) {
+        return NextResponse.json({ error: 'Captcha verification failed. Please try again.' }, { status: 400 })
+      }
     }
 
     // Sanitize all user-supplied fields before DB writes or emails
@@ -70,6 +83,27 @@ export async function POST(request: NextRequest) {
     if (insertError) {
       Sentry.captureException(new Error(insertError.message))
       return NextResponse.json({ error: insertError.message }, { status: 500 })
+    }
+
+    if (isAdminBypass) {
+      const slug = toSlug(clean.title, clean.city, clean.event_date)
+      await supabase.from('fenm_events').upsert([{
+        id: crypto.randomUUID(),
+        slug,
+        title: clean.title,
+        organizer: clean.organizer || null,
+        description: clean.description || null,
+        event_date: clean.event_date,
+        event_time: clean.event_time || null,
+        location_name: clean.location_name || null,
+        address_street: clean.address_street || null,
+        city: clean.city,
+        state: clean.state,
+        zip: clean.zip || null,
+        event_url: clean.event_url || null,
+        category: clean.category,
+        show_on_ffnm: true,
+      }], { onConflict: 'slug' })
     }
 
     await fetch('https://api.brevo.com/v3/smtp/email', {

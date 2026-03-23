@@ -6,6 +6,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const FENM_CATEGORIES = new Set(['festival', 'pop_up', 'community'])
+
+function toSlug(title: string, city: string, date: string): string {
+  return [title, city, date]
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { submissionId } = await request.json()
@@ -38,6 +49,27 @@ export async function POST(request: NextRequest) {
       category: submission.category,
       status: 'published'
     }])
+
+    if (FENM_CATEGORIES.has(submission.category)) {
+      const slug = toSlug(submission.title, submission.city, submission.event_date)
+      await supabase.from('fenm_events').upsert([{
+        id: crypto.randomUUID(),
+        slug,
+        title: submission.title,
+        organizer: submission.organizer || null,
+        description: submission.description || null,
+        event_date: submission.event_date,
+        event_time: submission.event_time || null,
+        location_name: submission.location_name || null,
+        address_street: submission.address_street || null,
+        city: submission.city,
+        state: submission.state,
+        zip: submission.zip || null,
+        event_url: submission.event_url || null,
+        category: submission.category,
+        show_on_ffnm: true,
+      }], { onConflict: 'slug' })
+    }
 
     await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
