@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
 
     await supabase.from('events').insert([{
       title: submission.title,
+      organizer: submission.organizer || null,
       description: submission.description,
       event_date: submission.event_date,
       event_time: submission.event_time,

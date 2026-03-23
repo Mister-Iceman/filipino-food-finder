@@ -13,6 +13,7 @@ export default function SubmitEventPage() {
 
   const [formData, setFormData] = useState({
     title: '',
+    organizer: '',
     description: '',
     event_date: '',
     event_time: '',
@@ -121,6 +122,10 @@ export default function SubmitEventPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Event Title *</label>
                   <input type="text" required value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Filipino Food Festival 2026" className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Organizer / Host</label>
+                  <input type="text" value={formData.organizer} onChange={(e) => setFormData({...formData, organizer: e.target.value})} placeholder="e.g. Filipino Cultural Foundation Inc." className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Event Description</label>

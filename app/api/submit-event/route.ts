@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
     // Sanitize all user-supplied fields before DB writes or emails
     const clean = {
       title:          cleanText(body.title),
+      organizer:      cleanText(body.organizer) || null,
       description:    cleanText(body.description),
       event_date:     cleanText(body.event_date),
       event_time:     cleanText(body.event_time),
