@@ -119,6 +119,7 @@ export default function Footer() {
                 <li><a href="/why-list-with-us" className="text-gray-400 hover:text-white transition-colors">Why List With Us</a></li>
                 <li><a href="/add-business" className="text-gray-400 hover:text-white transition-colors">Add Your Business</a></li>
                 <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Claim a Listing</a></li>
+                <li><a href="/advertise" className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors">Advertise With Us ↗</a></li>
               </ul>
             </div>
 

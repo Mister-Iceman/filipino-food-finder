@@ -137,6 +137,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/cultural-knowledge-base/golden-crunch-history-of-lumpia/`,
+      lastModified: new Date('2026-03-19'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
     ...culturalKnowledgeUrls,
     ...staticCultureUrls,
     ...cityUrls,
