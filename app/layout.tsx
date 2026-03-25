@@ -65,7 +65,7 @@ export default function RootLayout({
 }) {
   // Set to true when AdSense is approved
   const ADSENSE_ENABLED = false
-  const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX' // Replace when approved
+  const ADSENSE_PUBLISHER_ID = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID ?? ''
   return (
     <html lang="en">
       <head>

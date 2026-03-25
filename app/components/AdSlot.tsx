@@ -17,9 +17,8 @@ export default function AdSlot({
 }: AdSlotProps) {
   // Set this to true when you get AdSense approval
   const ADSENSE_ENABLED = false
-  
-  // Your AdSense publisher ID (you'll get this when approved)
-  const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX' // Replace when you get approved
+
+  const ADSENSE_PUBLISHER_ID = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID ?? ''
 
   useEffect(() => {
     if (ADSENSE_ENABLED && typeof window !== 'undefined') {
