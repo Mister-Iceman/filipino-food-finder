@@ -82,7 +82,7 @@ export default function FilipinoSweetToothPage() {
       {/* Hero */}
       <div style={{ width: '100%', backgroundColor: '#f3f4f6' }}>
         <img
-          src="/images/beyond-ube.png"
+          src="/images/beyond-ube.jpg"
           alt="Beyond Ube - Filipino desserts, kakanin, and Kapeng Barako"
           style={{ width: '100%', maxWidth: '100%', height: 'auto', display: 'block' }}
         />
