@@ -147,7 +147,7 @@ export default function BalutBetamaxAndBeyondPage() {
           <p className="text-gray-700 text-base leading-relaxed m-0">
             🛒 <strong>Make It At Home:</strong> Want to recreate the smoky magic of Manila street food? You&rsquo;ll need the right gear. A{' '}
             <a
-              href="https://www.amazon.com/s?k=japanese+yakitori+charcoal+grill&tag=filipinofoodn-20"
+              href="https://amzn.to/4uV3UwY"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
@@ -156,7 +156,7 @@ export default function BalutBetamaxAndBeyondPage() {
             </a>
             {' '}delivers that authentic smokiness you can&rsquo;t get from gas. Pair it with{' '}
             <a
-              href="https://www.amazon.com/s?k=bamboo+skewers+heavy+duty&tag=filipinofoodn-20"
+              href="https://amzn.to/4d7QPtJ"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="text-purple-700 font-semibold underline hover:text-purple-900"
