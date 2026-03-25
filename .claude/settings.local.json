@@ -27,7 +27,18 @@
       "WebFetch(domain:stories.baboo.travel)",
       "WebFetch(domain:www.wazzup.ph)",
       "WebFetch(domain:jocyls.com)",
-      "WebFetch(domain:www.thekitchn.com)"
+      "WebFetch(domain:www.thekitchn.com)",
+      "Bash(powershell:*)",
+      "Bash(cd /c/Users/josep/Desktop/filipino-events-finder && npm run build 2>&1)",
+      "Bash(test:*)",
+      "Bash(cd C:/Users/josep/Desktop/filipino-events-finder && npm run build 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-events-finder\" && npm run build 2>&12)",
+      "Bash(cd \"C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-events-finder\" && npm run build 2>&1)",
+      "Bash(cd C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-events-finder:*)",
+      "Bash(cd \"C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-events-finder\" && git remote add origin https://github.com/Mister-Iceman/filipino-events-finder.git && git branch -M main && git push -u origin main 2>&1)",
+      "Bash(cd C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-food-finder:*)",
+      "Bash(cd \"C:\\\\Users\\\\josep\\\\Desktop\\\\filipino-food-finder\" && npm run build 2>&1)",
+      "Bash(cd /c/Users/josep/Desktop/filipino-food-finder && npm run build 2>&1)"
     ]
   }
 }
