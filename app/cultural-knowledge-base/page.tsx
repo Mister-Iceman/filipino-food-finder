@@ -239,6 +239,69 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/long-life-of-pancit-filipino-noodle-culture"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/long-life-pancit.jpg"
+                  alt="The Long Life of Pancit: Unraveling the Philippines' Noodle Culture"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; Food</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  The Long Life of Pancit: Unraveling the Philippines&rsquo; Noodle Culture
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From birthday celebrations to regional variations &mdash; discover why pancit noodles are the most culturally significant dish in Filipino cuisine.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
+            <Link href="/cultural-knowledge-base/sour-power-and-sawsawan-acidity-in-filipino-cooking"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/sour-power.jpg"
+                  alt="Sour Power and Sawsawan: The Science and Soul of Acidity in Filipino Cooking"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; Food</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  Sour Power and Sawsawan: The Science and Soul of Acidity in Filipino Cooking
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  Explore how vinegar, calamansi, tamarind, and sawsawan dipping sauces define the bold, mouth-puckering soul of Filipino cuisine.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">9 min read</p>
+              </div>
+            </Link>
+
+            <Link href="/cultural-knowledge-base/tapestry-of-tastes-historical-waves-filipino-cuisine"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/tapestry-of-tastes.jpg"
+                  alt="A Tapestry of Tastes: The Historical Waves That Shaped the Original Fusion Cuisine"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">History &amp; Culture</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  A Tapestry of Tastes: The Historical Waves That Shaped the &lsquo;Original Fusion&rsquo; Cuisine
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From pre-colonial adobo to Chinese pancit and Spanish kaldereta &mdash; trace the history that made Filipino cuisine the world&rsquo;s original fusion food.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">9 min read</p>
+              </div>
+            </Link>
+
             {rest.map(article => (
                 <Link key={article.id} href={'/cultural-knowledge-base/' + article.slug}
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
