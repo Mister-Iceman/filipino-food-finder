@@ -11,6 +11,8 @@ import ClaimForm from '../../components/ClaimForm'
 import LeadLink from '../../components/LeadLink'
 import ListingDetailTracker from '../../components/analytics/ListingDetailTracker'
 
+export const revalidate = 3600
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

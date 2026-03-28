@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+export const revalidate = 86400
+
 export const metadata: Metadata = {
   title: 'About Us | Filipino Food Near Me',
   description: 'Learn about the first and only community Filipino food directory in America. Our mission is connecting Filipino-American communities to authentic cuisine across America.',

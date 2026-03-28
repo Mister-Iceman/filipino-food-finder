@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

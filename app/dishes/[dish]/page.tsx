@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

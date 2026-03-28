@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import PhoneReveal from '../components/PhoneReveal'
 
+export const revalidate = 86400
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

@@ -12,7 +12,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export default async function CulturalKnowledgeBasePage() {
   const { data: articles } = await supabase

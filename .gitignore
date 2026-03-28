@@ -45,3 +45,11 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Claude Code
+.claude/worktrees/
+.claude/settings.local.json
+
+# Scrapers and archives
+filam-scraper/
+*.zip

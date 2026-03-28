@@ -8,7 +8,7 @@ import FeaturedArticles from './components/FeaturedArticles'
 import LatestNews from './components/LatestNews'
 import HeroImageCarousel from './components/HeroImageCarousel'
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: "Filipino Food Near Me | The First Community Filipino Food Directory in America",

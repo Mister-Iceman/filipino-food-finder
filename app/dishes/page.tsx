@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Browse Filipino Dishes | Filipino Food Near Me',
   description: 'Find Filipino restaurants known for specific dishes. Discover the best spots for adobo, lechon, sisig, lumpia, halo-halo, and more across America.',
