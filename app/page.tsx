@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     title: "Filipino Food Near Me | First Community Filipino Food Directory",
     description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across America.",
   },
+  alternates: {
+    canonical: 'https://www.filipinofoodnearme.org/',
+  },
 }
 
 const supabase = createClient(

@@ -6,7 +6,7 @@ export const metadata = {
   title: 'Filipino Restaurant Directory | Filipino Food Near Me',
   description: 'Browse our complete directory of Filipino restaurants, bakeries, grocery stores, and food trucks across America.',
   alternates: {
-    canonical: 'https://filipinofoodnearme.org/directory/',
+    canonical: 'https://www.filipinofoodnearme.org/directory',
   },
 }
 
