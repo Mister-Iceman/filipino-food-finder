@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { PACKAGES, calculateOrderTotal } from '../../../lib/ad-packages'
 import type { FfnmPackage, FenmPackage } from '../../../lib/ad-packages'
+import { supabase } from '../../../lib/supabase'
 
 type Site = 'ffnm' | 'fenm' | 'both' | null
 
@@ -245,11 +246,11 @@ function ImageUploadSlot({
 
 // ── Why advertise section ──────────────────────────────────────────────────
 
-const STATS = [
-  { icon: '🍽️', number: '1,237+', label: 'Filipino food businesses listed' },
-  { icon: '🗺️', number: '34',     label: 'States with listings' },
-  { icon: '📍', number: '423+',   label: 'Cities represented' },
-  { icon: '👥', number: '4.2M+',  label: 'Filipino-Americans in the U.S.' },
+const FENM_STATS = [
+  { icon: '📅', number: '90+',  label: 'Events listed' },
+  { icon: '📍', number: '60+',  label: 'Cities' },
+  { icon: '🗺️', number: '18+',  label: 'States covered' },
+  { icon: '🎭', number: '6+',   label: 'Event categories' },
 ]
 
 const VALUE_PROPS = [
@@ -271,6 +272,34 @@ const VALUE_PROPS = [
 ]
 
 function WhyAdvertise() {
+  const [ffnmCounts, setFfnmCounts] = useState({ businesses: '1,237+', states: '34', cities: '423+' })
+
+  useEffect(() => {
+    async function fetchStats() {
+      const [bizRes, stateRes, cityRes] = await Promise.all([
+        supabase.from('listings').select('*', { count: 'exact', head: true }),
+        supabase.from('listings').select('state').not('state', 'is', null),
+        supabase.from('listings').select('city').not('city', 'is', null),
+      ])
+      const businesses = bizRes.count ?? null
+      const states = stateRes.data ? new Set(stateRes.data.map((r: any) => r.state)).size : null
+      const cities = cityRes.data ? new Set(cityRes.data.map((r: any) => r.city)).size : null
+      setFfnmCounts({
+        businesses: businesses !== null ? `${businesses.toLocaleString()}+` : '1,237+',
+        states: states !== null ? String(states) : '34',
+        cities: cities !== null ? `${cities.toLocaleString()}+` : '423+',
+      })
+    }
+    fetchStats()
+  }, [])
+
+  const FFNM_STATS = [
+    { icon: '🍽️', number: ffnmCounts.businesses, label: 'Filipino food businesses listed' },
+    { icon: '🗺️', number: ffnmCounts.states,     label: 'States with listings' },
+    { icon: '📍', number: ffnmCounts.cities,      label: 'Cities represented' },
+    { icon: '👥', number: '4.2M+',                label: 'Filipino-Americans in the U.S.' },
+  ]
+
   return (
     <div className="mb-8">
       {/* Section header */}
@@ -290,15 +319,39 @@ function WhyAdvertise() {
         </p>
       </div>
 
-      {/* Stats grid — 2×2 mobile, 4-col desktop */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        {STATS.map((s) => (
+      {/* FFNM stats */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">FilipinoFoodNearMe.org</span>
+        <div className="flex-1 h-px bg-gray-200" />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        {FFNM_STATS.map((s) => (
           <div
             key={s.label}
             className="bg-white border border-gray-200 rounded-xl p-4 text-center"
           >
             <div className="text-2xl mb-1">{s.icon}</div>
             <div className="text-2xl font-semibold mb-0.5" style={{ color: '#62438D' }}>
+              {s.number}
+            </div>
+            <div className="text-xs text-gray-500 leading-tight">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* FENM stats */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">FilipinoEventsNearMe.org</span>
+        <div className="flex-1 h-px bg-gray-200" />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        {FENM_STATS.map((s) => (
+          <div
+            key={s.label}
+            className="bg-white border border-gray-200 rounded-xl p-4 text-center"
+          >
+            <div className="text-2xl mb-1">{s.icon}</div>
+            <div className="text-2xl font-semibold mb-0.5" style={{ color: '#0038A8' }}>
               {s.number}
             </div>
             <div className="text-xs text-gray-500 leading-tight">{s.label}</div>
