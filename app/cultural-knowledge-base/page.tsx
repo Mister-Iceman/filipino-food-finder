@@ -302,6 +302,27 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/rise-and-shine.jpg"
+                  alt="Rise and Shine: The Ultimate Guide to Almusal and the Filipino Breakfast Universe"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; Food</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  Rise and Shine: The Ultimate Guide to &lsquo;Almusal&rsquo; and the Filipino Breakfast Universe
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From silog plates to champorado with tuyo &mdash; explore the hearty, carb-heavy world of Filipino breakfast culture and why almusal is a way of life.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">9 min read</p>
+              </div>
+            </Link>
+
             <Link href="/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food"
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
