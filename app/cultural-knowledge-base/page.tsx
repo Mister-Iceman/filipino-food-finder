@@ -302,6 +302,27 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/rations-to-riches.jpg"
+                  alt="From Rations to Riches: How American Influence Birthed Filipino Spaghetti and Fast Food"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">History &amp; Culture</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  From Rations to Riches: How American Influence Birthed Filipino Spaghetti and Fast Food
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From Spam to banana ketchup to Jollibee &mdash; discover how American colonial influence and WWII rations permanently transformed Filipino comfort food.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
             {rest.map(article => (
                 <Link key={article.id} href={'/cultural-knowledge-base/' + article.slug}
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
