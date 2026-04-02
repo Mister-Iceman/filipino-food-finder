@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import type { Metadata } from 'next'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
@@ -162,12 +161,10 @@ export default async function HomePage() {
 
               {/* Hero image with FEATURED badge */}
               <div style={{ position: 'relative', width: '100%', height: '200px', overflow: 'hidden', borderRadius: '8px 8px 0 0' }}>
-                <Image
+                <img
                   src="/images/manila-kitchen-demo.jpg"
                   alt="Manila Kitchen Filipino food spread"
-                  fill
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                  priority
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
                 />
                 <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: '#D4A017', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
                   FEATURED
