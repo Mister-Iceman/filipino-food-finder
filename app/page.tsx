@@ -158,22 +158,20 @@ export default async function HomePage() {
             </p>
 
             {/* Demo Card */}
-            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden border border-amber-200">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-amber-200">
 
-              {/* FEATURED badge */}
-              <div className="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1 rounded-full shadow" style={{ background: 'linear-gradient(90deg, #D97706, #F59E0B)' }}>
-                ⭐ FEATURED
-              </div>
-
-              {/* Hero image */}
-              <div className="relative w-full h-48 overflow-hidden">
+              {/* Hero image with FEATURED badge */}
+              <div style={{ position: 'relative', width: '100%', height: '200px', overflow: 'hidden', borderRadius: '8px 8px 0 0' }}>
                 <Image
                   src="/images/manila-kitchen-demo.jpg"
-                  alt="Manila Kitchen - Filipino Restaurant in Los Angeles"
+                  alt="Manila Kitchen Filipino food spread"
                   fill
                   style={{ objectFit: 'cover', objectPosition: 'center' }}
+                  priority
                 />
-                <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }} />
+                <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: '#D4A017', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
+                  FEATURED
+                </div>
               </div>
 
               {/* Card body */}
