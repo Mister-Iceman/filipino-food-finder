@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { WebsiteStructuredData } from './components/StructuredData'
 import { createClient } from '@supabase/supabase-js'
@@ -164,12 +165,15 @@ export default async function HomePage() {
                 ⭐ FEATURED
               </div>
 
-              {/* Hero gradient placeholder */}
-              <div
-                className="w-full h-48 flex items-center justify-center text-6xl"
-                style={{ background: 'linear-gradient(135deg, #8B1A1A, #D4621A)' }}
-              >
-                🍽️
+              {/* Hero image */}
+              <div className="relative w-full h-48 overflow-hidden">
+                <Image
+                  src="/images/manila-kitchen-demo.jpg"
+                  alt="Manila Kitchen - Filipino Restaurant in Los Angeles"
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                />
+                <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }} />
               </div>
 
               {/* Card body */}
