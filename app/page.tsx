@@ -147,6 +147,106 @@ export default async function HomePage() {
       </section>
 
       <main role="main">
+        {/* Featured Listing Demo */}
+        <section className="py-14 px-4 border-y border-gray-100" style={{ backgroundColor: '#FAFAF8' }}>
+          <div className="max-w-2xl mx-auto">
+
+            {/* Eyebrow */}
+            <p className="text-center text-sm font-semibold tracking-wide mb-5" style={{ color: '#B45309' }}>
+              ⭐ Featured Listing — This Could Be Your Business
+            </p>
+
+            {/* Demo Card */}
+            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden border border-amber-200">
+
+              {/* FEATURED badge */}
+              <div className="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1 rounded-full shadow" style={{ background: 'linear-gradient(90deg, #D97706, #F59E0B)' }}>
+                ⭐ FEATURED
+              </div>
+
+              {/* Hero gradient placeholder */}
+              <div
+                className="w-full h-48 flex items-center justify-center text-6xl"
+                style={{ background: 'linear-gradient(135deg, #8B1A1A, #D4621A)' }}
+              >
+                🍽️
+              </div>
+
+              {/* Card body */}
+              <div className="p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Manila Kitchen</h3>
+                    <p className="text-sm text-gray-500 mt-0.5">📍 Historic Filipinotown, Los Angeles, CA</p>
+                  </div>
+                  <span className="inline-block self-start text-xs bg-purple-100 text-purple-700 font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                    Filipino Restaurant
+                  </span>
+                </div>
+
+                <p className="text-gray-500 text-sm italic mb-3">
+                  &ldquo;Authentic home-style Filipino cooking in the heart of HiFi&rdquo;
+                </p>
+
+                {/* Cuisine tags */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {['Adobo', 'Sinigang', 'Kare-Kare', 'Lechon'].map(tag => (
+                    <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{tag}</span>
+                  ))}
+                </div>
+
+                {/* Rating */}
+                <p className="text-sm font-semibold mb-2" style={{ color: '#D97706' }}>
+                  ★★★★★{' '}
+                  <span className="text-gray-700 font-normal">5.0 · 124 reviews</span>
+                </p>
+
+                {/* Info row */}
+                <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-gray-500 mb-5">
+                  <span>📞 (213) 555-0192</span>
+                  <span>🕐 Mon–Sun 10am–9pm</span>
+                </div>
+
+                {/* Demo CTA buttons */}
+                <div className="flex flex-wrap items-center gap-3">
+                  {['Get Directions', 'Visit Website', 'Call Now'].map(label => (
+                    <button
+                      key={label}
+                      disabled
+                      className="text-sm px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed select-none"
+                      title="Demo only — not a real listing"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                  <span className="text-xs text-gray-400 italic">demo</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Conversion block */}
+            <div className="mt-10 text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Get your Filipino food business featured like this
+              </h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                Join the FilAm Network and reach thousands of Filipino-Americans actively searching for businesses like yours.
+              </p>
+              <Link
+                href="/advertise"
+                className="inline-block px-8 py-4 rounded-full font-bold text-white shadow-lg hover:brightness-110 transition-all text-base"
+                style={{ backgroundColor: '#D4A017' }}
+              >
+                Become a Founding Advertiser →
+              </Link>
+              <p className="mt-3 text-sm font-medium" style={{ color: '#92400E' }}>
+                30% off for life · Limited spots · No contracts
+              </p>
+            </div>
+
+          </div>
+        </section>
+
         {/* Upcoming Events / Featured Section */}
         <section data-section="events" className="py-16 bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-7xl mx-auto px-4">
