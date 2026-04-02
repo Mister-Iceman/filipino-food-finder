@@ -302,6 +302,27 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/merienda-culture-filipino-snacks-street-food"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/merienda.jpg"
+                  alt="Merienda Culture and the Vibrant Streets: A Deep Dive into Filipino Snacks and Street Food"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Street Food &amp; Culture</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  &lsquo;Merienda&rsquo; Culture and the Vibrant Streets: A Deep Dive into Filipino Snacks and Street Food
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  From taho vendors to fishball carts to kwek-kwek &mdash; explore the beloved merienda culture and vibrant street food scene that defines everyday Filipino life.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">9 min read</p>
+              </div>
+            </Link>
+
             <Link href="/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal"
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
