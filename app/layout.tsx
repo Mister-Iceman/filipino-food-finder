@@ -63,9 +63,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Set to true when AdSense is approved
-  const ADSENSE_ENABLED = false
-  const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX' // Replace when approved
+  const ADSENSE_ENABLED = true
+  const ADSENSE_PUBLISHER_ID = 'ca-pub-8442464993329627'
   return (
     <html lang="en">
       <head>
