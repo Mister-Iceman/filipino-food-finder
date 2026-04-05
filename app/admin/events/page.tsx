@@ -6,6 +6,16 @@ import Link from 'next/link'
 
 const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
+const FENM_CATEGORY_LABELS: Record<string, string> = {
+  'festivals-fiestas': 'Festivals & Fiestas',
+  'culture-heritage': 'Culture & Heritage',
+  'faith-tradition': 'Faith & Tradition',
+  'arts-music-entertainment': 'Arts, Music & Entertainment',
+  'community-family': 'Community & Family',
+  'business-networking': 'Business & Networking',
+  'sports-wellness': 'Sports & Wellness',
+}
+
 export default function EventsAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
@@ -22,7 +32,7 @@ export default function EventsAdminPage() {
     title: '', description: '', event_date: '', event_time: '', end_date: '',
     location_name: '', address_street: '', city: '', state: '', zip: '',
     event_url: '', ticket_url: '', image_url: '', category: 'festival',
-    is_featured: false, is_sponsored: false
+    is_featured: false, is_sponsored: false, fenm_secondary_category: ''
   })
 
   const supabase = createClient(
@@ -115,7 +125,8 @@ export default function EventsAdminPage() {
       state: event.state || '', zip: event.zip || '',
       event_url: event.event_url || '', ticket_url: event.ticket_url || '',
       image_url: event.image_url || '', category: event.category || 'festival',
-      is_featured: event.is_featured || false, is_sponsored: event.is_sponsored || false
+      is_featured: event.is_featured || false, is_sponsored: event.is_sponsored || false,
+      fenm_secondary_category: event.fenm_secondary_category || ''
     })
     setEditingId(event.id)
     setShowForm(true)
@@ -150,7 +161,7 @@ export default function EventsAdminPage() {
   }
 
   const resetForm = () => {
-    setFormData({ title: '', description: '', event_date: '', event_time: '', end_date: '', location_name: '', address_street: '', city: '', state: '', zip: '', event_url: '', ticket_url: '', image_url: '', category: 'festival', is_featured: false, is_sponsored: false })
+    setFormData({ title: '', description: '', event_date: '', event_time: '', end_date: '', location_name: '', address_street: '', city: '', state: '', zip: '', event_url: '', ticket_url: '', image_url: '', category: 'festival', is_featured: false, is_sponsored: false, fenm_secondary_category: '' })
     setEditingId(null)
     setShowForm(false)
   }
@@ -209,6 +220,20 @@ export default function EventsAdminPage() {
                 <option value="community">🎊 Community Event</option>
                 <option value="tasting">🎤 Tasting & Demo</option>
               </select>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Secondary FENM Category (optional)</label>
+                <select value={formData.fenm_secondary_category} onChange={(e) => setFormData({...formData, fenm_secondary_category: e.target.value})} className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">None</option>
+                  <option value="festivals-fiestas">Festivals &amp; Fiestas</option>
+                  <option value="culture-heritage">Culture &amp; Heritage</option>
+                  <option value="faith-tradition">Faith &amp; Tradition</option>
+                  <option value="arts-music-entertainment">Arts, Music &amp; Entertainment</option>
+                  <option value="community-family">Community &amp; Family</option>
+                  <option value="business-networking">Business &amp; Networking</option>
+                  <option value="sports-wellness">Sports &amp; Wellness</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">All active FFNM events automatically appear on FilipinoEventsNearMe.org under Food &amp; Markets. Select a second category if this event also fits another category.</p>
+              </div>
               <input type="text" placeholder="Location Name" value={formData.location_name} onChange={(e) => setFormData({...formData, location_name: e.target.value})} className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
               <input type="text" placeholder="Street Address" value={formData.address_street} onChange={(e) => setFormData({...formData, address_street: e.target.value})} className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
               <div className="grid md:grid-cols-3 gap-4">
@@ -320,7 +345,14 @@ export default function EventsAdminPage() {
                   ) : (
                     upcomingEvents.map((event) => (
                       <tr key={event.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{event.title}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                          <span>{event.title}</span>
+                          {event.fenm_secondary_category && FENM_CATEGORY_LABELS[event.fenm_secondary_category] && (
+                            <span className="ml-2 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-normal whitespace-nowrap">
+                              {FENM_CATEGORY_LABELS[event.fenm_secondary_category]}
+                            </span>
+                          )}
+                        </td>
                         <td className="px-6 py-4 text-sm text-gray-600">{formatDate(event.event_date)}</td>
                         <td className="px-6 py-4 text-sm text-gray-600">{event.city}, {event.state}</td>
                         <td className="px-6 py-4 text-sm text-gray-600">{event.category}</td>
@@ -371,7 +403,14 @@ export default function EventsAdminPage() {
                 <tbody className="divide-y divide-gray-200">
                   {pastEvents.map((event) => (
                     <tr key={event.id} className="hover:bg-gray-50 opacity-60">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{event.title}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        <span>{event.title}</span>
+                        {event.fenm_secondary_category && FENM_CATEGORY_LABELS[event.fenm_secondary_category] && (
+                          <span className="ml-2 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-normal whitespace-nowrap">
+                            {FENM_CATEGORY_LABELS[event.fenm_secondary_category]}
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-sm text-gray-600">{formatDate(event.event_date)}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{event.city}, {event.state}</td>
                       <td className="px-6 py-4 text-center">
