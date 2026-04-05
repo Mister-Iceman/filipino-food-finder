@@ -47,21 +47,53 @@ export default async function EventsPage() {
   const pastEvents = pastRaw?.map(mapEvent)
 
   const categoryColors: any = {
-    'festival': 'bg-purple-100 text-purple-800',
-    'grand_opening': 'bg-green-100 text-green-800',
-    'pop_up': 'bg-yellow-100 text-yellow-800',
-    'cooking_class': 'bg-blue-100 text-blue-800',
-    'community': 'bg-pink-100 text-pink-800',
-    'tasting': 'bg-orange-100 text-orange-800'
+    // FFNM categories
+    'festival':        'bg-purple-100 text-purple-800',
+    'grand-opening':   'bg-green-100 text-green-800',
+    'pop-up':          'bg-yellow-100 text-yellow-800',
+    'cooking-class':   'bg-orange-100 text-orange-800',
+    'community-event': 'bg-blue-100 text-blue-800',
+    'tasting-demo':    'bg-pink-100 text-pink-800',
+    // FFNM legacy underscore keys
+    'grand_opening':   'bg-green-100 text-green-800',
+    'pop_up':          'bg-yellow-100 text-yellow-800',
+    'cooking_class':   'bg-orange-100 text-orange-800',
+    'community':       'bg-blue-100 text-blue-800',
+    'tasting':         'bg-pink-100 text-pink-800',
+    // FENM categories
+    'food-markets':             'bg-orange-100 text-orange-800',
+    'festivals-fiestas':        'bg-purple-100 text-purple-800',
+    'culture-heritage':         'bg-blue-100 text-blue-800',
+    'faith-tradition':          'bg-indigo-100 text-indigo-800',
+    'arts-music-entertainment': 'bg-pink-100 text-pink-800',
+    'community-family':         'bg-green-100 text-green-800',
+    'business-networking':      'bg-gray-100 text-gray-800',
+    'sports-wellness':          'bg-teal-100 text-teal-800',
   }
 
   const categoryLabels: any = {
-    'festival': '🎉 Festival',
-    'grand_opening': '🏪 Grand Opening',
-    'pop_up': '🍽️ Pop-Up',
-    'cooking_class': '🎓 Cooking Class',
-    'community': '🎊 Community Event',
-    'tasting': '🎤 Tasting & Demo'
+    // FFNM categories
+    'festival':        '🎉 Festival',
+    'grand-opening':   '🎊 Grand Opening',
+    'pop-up':          '🍱 Pop-Up',
+    'cooking-class':   '👨‍🍳 Cooking Class',
+    'community-event': '🤝 Community Event',
+    'tasting-demo':    '🍴 Tasting & Demo',
+    // FFNM legacy underscore keys
+    'grand_opening':   '🎊 Grand Opening',
+    'pop_up':          '🍱 Pop-Up',
+    'cooking_class':   '👨‍🍳 Cooking Class',
+    'community':       '🤝 Community Event',
+    'tasting':         '🍴 Tasting & Demo',
+    // FENM categories
+    'food-markets':             '🍽️ Food & Markets',
+    'festivals-fiestas':        '🎉 Festivals & Fiestas',
+    'culture-heritage':         '🏛️ Culture & Heritage',
+    'faith-tradition':          '⛪ Faith & Tradition',
+    'arts-music-entertainment': '🎭 Arts, Music & Ent.',
+    'community-family':         '👨‍👩‍👧 Community & Family',
+    'business-networking':      '💼 Business & Networking',
+    'sports-wellness':          '🏅 Sports & Wellness',
   }
 
   const formatDate = (date: string) => {
