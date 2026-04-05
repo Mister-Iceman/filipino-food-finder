@@ -246,12 +246,6 @@ function ImageUploadSlot({
 
 // ── Why advertise section ──────────────────────────────────────────────────
 
-const FENM_STATS = [
-  { icon: '📅', number: '90+',  label: 'Events listed' },
-  { icon: '📍', number: '60+',  label: 'Cities' },
-  { icon: '🗺️', number: '18+',  label: 'States covered' },
-  { icon: '🎭', number: '6+',   label: 'Event categories' },
-]
 
 const VALUE_PROPS = [
   {
@@ -273,6 +267,12 @@ const VALUE_PROPS = [
 
 function WhyAdvertise() {
   const [ffnmCounts, setFfnmCounts] = useState({ businesses: '1,237+', states: '34', cities: '423+' })
+  const [fenmCounts, setFenmCounts] = useState({
+    events: '102+',
+    cities: '64+',
+    states: '18+',
+    categories: '7+',
+  })
 
   useEffect(() => {
     async function fetchStats() {
@@ -288,6 +288,24 @@ function WhyAdvertise() {
         businesses: businesses !== null ? `${businesses.toLocaleString()}+` : '1,237+',
         states: states !== null ? String(states) : '34',
         cities: cities !== null ? `${cities.toLocaleString()}+` : '423+',
+      })
+
+      // FENM stats — query fenm_events table
+      const [fenmEventsRes, fenmCitiesRes, fenmStatesRes, fenmCatsRes] = await Promise.all([
+        supabase.from('fenm_events').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('fenm_events').select('city').eq('status', 'active'),
+        supabase.from('fenm_events').select('state').eq('status', 'active'),
+        supabase.from('fenm_events').select('category').eq('status', 'active'),
+      ])
+      const fenmEventCount = fenmEventsRes.count ?? null
+      const fenmCityCount = fenmCitiesRes.data ? new Set(fenmCitiesRes.data.map((r: any) => r.city).filter(Boolean)).size : null
+      const fenmStateCount = fenmStatesRes.data ? new Set(fenmStatesRes.data.map((r: any) => r.state).filter(Boolean)).size : null
+      const fenmCatCount = fenmCatsRes.data ? new Set(fenmCatsRes.data.map((r: any) => r.category).filter(Boolean)).size : null
+      setFenmCounts({
+        events:     fenmEventCount !== null ? fenmEventCount + '+' : '102+',
+        cities:     fenmCityCount  !== null ? fenmCityCount  + '+' : '64+',
+        states:     fenmStateCount !== null ? fenmStateCount + '+' : '18+',
+        categories: fenmCatCount   !== null ? fenmCatCount   + '+' : '7+',
       })
     }
     fetchStats()
@@ -345,7 +363,12 @@ function WhyAdvertise() {
         <div className="flex-1 h-px bg-gray-200" />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        {FENM_STATS.map((s) => (
+        {[
+          { icon: '📅', number: fenmCounts.events,     label: 'Events listed' },
+          { icon: '📍', number: fenmCounts.cities,     label: 'Cities' },
+          { icon: '🗺️', number: fenmCounts.states,     label: 'States covered' },
+          { icon: '🎭', number: fenmCounts.categories, label: 'Event categories' },
+        ].map((s) => (
           <div
             key={s.label}
             className="bg-white border border-gray-200 rounded-xl p-4 text-center"
