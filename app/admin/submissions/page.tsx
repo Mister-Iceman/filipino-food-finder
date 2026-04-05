@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
 
 function AddedBanner() {
   const searchParams = useSearchParams()
@@ -13,6 +14,11 @@ function AddedBanner() {
   )
 }
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export default function AdminSubmissionsPage() {
   const [password, setPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -23,6 +29,10 @@ export default function AdminSubmissionsPage() {
   const [infoMessage, setInfoMessage] = useState('')
   const [approveModal, setApproveModal] = useState<{ id: number; name: string } | null>(null)
   const [isPickupOnly, setIsPickupOnly] = useState(false)
+  const [listings, setListings] = useState<any[]>([])
+  const [listingsLoading, setListingsLoading] = useState(false)
+  const [togglingFenmSponsor, setTogglingFenmSponsor] = useState<Set<number>>(new Set())
+  const [showListings, setShowListings] = useState(false)
 
   const ADMIN_PASSWORD = 'R@ikkonenProjpagkain2026'
 
@@ -87,6 +97,34 @@ export default function AdminSubmissionsPage() {
     setIsPickupOnly(false)
   }
 
+  const loadListings = async () => {
+    setListingsLoading(true)
+    const { data, error } = await supabase
+      .from('listings')
+      .select('id, name, slug, category_primary, city, state, show_on_fenm, created_at')
+      .order('name', { ascending: true })
+    if (error) {
+      console.error('Error loading listings:', error)
+    } else {
+      setListings(data || [])
+    }
+    setListingsLoading(false)
+  }
+
+  const handleFenmSponsorToggle = async (listingId: number, currentValue: boolean) => {
+    setTogglingFenmSponsor(prev => new Set(prev).add(listingId))
+    const { error } = await supabase
+      .from('listings')
+      .update({ show_on_fenm: !currentValue })
+      .eq('id', listingId)
+    if (error) {
+      alert('Error updating FENM sponsor toggle: ' + error.message)
+    } else {
+      await loadListings()
+    }
+    setTogglingFenmSponsor(prev => { const next = new Set(prev); next.delete(listingId); return next })
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
@@ -123,10 +161,20 @@ export default function AdminSubmissionsPage() {
 
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">Business Submissions</h1>
-            <p className="text-gray-600 mt-1">Review and manage incoming business listing requests</p>
+            <h1 className="text-4xl font-bold text-gray-900">
+              {showListings ? 'Live Listings' : 'Business Submissions'}
+            </h1>
+            <p className="text-gray-600 mt-1">
+              {showListings ? 'Manage FENM sponsor visibility for live listings' : 'Review and manage incoming business listing requests'}
+            </p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={() => { setShowListings(!showListings); if (!showListings) loadListings() }}
+              className={`px-4 py-2 rounded-lg font-medium text-sm border transition-colors ${showListings ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-50'}`}
+            >
+              {showListings ? '← Submissions' : 'Live Listings →'}
+            </button>
             <a href="/admin/submissions/new" className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
               + Add Business
             </a>
@@ -136,7 +184,8 @@ export default function AdminSubmissionsPage() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
+        {/* Filter Tabs — only shown in submissions view */}
+        {!showListings && (
         <div className="flex gap-2 mb-6 flex-wrap">
           {['pending', 'info_requested', 'approved', 'rejected'].map((status) => (
             <button
@@ -148,14 +197,69 @@ export default function AdminSubmissionsPage() {
             </button>
           ))}
         </div>
+        )}
 
-        {loading ? (
+        {/* Live Listings table — FENM sponsor toggles */}
+        {showListings && (
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="p-6 bg-indigo-50 border-b flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Live Listings ({listings.length})</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Toggle "FENM Sponsor" to feature a listing on FilipinoEventsNearMe.org</p>
+              </div>
+              <button onClick={loadListings} className="text-sm text-indigo-600 hover:underline">Refresh</button>
+            </div>
+            {listingsLoading ? (
+              <div className="p-12 text-center text-gray-500">Loading listings...</div>
+            ) : listings.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">No listings found.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Business</th>
+                      <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Category</th>
+                      <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Location</th>
+                      <th className="px-6 py-3 text-center text-sm font-bold text-gray-700">FENM Sponsor</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {listings.map((listing) => (
+                      <tr key={listing.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <p className="text-sm font-medium text-gray-900">{listing.name}</p>
+                          <p className="text-xs text-gray-400">{listing.slug}</p>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{listing.category_primary}</td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{listing.city}, {listing.state}</td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => handleFenmSponsorToggle(listing.id, listing.show_on_fenm)}
+                            disabled={togglingFenmSponsor.has(listing.id)}
+                            title={listing.show_on_fenm ? 'Featured on FENM — click to remove' : 'Not on FENM — click to feature'}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 focus:outline-none ${listing.show_on_fenm ? 'bg-green-500' : 'bg-gray-300'}`}
+                          >
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${togglingFenmSponsor.has(listing.id) ? 'animate-pulse' : ''} ${listing.show_on_fenm ? 'translate-x-6' : 'translate-x-1'}`} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Submissions list */}
+        {!showListings && loading ? (
           <div className="text-center py-12 text-gray-500">Loading submissions...</div>
-        ) : submissions.length === 0 ? (
+        ) : !showListings && submissions.length === 0 ? (
           <div className="bg-white rounded-xl shadow p-12 text-center text-gray-500">
             No {filter} submissions found.
           </div>
-        ) : (
+        ) : !showListings && (
           <div className="space-y-4">
             {submissions.map((submission) => (
               <div key={submission.id} className="bg-white rounded-xl shadow-lg p-6">

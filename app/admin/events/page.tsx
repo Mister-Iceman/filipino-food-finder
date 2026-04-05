@@ -16,6 +16,7 @@ export default function EventsAdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState<number | null>(null)
+  const [togglingFenm, setTogglingFenm] = useState<Set<number>>(new Set())
 
   const [formData, setFormData] = useState({
     title: '', description: '', event_date: '', event_time: '', end_date: '',
@@ -132,6 +133,20 @@ export default function EventsAdminPage() {
     if (response.ok) { alert('Event deleted!'); loadEvents() }
     else { const err = await response.json(); alert('Error: ' + err.error) }
     setLoading(false)
+  }
+
+  const handleFenmToggle = async (eventId: number, currentValue: boolean) => {
+    setTogglingFenm(prev => new Set(prev).add(eventId))
+    const { error } = await supabase
+      .from('events')
+      .update({ show_on_fenm: !currentValue })
+      .eq('id', eventId)
+    if (error) {
+      alert('Error updating FENM toggle: ' + error.message)
+    } else {
+      await loadEvents()
+    }
+    setTogglingFenm(prev => { const next = new Set(prev); next.delete(eventId); return next })
   }
 
   const resetForm = () => {
@@ -295,12 +310,13 @@ export default function EventsAdminPage() {
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Location</th>
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Category</th>
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Status</th>
+                    <th className="px-6 py-3 text-center text-sm font-bold text-gray-700">FENM</th>
                     <th className="px-6 py-3 text-right text-sm font-bold text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {upcomingEvents.length === 0 ? (
-                    <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">No upcoming events.</td></tr>
+                    <tr><td colSpan={7} className="px-6 py-8 text-center text-gray-500">No upcoming events.</td></tr>
                   ) : (
                     upcomingEvents.map((event) => (
                       <tr key={event.id} className="hover:bg-gray-50">
@@ -311,6 +327,16 @@ export default function EventsAdminPage() {
                         <td className="px-6 py-4 text-sm">
                           {event.is_featured && <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs mr-1">⭐ Featured</span>}
                           {event.is_sponsored && <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">💰 Sponsored</span>}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => handleFenmToggle(event.id, event.show_on_fenm)}
+                            disabled={togglingFenm.has(event.id)}
+                            title={event.show_on_fenm ? 'Shown on FENM — click to hide' : 'Hidden from FENM — click to show'}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 focus:outline-none ${event.show_on_fenm ? 'bg-green-500' : 'bg-gray-300'}`}
+                          >
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${togglingFenm.has(event.id) ? 'animate-pulse' : ''} ${event.show_on_fenm ? 'translate-x-6' : 'translate-x-1'}`} />
+                          </button>
                         </td>
                         <td className="px-6 py-4 text-right text-sm space-x-2">
                           <button onClick={() => handleEdit(event)} className="text-blue-600 hover:text-blue-800 font-medium">Edit</button>
@@ -338,6 +364,7 @@ export default function EventsAdminPage() {
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Title</th>
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Date</th>
                     <th className="px-6 py-3 text-left text-sm font-bold text-gray-700">Location</th>
+                    <th className="px-6 py-3 text-center text-sm font-bold text-gray-700">FENM</th>
                     <th className="px-6 py-3 text-right text-sm font-bold text-gray-700">Actions</th>
                   </tr>
                 </thead>
@@ -347,6 +374,16 @@ export default function EventsAdminPage() {
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">{event.title}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{formatDate(event.event_date)}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{event.city}, {event.state}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => handleFenmToggle(event.id, event.show_on_fenm)}
+                          disabled={togglingFenm.has(event.id)}
+                          title={event.show_on_fenm ? 'Shown on FENM — click to hide' : 'Hidden from FENM — click to show'}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 focus:outline-none ${event.show_on_fenm ? 'bg-green-500' : 'bg-gray-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${togglingFenm.has(event.id) ? 'animate-pulse' : ''} ${event.show_on_fenm ? 'translate-x-6' : 'translate-x-1'}`} />
+                        </button>
+                      </td>
                       <td className="px-6 py-4 text-right text-sm">
                         <button onClick={() => handleDelete(event.id)} className="text-red-600 hover:text-red-800 font-medium">Delete</button>
                       </td>
