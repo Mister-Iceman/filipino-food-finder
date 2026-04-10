@@ -215,16 +215,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                     Get Tickets →
                   </a>
                 )}
-                {event.event_url && (
-                  <a
-                    href={event.event_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-center px-6 py-4 rounded-lg font-bold text-lg transition-colors"
-                  >
-                    Visit Event Page →
-                  </a>
-                )}
               </div>
             </div>
 
