@@ -162,6 +162,11 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
+              {!listing.is_claimed && (
+                <span className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 px-2 py-0.5 rounded-full font-medium mb-3">
+                  ⚠️ Unverified Listing
+                </span>
+              )}
               <p className="text-xl text-gray-600 mb-6">{listing.category_primary}</p>
 
               {listing.is_pickup_only && (
@@ -220,7 +225,9 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                   )}
                 </div>
                 </div>
-                <ClaimForm listingId={listing.id} listingName={listing.name} />
+                {!listing.is_claimed && (
+                  <ClaimForm listingId={listing.id} listingName={listing.name} />
+                )}
 
               {/* Photos gallery */}
               {photos.length > 0 && (
@@ -321,6 +328,27 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
         <div className="mt-12">
           <NearbyRestaurants city={listing.city} state={listing.state} currentListingId={listing.id} />
         </div>
+
+        {!listing.is_claimed && (
+          <div className="mt-12 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50 p-8 text-center">
+            <div className="text-3xl mb-3">🏷️</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Is this your business?</h3>
+            <p className="text-gray-600 mb-2 max-w-lg mx-auto">
+              This listing was added by the FilAm Network community. Claim it to add photos, update your details, respond to visitors, and get featured to thousands of Filipino-Americans actively searching for businesses like yours.
+            </p>
+            <p className="text-sm text-amber-700 font-medium mb-6">
+              Verified listings get 3x more visibility in our directory.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={`/claim-listing/${slug}`} className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-full transition-all hover:scale-105">
+                Claim This Listing →
+              </a>
+              <a href="/advertise" className="inline-block px-6 py-3 border-2 border-amber-500 text-amber-700 font-bold rounded-full hover:bg-amber-100 transition-all">
+                Learn About Advertising
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

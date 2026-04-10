@@ -232,6 +232,20 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
             ← Back to All Events
           </Link>
         </div>
+
+        <div className="mt-12 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50 p-8 text-center">
+          <div className="text-3xl mb-3">📣</div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Is this your event?</h3>
+          <p className="text-gray-600 mb-2 max-w-lg mx-auto">
+            Get your event featured to thousands of Filipino-Americans actively searching for things to do. Add more photos, highlight your sponsors, and drive more ticket sales.
+          </p>
+          <p className="text-sm text-amber-700 font-medium mb-6">
+            Featured events get 3x more visibility across FilipinoFoodNearMe.org and FilipinoEventsNearMe.org.
+          </p>
+          <a href="/advertise" className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-full transition-all hover:scale-105">
+            Feature This Event →
+          </a>
+        </div>
       </div>
     </div>
   )
