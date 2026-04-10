@@ -89,8 +89,6 @@ const nextConfig: NextConfig = {
       // via permanentRedirect() because App Router dynamic routes intercept
       // before next.config.ts redirects fire for matching page paths.
 
-      // Legacy claim-listing pages → add-business
-      { source: '/claim-listing/:path*', destination: '/add-business/',    permanent: true },
 
       // WordPress taxonomy wildcards → homepage
       { source: '/category/:path*',    destination: '/', permanent: true },
