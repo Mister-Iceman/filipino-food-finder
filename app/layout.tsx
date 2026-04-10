@@ -77,6 +77,13 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
+        <Script
+          id="mediavine-grow"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id","U2l0ZTozZjFjYTIyNC0xNjk0LTRmYzQtYjk1Yy1mMTRhNzRkOTU2YWM=");var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();`
+          }}
+        />
       </head>
       <body className={inter.className}>
         <Script
