@@ -212,14 +212,12 @@ export default async function EventsPage() {
                       )}
 
                       <div className="flex gap-2">
+                        <span className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm">
+                          Learn More
+                        </span>
                         {event.event_url && (
-                          <span className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm">
-                            Learn More
-                          </span>
-                        )}
-                        {event.ticket_url && (
-                          <span className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-lg font-semibold text-sm">
-                            Get Tickets
+                          <span className="flex-1 border border-blue-600 text-blue-600 text-center px-4 py-2 rounded-lg font-semibold text-sm">
+                            Visit Website →
                           </span>
                         )}
                       </div>

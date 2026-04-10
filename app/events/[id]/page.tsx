@@ -2,73 +2,130 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 86400
+export const dynamic = 'force-dynamic'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+const categoryColors: Record<string, string> = {
+  'festival':                 'bg-purple-100 text-purple-800',
+  'grand-opening':            'bg-green-100 text-green-800',
+  'pop-up':                   'bg-yellow-100 text-yellow-800',
+  'cooking-class':            'bg-orange-100 text-orange-800',
+  'community-event':          'bg-blue-100 text-blue-800',
+  'tasting-demo':             'bg-pink-100 text-pink-800',
+  'grand_opening':            'bg-green-100 text-green-800',
+  'pop_up':                   'bg-yellow-100 text-yellow-800',
+  'cooking_class':            'bg-orange-100 text-orange-800',
+  'community':                'bg-blue-100 text-blue-800',
+  'tasting':                  'bg-pink-100 text-pink-800',
+  'food-markets':             'bg-orange-100 text-orange-800',
+  'festivals-fiestas':        'bg-purple-100 text-purple-800',
+  'culture-heritage':         'bg-blue-100 text-blue-800',
+  'faith-tradition':          'bg-indigo-100 text-indigo-800',
+  'arts-music-entertainment': 'bg-pink-100 text-pink-800',
+  'community-family':         'bg-green-100 text-green-800',
+  'business-networking':      'bg-gray-100 text-gray-800',
+  'sports-wellness':          'bg-teal-100 text-teal-800',
+}
+
+const categoryLabels: Record<string, string> = {
+  'festival':                 '🎉 Festival',
+  'grand-opening':            '🎊 Grand Opening',
+  'pop-up':                   '🍱 Pop-Up',
+  'cooking-class':            '👨‍🍳 Cooking Class',
+  'community-event':          '🤝 Community Event',
+  'tasting-demo':             '🍴 Tasting & Demo',
+  'grand_opening':            '🎊 Grand Opening',
+  'pop_up':                   '🍱 Pop-Up',
+  'cooking_class':            '👨‍🍳 Cooking Class',
+  'community':                '🤝 Community Event',
+  'tasting':                  '🍴 Tasting & Demo',
+  'food-markets':             '🍽️ Food & Markets',
+  'festivals-fiestas':        '🎉 Festivals & Fiestas',
+  'culture-heritage':         '🏛️ Culture & Heritage',
+  'faith-tradition':          '⛪ Faith & Tradition',
+  'arts-music-entertainment': '🎭 Arts, Music & Ent.',
+  'community-family':         '👨‍👩‍👧 Community & Family',
+  'business-networking':      '💼 Business & Networking',
+  'sports-wellness':          '🏅 Sports & Wellness',
+}
+
+function formatDate(date: string) {
+  const [year, month, day] = date.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+function formatTime(time: string) {
+  const [hourStr, minuteStr] = time.split(':')
+  const hour = parseInt(hourStr, 10)
+  const period = hour >= 12 ? 'PM' : 'AM'
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour
+  return `${displayHour}:${minuteStr} ${period}`
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
-  const { data: raw } = await supabase
+
+  const { data: event } = await supabase
     .from('fenm_events')
     .select('*')
-    .eq('show_on_ffnm', true)
     .eq('id', id)
     .single()
 
-  if (!raw) {
-    return {
-      title: 'Event Not Found'
-    }
-  }
+  if (!event) return { title: 'Event Not Found' }
 
-  const event = { ...raw, event_date: raw.start_date, event_time: raw.start_time, location_name: raw.venue_name, address_street: raw.address }
+  const description = event.description
+    ? event.description.slice(0, 160)
+    : `Join us for ${event.title}`
 
   return {
     title: `${event.title} | Filipino Food Events`,
-    description: event.description || `Join us for ${event.title} on ${event.event_date}`
+    description,
+    alternates: {
+      canonical: `https://www.filipinofoodnearme.org/events/${id}`,
+    },
+    openGraph: {
+      title: event.title,
+      description,
+      ...(event.image_url ? { images: [{ url: event.image_url }] } : {}),
+    },
   }
 }
 
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
-  const { data: raw } = await supabase
+
+  const { data: event } = await supabase
     .from('fenm_events')
     .select('*')
-    .eq('show_on_ffnm', true)
     .eq('id', id)
     .single()
 
-  if (!raw) {
-    notFound()
-  }
+  if (!event) notFound()
 
-  const event = { ...raw, event_date: raw.start_date, event_time: raw.start_time, location_name: raw.venue_name, address_street: raw.address }
+  const startDate = event.start_date
+  const startTime = event.start_time
+  const endDate = event.end_date
+  const venueName = event.venue_name
+  const address = event.address
 
-  const categoryLabels: any = {
-    'festival': '🎉 Festival',
-    'grand_opening': '🏪 Grand Opening',
-    'pop_up': '🍽️ Pop-Up',
-    'cooking_class': '🎓 Cooking Class',
-    'community': '🎊 Community Event',
-    'tasting': '🎤 Tasting & Demo'
-  }
-
-  const formatDate = (date: string) => {
-    const [year, month, day] = date.split('-').map(Number)
-    const localDate = new Date(year, month - 1, day)
-    
-    return localDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+  const priceLabel = (() => {
+    if (event.is_free) return null
+    if (event.price_min != null && event.price_max != null) {
+      return `$${event.price_min}–$${event.price_max}`
+    }
+    if (event.price_min != null) return `From $${event.price_min}`
+    if (event.price_max != null) return `Up to $${event.price_max}`
+    return null
+  })()
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -79,9 +136,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {event.image_url && (
-            <div className="h-96 bg-gray-200 overflow-hidden">
-              <img 
-                src={event.image_url} 
+            <div className="h-80 md:h-96 overflow-hidden">
+              <img
+                src={event.image_url}
                 alt={event.title}
                 className="w-full h-full object-cover"
               />
@@ -89,70 +146,83 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
           )}
 
           <div className="p-8">
-            {event.is_featured && (
-              <div className="mb-4">
-                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-sm font-bold px-4 py-2 rounded-full">
-                  ⭐ FEATURED EVENT
+            {/* Badges row */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              {event.is_featured && (
+                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-sm font-bold px-4 py-1.5 rounded-full">
+                  ⭐ FEATURED
                 </span>
-              </div>
-            )}
+              )}
+              {event.category && categoryLabels[event.category] && (
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${categoryColors[event.category] ?? 'bg-gray-100 text-gray-800'}`}>
+                  {categoryLabels[event.category]}
+                </span>
+              )}
+              {event.is_free ? (
+                <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">
+                  ✅ Free Admission
+                </span>
+              ) : priceLabel ? (
+                <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                  🎟️ Ticketed · {priceLabel}
+                </span>
+              ) : (
+                <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                  🎟️ Ticketed Event
+                </span>
+              )}
+            </div>
 
-            {event.category && (
-              <p className="text-lg text-gray-600 mb-2">
-                {categoryLabels[event.category]}
-              </p>
-            )}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{event.title}</h1>
 
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">{event.title}</h1>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              {/* Left: Date + Location */}
+              <div className="space-y-5">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-500 uppercase mb-1">Date & Time</h3>
-                  <p className="text-lg text-gray-900">
-                    📅 {formatDate(event.event_date)}
-                    {event.event_time && (
-                      <><br /><span className="text-gray-600">🕐 {event.event_time}</span></>
-                    )}
-                    {event.end_date && (
-                      <><br /><span className="text-gray-600">Ends: {formatDate(event.end_date)}</span></>
-                    )}
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Date &amp; Time</h3>
+                  <p className="text-gray-900 font-medium">
+                    📅 {formatDate(startDate)}
                   </p>
+                  {startTime && (
+                    <p className="text-gray-600">🕐 {formatTime(startTime)}</p>
+                  )}
+                  {endDate && endDate !== startDate && (
+                    <p className="text-gray-500 text-sm mt-1">Ends: {formatDate(endDate)}</p>
+                  )}
                 </div>
 
-                {(event.location_name || event.address_street || event.city) && (
+                {(venueName || address || event.city) && (
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-1">Location</h3>
-                    <div className="text-lg text-gray-900">
-                      {event.location_name && <p className="font-semibold">📍 {event.location_name}</p>}
-                      {event.address_street && <p className="text-gray-600">{event.address_street}</p>}
-                      {event.city && event.state && (
-                        <p className="text-gray-600">{event.city}, {event.state} {event.zip}</p>
-                      )}
-                    </div>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Location</h3>
+                    {venueName && <p className="text-gray-900 font-medium">📍 {venueName}</p>}
+                    {address && <p className="text-gray-600">{address}</p>}
+                    {event.city && event.state && (
+                      <p className="text-gray-600">{event.city}, {event.state}{event.zip ? ` ${event.zip}` : ''}</p>
+                    )}
                   </div>
                 )}
               </div>
 
-              <div className="space-y-4">
-                {event.event_url && (
-                  <a 
-                    href={event.event_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center px-6 py-4 rounded-lg font-bold text-lg"
-                  >
-                    Learn More →
-                  </a>
-                )}
+              {/* Right: Action buttons */}
+              <div className="space-y-3 flex flex-col justify-start">
                 {event.ticket_url && (
-                  <a 
+                  <a
                     href={event.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full bg-green-600 hover:bg-green-700 text-white text-center px-6 py-4 rounded-lg font-bold text-lg"
+                    className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center px-6 py-4 rounded-lg font-bold text-lg transition-colors"
                   >
-                    Get Tickets 🎫
+                    Get Tickets →
+                  </a>
+                )}
+                {event.event_url && (
+                  <a
+                    href={event.event_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-center px-6 py-4 rounded-lg font-bold text-lg transition-colors"
+                  >
+                    Visit Event Page →
                   </a>
                 )}
               </div>
@@ -160,13 +230,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
             {event.description && (
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">About This Event</h3>
-                <div className="prose prose-lg max-w-none text-gray-700">
-                  <p className="whitespace-pre-wrap">{event.description}</p>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Event</h2>
+                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{event.description}</p>
               </div>
             )}
           </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/events" className="text-blue-600 hover:underline">
+            ← Back to All Events
+          </Link>
         </div>
       </div>
     </div>
