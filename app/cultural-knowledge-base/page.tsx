@@ -92,6 +92,27 @@ export default async function CulturalKnowledgeBasePage() {
               • To add future static articles: copy this card block and update
                 href, src, alt, title text, excerpt, and read time accordingly
               ────────────────────────────────────────────────────────────────── */}
+            <Link href="/cultural-knowledge-base/filipino-food-month-guide"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/filipino-food-month.jpg"
+                  alt="The Ultimate Guide to Filipino Food Month"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; History</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  The Ultimate Guide to Filipino Food Month
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  Every April, Filipino Food Month celebrates the Philippines&rsquo; rich culinary heritage. Learn the history behind Buwan ng Kalutong Pilipino and how to join the global feast.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
             <Link href="/culture/new-wave-filipino-american-cuisine"
               className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
               <div className="h-40 overflow-hidden bg-gray-100">
