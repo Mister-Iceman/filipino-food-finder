@@ -583,6 +583,94 @@ const MOCKUP_CONFIGS = [
   },
 ]
 
+function MockupKBArticle() {
+  return (
+    <div className="rounded-xl border-2 border-gray-200 overflow-hidden shadow-sm">
+      {/* Browser chrome */}
+      <div className="flex items-center gap-1 px-2 py-1.5" style={{ background: 'linear-gradient(135deg,#62438D,#92345A)' }}>
+        <div className="flex gap-0.5 mr-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+        </div>
+        <span className="text-[9px] font-bold text-white truncate">FilipinoFoodNearMe.org / cultural-knowledge-base</span>
+      </div>
+
+      {/* Article hero */}
+      <div className="px-3 py-2" style={{ background: '#F9F5FF' }}>
+        <div className="text-[8px] font-bold uppercase tracking-wide mb-1" style={{ color: '#62438D' }}>
+          Cultural Knowledge Base
+        </div>
+        <div className="text-[10px] font-bold text-gray-900 leading-tight mb-1">
+          The Long Life of Pancit: Filipino Noodle Culture
+        </div>
+        <div className="space-y-1">
+          <div className="h-1.5 bg-gray-200 rounded w-full" />
+          <div className="h-1.5 bg-gray-200 rounded w-4/5" />
+        </div>
+      </div>
+
+      {/* Article body (simulated) */}
+      <div className="px-3 py-2 bg-white">
+        <div className="space-y-1 mb-2">
+          <div className="h-1.5 bg-gray-100 rounded w-full" />
+          <div className="h-1.5 bg-gray-100 rounded w-full" />
+          <div className="h-1.5 bg-gray-100 rounded w-3/4" />
+        </div>
+
+        {/* Where to Try section */}
+        <div className="rounded-lg p-2 mt-2" style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+          <div className="text-[8px] font-bold text-gray-900 mb-1.5">Where to Try Pancit Near You</div>
+          <div className="grid grid-cols-3 gap-1">
+            {/* Sponsored card */}
+            <div
+              className="rounded p-1.5 flex flex-col gap-1"
+              style={{ background: '#fff', border: '2px solid #FBBF24' }}
+            >
+              <span
+                className="text-[6px] font-bold px-1 py-0.5 rounded-full self-start"
+                style={{ background: '#FEF3C7', color: '#D1880D' }}
+              >
+                Featured Sponsor
+              </span>
+              {/* Logo placeholder */}
+              <div
+                className="rounded flex items-center justify-center h-4"
+                style={{ border: '1px dashed #D1880D', background: '#FFFBEB' }}
+              >
+                <span className="text-[5px] font-bold" style={{ color: '#D1880D' }}>Your logo</span>
+              </div>
+              <div className="h-1 bg-gray-200 rounded w-full" />
+              <div className="h-1 bg-gray-200 rounded w-3/4" />
+              <div
+                className="text-[5px] font-bold text-white text-center rounded px-1 py-0.5 mt-0.5"
+                style={{ background: '#62438D' }}
+              >
+                View Listing
+              </div>
+            </div>
+            {/* Organic cards */}
+            {[0, 1].map((k) => (
+              <div key={k} className="rounded p-1.5 flex flex-col gap-1" style={{ background: '#fff', border: '1px solid #e5e7eb' }}>
+                <div className="h-1 bg-gray-200 rounded w-full" />
+                <div className="h-1 bg-gray-200 rounded w-3/4" />
+                <div className="h-1 bg-gray-100 rounded w-1/2" />
+                <div className="h-3 bg-gray-100 rounded w-full mt-0.5" />
+                <div
+                  className="text-[5px] font-bold text-white text-center rounded px-1 py-0.5"
+                  style={{ background: '#62438D' }}
+                >
+                  View Listing
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function PlacementPreviews() {
   const [open, setOpen] = useState(false)
   const [mobileViews, setMobileViews] = useState([false, false, false, false])
@@ -645,23 +733,18 @@ function PlacementPreviews() {
             Your featured ad appears in dedicated sponsored slots — always clearly above organic results.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
-            {MOCKUP_CONFIGS.map((m, i) => {
+            {MOCKUP_CONFIGS.slice(0, 2).map((m, i) => {
               const isMobile = mobileViews[i]
-              const accent = m.site === 'ffnm' ? '#62438D' : '#085041'
-              const siteLabel =
-                m.site === 'ffnm' ? '🍽️ FilipinoFoodNearMe.org' : '📅 FilipinoEventsNearMe.org'
+              const accent = '#62438D'
+              const siteLabel = '🍽️ FilipinoFoodNearMe.org'
 
               return (
                 <div key={i} className="flex flex-col gap-2">
-                  {/* Header row */}
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
-                        {siteLabel}
-                      </p>
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{siteLabel}</p>
                       <p className="text-sm font-semibold text-gray-800">{m.label}</p>
                     </div>
-                    {/* Desktop / Mobile toggle */}
                     <div className="flex gap-1 shrink-0 mt-0.5">
                       {(['Desktop', 'Mobile'] as const).map((view) => {
                         const active = view === 'Mobile' ? isMobile : !isMobile
@@ -683,8 +766,6 @@ function PlacementPreviews() {
                       })}
                     </div>
                   </div>
-
-                  {/* Mockup frame */}
                   <div
                     className="rounded-xl border-2 border-gray-200 overflow-hidden shadow-sm transition-all duration-200 mx-auto w-full"
                     style={{ maxWidth: isMobile ? '200px' : '100%' }}
@@ -693,13 +774,75 @@ function PlacementPreviews() {
                     <MockupHero site={m.site} page={m.page} />
                     <MockupBody site={m.site} page={m.page} isMobile={isMobile} />
                   </div>
-
-                  {/* Package badge */}
                   <p className="text-xs text-gray-500">
-                    <span className="font-semibold" style={{ color: accent }}>
-                      Included in:
-                    </span>{' '}
-                    {m.packages}
+                    <span className="font-semibold" style={{ color: accent }}>Included in:</span>{' '}{m.packages}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Cultural KB article preview */}
+          <div className="mt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">📚 FilipinoFoodNearMe.org — Cultural Knowledge Base</p>
+            </div>
+            <p className="text-sm font-semibold text-gray-800">Cultural Knowledge Base article</p>
+            <p className="text-xs text-gray-500 mb-1">Your business featured in high-traffic educational content</p>
+            <MockupKBArticle />
+            <p className="text-xs text-gray-500">
+              <span className="font-semibold" style={{ color: '#62438D' }}>Included in:</span>{' '}
+              Regional Spotlight + Cultural KB, National Partner + Cultural KB, Heritage Sponsor
+            </p>
+            <p className="text-xs text-gray-400 italic">
+              Sponsor a specific Cultural KB article and get featured in the &ldquo;Where to Try&rdquo; section reaching thousands of Filipino food enthusiasts.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mt-6">
+            {MOCKUP_CONFIGS.slice(2).map((m, i) => {
+              const isMobile = mobileViews[i + 2]
+              const accent = '#085041'
+              const siteLabel = '📅 FilipinoEventsNearMe.org'
+
+              return (
+                <div key={i} className="flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">{siteLabel}</p>
+                      <p className="text-sm font-semibold text-gray-800">{m.label}</p>
+                    </div>
+                    <div className="flex gap-1 shrink-0 mt-0.5">
+                      {(['Desktop', 'Mobile'] as const).map((view) => {
+                        const active = view === 'Mobile' ? isMobile : !isMobile
+                        return (
+                          <button
+                            key={view}
+                            type="button"
+                            onClick={() => setView(i + 2, view === 'Mobile')}
+                            className="text-[10px] px-2 py-1 rounded-full font-semibold border transition-all"
+                            style={{
+                              background: active ? accent : 'transparent',
+                              color: active ? '#fff' : '#6b7280',
+                              borderColor: active ? accent : '#e5e7eb',
+                            }}
+                          >
+                            {view}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-gray-200 overflow-hidden shadow-sm transition-all duration-200 mx-auto w-full"
+                    style={{ maxWidth: isMobile ? '200px' : '100%' }}
+                  >
+                    <MockupTopbar site={m.site} />
+                    <MockupHero site={m.site} page={m.page} />
+                    <MockupBody site={m.site} page={m.page} isMobile={isMobile} />
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    <span className="font-semibold" style={{ color: accent }}>Included in:</span>{' '}{m.packages}
                   </p>
                 </div>
               )
