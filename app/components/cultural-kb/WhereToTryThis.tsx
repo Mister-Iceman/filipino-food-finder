@@ -99,12 +99,25 @@ export default function WhereToTryThis({ dishName, sponsoredBusiness }: Props) {
         ))}
       </div>
 
-      <p className="text-xs text-gray-400 mt-4 text-center">
-        Want your restaurant featured here?{' '}
-        <Link href="/advertise" className="text-purple-700 hover:underline font-medium">
-          Learn about Cultural KB sponsorships →
+      <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl px-5 py-4"
+        style={{ background: 'linear-gradient(135deg, #fffbeb, #fff7ed)' }}>
+        <div className="flex items-start gap-3">
+          <span className="text-2xl leading-none mt-0.5">⭐</span>
+          <div>
+            <p className="font-bold text-gray-900 text-sm">Feature Your Business Here</p>
+            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+              Sponsor this article and get your restaurant highlighted to thousands of Filipino food lovers searching for authentic {dishName}.
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/advertise"
+          className="shrink-0 text-sm font-bold px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90 whitespace-nowrap"
+          style={{ background: '#62438D' }}
+        >
+          Learn About Sponsorships →
         </Link>
-      </p>
+      </div>
     </div>
   )
 }
