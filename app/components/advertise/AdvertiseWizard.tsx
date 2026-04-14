@@ -931,16 +931,16 @@ export default function AdvertiseWizard() {
       }
     }
     if (step === 3) {
+      if (selectedFfnm?.val === 'heritage' && !kbArticle) {
+        setStepError('Please select a Cultural KB article to sponsor.')
+        return false
+      }
       if ((site === 'ffnm' || site === 'both') && !businessNameFfnm.trim()) {
         setStepError('Please enter your business name.')
         return false
       }
       if ((site === 'fenm' || site === 'both') && !eventNameFenm.trim()) {
         setStepError('Please enter your event name.')
-        return false
-      }
-      if (selectedFfnm?.val === 'heritage' && !kbArticle) {
-        setStepError('Please select a Cultural KB article for the Heritage Sponsor package.')
         return false
       }
     }
