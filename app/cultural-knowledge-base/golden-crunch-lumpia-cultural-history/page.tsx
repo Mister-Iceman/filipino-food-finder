@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ArticleReadTracker from '../../components/ArticleReadTracker'
+import WhereToTryThis from '../../components/cultural-kb/WhereToTryThis'
 
 export const metadata: Metadata = {
   title: 'The Golden Crunch: A Cultural History of Lumpia, from Ancient Origins to Global Sensation | FilipinoFoodNearMe.org',
@@ -216,6 +217,8 @@ export default function GoldenCrunchLumpiaCulturalHistoryPage() {
           </p>
 
         </div>
+
+        <WhereToTryThis dishName="Lumpia" />
 
         {/* ── CLOSING CTA ── */}
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ArticleReadTracker from '../../components/ArticleReadTracker'
+import WhereToTryThis from '../../components/cultural-kb/WhereToTryThis'
 
 export const metadata: Metadata = {
   title: 'Beyond Ube: The Ultimate Guide to Filipino Desserts, Kakanin, and Kapeng Barako | FilipinoFoodNearMe.org',
@@ -168,6 +169,8 @@ export default function FilipinoSweetToothPage() {
             The Philippines has a rich, often overlooked coffee and cacao culture. <strong>Kapeng Barako</strong> (meaning &ldquo;macho&rdquo; coffee) is a rare, strong-flavored Liberica coffee varietal grown in the mountains of Batangas &mdash; it perfectly cuts through the sweetness of Filipino pastries. Traditional <strong>Tsokolate</strong> is made by melting pure roasted cacao tablets (<em>tablea</em>) in boiling water or milk, resulting in a thick, rich, earthy hot chocolate brought to the Philippines via the Acapulco-Manila galleon trade.
           </p>
         </div>
+
+        <WhereToTryThis dishName="Halo-Halo" />
 
         {/* ── CLOSING CTA ── */}
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">

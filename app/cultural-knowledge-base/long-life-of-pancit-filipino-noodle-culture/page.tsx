@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ArticleReadTracker from '../../components/ArticleReadTracker'
+import WhereToTryThis from '../../components/cultural-kb/WhereToTryThis'
 
 export const metadata: Metadata = {
   title: 'The Long Life of Pancit: Unraveling the Philippines\' Noodle Culture | FilipinoFoodNearMe.org',
@@ -169,6 +170,8 @@ export default function LongLifeOfPancitPage() {
             {' '}for the real thing.
           </p>
         </aside>
+
+        <WhereToTryThis dishName="Pancit" />
 
         {/* ── CLOSING CTA ── */}
         <div className="mt-14 bg-gradient-to-r from-[#62438D] to-[#92345A] rounded-2xl p-8 text-center text-white">

@@ -743,6 +743,11 @@ export default function AdvertiseWizard() {
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
 
+  // Step 3 - Cultural KB preferences (regional_kb, national_kb, heritage packages)
+  const [kbArticle, setKbArticle] = useState('')
+  const [kbTiming, setKbTiming] = useState('flexible')
+  const [kbSpecialty, setKbSpecialty] = useState('')
+
   // UI state
   const [stepError, setStepError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -778,6 +783,10 @@ export default function AdvertiseWizard() {
       }
       if ((site === 'fenm' || site === 'both') && !eventNameFenm.trim()) {
         setStepError('Please enter your event name.')
+        return false
+      }
+      if (selectedFfnm?.val === 'heritage' && !kbArticle) {
+        setStepError('Please select a Cultural KB article for the Heritage Sponsor package.')
         return false
       }
     }
@@ -844,6 +853,9 @@ export default function AdvertiseWizard() {
           geo_fenm: geoFenm,
           images_ffnm: imagesFfnm.filter(Boolean),
           images_fenm: effectiveImagesFenm.filter(Boolean),
+          kb_article: kbArticle || null,
+          kb_timing: kbTiming || null,
+          kb_specialty: kbSpecialty || null,
         }),
       })
 
@@ -1237,6 +1249,86 @@ export default function AdvertiseWizard() {
                       </p>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Cultural KB Preferences — only for KB packages */}
+              {selectedFfnm && ['regional_kb', 'national_kb', 'heritage'].includes(selectedFfnm.val) && (
+                <div className="mt-8 p-5 rounded-xl border-2 border-amber-200 bg-amber-50 space-y-5">
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-0.5">📚 Cultural Knowledge Base Preferences</h3>
+                    <p className="text-xs text-gray-500">
+                      Tell us which article you&rsquo;d like to be featured in. Not sure yet? You can finalize article selection via email after checkout.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Which Cultural KB article interests you?{' '}
+                      {selectedFfnm.val === 'heritage' && <span className="text-red-500">*</span>}
+                      {selectedFfnm.val !== 'heritage' && <span className="text-gray-400">(optional)</span>}
+                    </label>
+                    <select
+                      value={kbArticle}
+                      onChange={(e) => setKbArticle(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 bg-white"
+                      style={{ focusRingColor: '#D1880D' } as React.CSSProperties}
+                    >
+                      <option value="">Select an article…</option>
+                      <option>New Wave Filipino-American Cuisine</option>
+                      <option>Regional Masterpieces</option>
+                      <option>Ultimate Sawsawan Guide</option>
+                      <option>Beyond Ube: Filipino Desserts</option>
+                      <option>Golden Crunch Lumpia</option>
+                      <option>Balut, Betamax &amp; Beyond</option>
+                      <option>Long Life of Pancit</option>
+                      <option>Sour Power and Sawsawan</option>
+                      <option>Tapestry of Tastes</option>
+                      <option>Sabaw Season</option>
+                      <option>Filipino Food Month Guide</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Preferred spotlight timing
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { val: 'this_quarter', label: 'This Quarter' },
+                        { val: 'next_quarter', label: 'Next Quarter' },
+                        { val: 'flexible', label: 'Flexible' },
+                      ].map((opt) => (
+                        <label key={opt.val} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="kbTiming"
+                            value={opt.val}
+                            checked={kbTiming === opt.val}
+                            onChange={() => setKbTiming(opt.val)}
+                            className="accent-amber-500"
+                          />
+                          <span className="text-sm text-gray-700">{opt.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      What specialty aligns with this article?{' '}
+                      <span className="text-gray-400">(optional, max 80 chars)</span>
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={80}
+                      value={kbSpecialty}
+                      onChange={(e) => setKbSpecialty(e.target.value)}
+                      placeholder="e.g. We specialize in traditional Ilocano cuisine"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    />
+                    <p className="text-xs text-gray-400 text-right mt-0.5">{kbSpecialty.length}/80</p>
+                  </div>
                 </div>
               )}
 
