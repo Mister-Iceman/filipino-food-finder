@@ -50,6 +50,61 @@ export const PACKAGES = {
         'Optional category exclusivity',
         'Priority reporting + screenshot proof'
       ]
+    },
+    {
+      val: 'regional_kb',
+      name: 'Regional Spotlight + Cultural KB',
+      stripePrice: 'price_1TMCnmGfgbxgwcRZ6fX9ZbAf',
+      standardPrice: 199,
+      foundingPrice: 149,
+      savings: 50,
+      cadence: '/mo',
+      geo: 'State or Region',
+      features: [
+        'Everything in Regional Spotlight',
+        'Featured in 1 Cultural KB article per quarter',
+        'Logo in article "Where to Try" section',
+        'Priority in Cultural KB email features',
+        'Homepage rotation slot',
+        'Up to 3 city/category placements'
+      ]
+    },
+    {
+      val: 'national_kb',
+      name: 'National Partner + Cultural KB',
+      stripePrice: 'price_1TMCoqGfgbxgwcRZVz6sXXeE',
+      standardPrice: 399,
+      foundingPrice: 299,
+      savings: 100,
+      cadence: '/mo',
+      geo: 'Nationwide',
+      features: [
+        'Everything in National Partner',
+        'Featured in 2 Cultural KB articles per quarter',
+        '"Where to Try" priority placement',
+        'Priority in Cultural KB email features',
+        'Homepage priority slot (top position)',
+        '5 placements across key pages',
+        'Optional category exclusivity'
+      ]
+    },
+    {
+      val: 'heritage',
+      name: 'Heritage Sponsor',
+      stripePrice: 'price_1TMCpVGfgbxgwcRZXau39CdN',
+      standardPrice: 199,
+      foundingPrice: 199,
+      savings: 0,
+      cadence: '/article',
+      geo: 'Single article',
+      features: [
+        'Sponsor a specific Cultural KB article',
+        'Logo placement at top of article',
+        'Brand mention woven into content',
+        'Link to your FFNM listing',
+        'Social media shoutout when published',
+        'Quarterly Cultural Partners highlight'
+      ]
     }
   ],
   fenm: [
