@@ -674,12 +674,23 @@ function MockupKBArticle() {
 function PlacementPreviews() {
   const [open, setOpen] = useState(false)
   const [mobileViews, setMobileViews] = useState([false, false, false, false])
+  const sectionRef = useRef<HTMLDivElement>(null)
 
   const setView = (i: number, mobile: boolean) =>
     setMobileViews((prev) => prev.map((v, idx) => (idx === i ? mobile : v)))
 
+  const toggle = () => {
+    const opening = !open
+    setOpen(opening)
+    if (opening) {
+      setTimeout(() => {
+        sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+    }
+  }
+
   return (
-    <div className="mb-8">
+    <div className="mb-8" ref={sectionRef}>
       {/* Gold badge above banner */}
       <div className="flex mb-2">
         <span
@@ -692,7 +703,7 @@ function PlacementPreviews() {
 
       {/* Banner toggle */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={toggle}
         className="w-full flex items-center justify-between px-5 py-4 text-left transition-all"
         style={{
           background: 'linear-gradient(135deg,#62438D,#92345A)',
