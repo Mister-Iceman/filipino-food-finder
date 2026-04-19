@@ -135,13 +135,10 @@ export default function AboutPage() {
                 and other details before visiting.
               </p>
               <p>
-                <strong className="text-gray-900">Ratings & Reviews:</strong> Star ratings and review counts are sourced from 
-                Google Maps and reflect opinions of Google users, not Filipino Food Near Me. We do not verify, create, or moderate 
-                these ratings. For current ratings and full reviews, visit the business's Google Maps page.
+                <strong className="text-gray-900">Ratings & Reviews:</strong> Star ratings and review counts displayed on listing pages represent community-sourced data aggregated from public sources. Filipino Food Near Me does not create or moderate individual ratings. For the most current information, contact the business directly.
               </p>
               <p>
-                <strong className="text-gray-900">Google Maps:</strong> Links to Google Maps are provided for convenience. 
-                Google Maps™ is a trademark of Google LLC. We are not affiliated with Google.
+                <strong className="text-gray-900">Map Links:</strong> Links to maps and directions are provided for user convenience to help visitors locate businesses. We are not affiliated with any mapping service.
               </p>
             </div>
           </section>

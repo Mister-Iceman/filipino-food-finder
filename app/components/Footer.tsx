@@ -134,8 +134,9 @@ export default function Footer() {
               <a
                 href="mailto:info@filipinofoodnearme.org"
                 className="text-gray-400 hover:text-white transition-colors block mb-4"
-                dangerouslySetInnerHTML={{ __html: '&#105;&#110;&#102;&#111;&#64;&#102;&#105;&#108;&#105;&#112;&#105;&#110;&#111;&#102;&#111;&#111;&#100;&#110;&#101;&#97;&#114;&#109;&#101;&#46;&#111;&#114;&#103;' }}
-              />
+              >
+                info@filipinofoodnearme.org
+              </a>
               <div className="mb-4">
                 <SocialLinks />
               </div>
@@ -152,10 +153,9 @@ export default function Footer() {
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-center md:text-left">
                 <p className="text-gray-400 text-sm">© 2026 Filipino Food Near Me. All rights reserved.</p>
-                <p className="text-gray-500 text-xs mt-1">Google Maps™ is a trademark of Google LLC.</p>
               </div>
               <p className="text-gray-500 text-xs text-center md:text-right max-w-md">
-                <strong>Disclaimer:</strong> Information may not be current. Ratings from Google Maps. Contact businesses directly to verify details.
+                <strong>Disclaimer:</strong> Information may not be current. Ratings reflect community-sourced data. Contact businesses directly to verify details.
               </p>
             </div>
           </div>

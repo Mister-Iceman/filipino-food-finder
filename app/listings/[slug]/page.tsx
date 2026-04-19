@@ -68,15 +68,43 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     permanentRedirect('/directory/')
   }
 
-  const isGrocery = 
+  const isGrocery =
     listing.category_primary?.toLowerCase().includes('supermarket') ||
     listing.category_primary?.toLowerCase().includes('grocery') ||
     listing.category_primary?.toLowerCase().includes('market')
 
   const category = isGrocery ? 'grocery' : 'restaurant'
 
+  const STATE_TO_SLUG: Record<string, string> = {
+    'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
+    'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
+    'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
+    'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
+    'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
+    'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
+    'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
+    'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
+    'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
+    'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming',
+    'DC': 'district-of-columbia',
+  }
+  const stateSlug = STATE_TO_SLUG[listing.state] || listing.state.toLowerCase()
+  const citySlug = listing.city?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || ''
+
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
   const listingUrl = `${baseUrl}/listings/${slug}`
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'Directory', item: `${baseUrl}/directory` },
+      { '@type': 'ListItem', position: 3, name: listing.state, item: `${baseUrl}/states/${stateSlug}` },
+      { '@type': 'ListItem', position: 4, name: listing.city, item: `${baseUrl}/${stateSlug}/${citySlug}` },
+      { '@type': 'ListItem', position: 5, name: listing.name, item: listingUrl },
+    ],
+  }
 
   const schema = {
     '@context': 'https://schema.org',
@@ -132,10 +160,14 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <div className="max-w-7xl mx-auto px-4">
         <nav className="text-sm mb-6 text-gray-600" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-2">
+          <ol className="flex items-center space-x-2 flex-wrap gap-y-1">
             <li>
               <Link href="/" className="hover:underline hover:text-blue-600">Home</Link>
             </li>
@@ -145,13 +177,15 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
             </li>
             <li><span className="text-gray-400">/</span></li>
             <li>
-              <Link href={`/states/${listing.state.toLowerCase()}`} className="hover:underline hover:text-blue-600">
+              <Link href={`/states/${stateSlug}`} className="hover:underline hover:text-blue-600">
                 {listing.state}
               </Link>
             </li>
             <li><span className="text-gray-400">/</span></li>
             <li>
-              <span className="text-gray-900 font-medium">{listing.city}</span>
+              <Link href={`/${stateSlug}/${citySlug}`} className="hover:underline hover:text-blue-600">
+                {listing.city}
+              </Link>
             </li>
             <li><span className="text-gray-400">/</span></li>
             <li className="text-gray-500">{listing.name}</li>
@@ -320,7 +354,44 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className="mt-12">
+        {/* Internal links: city, state, category, Cultural KB */}
+        <div className="mt-12 bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Explore Filipino Food Near You</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={`/${stateSlug}/${citySlug}`}
+              className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              📍 Filipino Food in {listing.city}
+            </Link>
+            <Link
+              href={`/states/${stateSlug}`}
+              className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              🗺️ Filipino Food in {listing.state}
+            </Link>
+            <Link
+              href={`/directory?category=${encodeURIComponent(listing.category_primary || 'Restaurant')}`}
+              className="inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              🍽️ Browse {listing.category_primary || 'Restaurants'}
+            </Link>
+            <Link
+              href="/cultural-knowledge-base"
+              className="inline-flex items-center gap-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              📖 Filipino Food Culture
+            </Link>
+            <Link
+              href="/cultural-knowledge-base/ultimate-sawsawan-guide"
+              className="inline-flex items-center gap-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              🥫 The Sawsawan Guide
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-8">
           <NearbyRestaurants city={listing.city} state={listing.state} currentListingId={listing.id} />
         </div>
 

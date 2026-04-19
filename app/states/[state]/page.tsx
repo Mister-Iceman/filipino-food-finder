@@ -219,8 +219,23 @@ export default async function StatePage({ params }: StatePageProps) {
 
   const enhancedCities = new Set(cityPages?.map(cp => cp.city) || [])
 
+  const siteUrl = 'https://filipinofoodnearme.org'
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'Directory', item: `${siteUrl}/directory` },
+      { '@type': 'ListItem', position: 3, name: stateInfo.full, item: `${siteUrl}/states/${state}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="max-w-7xl mx-auto px-4">
         <nav className="text-sm mb-6 text-gray-600">
           <Link href="/" className="hover:underline">Home</Link>
