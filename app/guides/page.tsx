@@ -203,17 +203,6 @@ export default async function GuidesPage() {
           </div>
         </div>
 
-        {/* Coming Soon */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-8 md:p-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            More Guides Coming Soon
-          </h2>
-          <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
-            We're building comprehensive guides for more cities across America. Each guide includes cultural 
-            history, neighborhood highlights, food influences, and the most memorable Filipino restaurants.
-          </p>
-        </div>
-
         {/* CTA */}
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 max-w-4xl mx-auto">

@@ -90,7 +90,7 @@ export default async function CommunityPartnersPage() {
           </>
         ) : (
           <div className="text-center py-12 mb-16">
-            <p className="text-gray-500 text-lg">Partner announcements coming soon.</p>
+            <p className="text-gray-500 text-lg">Partner announcements will be listed here.</p>
           </div>
         )}
 

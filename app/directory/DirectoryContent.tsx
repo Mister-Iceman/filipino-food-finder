@@ -374,7 +374,9 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     return ''
   }
 
+  const allCategoryValues = new Set(listings.map((l: any) => l.category_primary).filter(Boolean))
   const categories = ['Restaurant', 'Supermarket & Grocery', 'Bakery, Dessert & Cafe', 'Quick Bites & Turo-Turo', 'Food Truck & Pop-Up']
+    .filter(cat => allCategoryValues.has(cat))
   const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
   const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE)
@@ -406,28 +408,25 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
           </p>
 
           {/* Category Quick Links */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-            <Link href="/directory?category=Restaurant" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
-              <div className="text-3xl mb-2">🍽️</div>
-              <div className="font-semibold text-gray-900">Restaurants</div>
-            </Link>
-            <Link href="/directory?category=Supermarket%20%26%20Grocery" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
-              <div className="text-3xl mb-2">🛒</div>
-              <div className="font-semibold text-gray-900">Grocery</div>
-            </Link>
-            <Link href="/directory?category=Bakery%2C%20Dessert%20%26%20Cafe" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
-              <div className="text-3xl mb-2">🥐</div>
-              <div className="font-semibold text-gray-900">Bakeries</div>
-            </Link>
-            <Link href="/directory?category=Quick%20Bites%20%26%20Turo-Turo" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
-              <div className="text-3xl mb-2">🌮</div>
-              <div className="font-semibold text-gray-900">Quick Bites</div>
-            </Link>
-            <Link href="/directory?category=Food%20Truck%20%26%20Pop-Up" className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
-              <div className="text-3xl mb-2">🚚</div>
-              <div className="font-semibold text-gray-900">Food Trucks</div>
-            </Link>
-          </div>
+          {(() => {
+            const quickLinks = [
+              { cat: 'Restaurant', href: '/directory?category=Restaurant', emoji: '🍽️', label: 'Restaurants' },
+              { cat: 'Supermarket & Grocery', href: '/directory?category=Supermarket%20%26%20Grocery', emoji: '🛒', label: 'Grocery' },
+              { cat: 'Bakery, Dessert & Cafe', href: '/directory?category=Bakery%2C%20Dessert%20%26%20Cafe', emoji: '🥐', label: 'Bakeries' },
+              { cat: 'Quick Bites & Turo-Turo', href: '/directory?category=Quick%20Bites%20%26%20Turo-Turo', emoji: '🌮', label: 'Quick Bites' },
+              { cat: 'Food Truck & Pop-Up', href: '/directory?category=Food%20Truck%20%26%20Pop-Up', emoji: '🚚', label: 'Food Trucks' },
+            ].filter(link => allCategoryValues.has(link.cat))
+            return (
+              <div className={`grid grid-cols-2 gap-4 mb-6 ${quickLinks.length <= 3 ? 'md:grid-cols-3' : 'md:grid-cols-5'}`}>
+                {quickLinks.map(link => (
+                  <Link key={link.cat} href={link.href} className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+                    <div className="text-3xl mb-2">{link.emoji}</div>
+                    <div className="font-semibold text-gray-900">{link.label}</div>
+                  </Link>
+                ))}
+              </div>
+            )
+          })()}
         </div>
 
         {/* Search + Filter Panel */}

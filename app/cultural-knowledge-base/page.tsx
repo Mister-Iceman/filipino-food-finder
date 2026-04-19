@@ -434,15 +434,6 @@ export default async function CulturalKnowledgeBasePage() {
           </div>
         </div>
 
-        {/* Empty state */}
-        {(!articles || articles.length === 0) && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📖</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Articles Coming Soon</h2>
-            <p className="text-gray-500 max-w-md mx-auto">We're writing guides, stories, and deep dives into Filipino food culture. Check back soon — or explore the directory in the meantime.</p>
-            <Link href="/directory" className="inline-block mt-6 bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-purple-800 transition-colors">Browse the Directory</Link>
-          </div>
-        )}
 
         {/* Explore Filipino Dishes */}
         <div className="mt-16 mb-16">

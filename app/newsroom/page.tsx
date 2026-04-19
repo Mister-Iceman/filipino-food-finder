@@ -80,8 +80,6 @@ export default async function NewsroomPage() {
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">📰</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Press Releases Coming Soon</h2>
             <p className="text-gray-500 max-w-md mx-auto">For immediate press inquiries, reach us at info@filipinofoodnearme.org</p>
           </div>
         )}

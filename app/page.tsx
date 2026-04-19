@@ -53,6 +53,12 @@ export default async function HomePage() {
 
   const cityCount = new Set(cityRows?.map(r => r.city).filter(Boolean)).size
 
+  // Fetch active categories
+  const { data: categoryRows } = await supabase
+    .from('listings')
+    .select('category_primary')
+  const activeCategories = new Set(categoryRows?.map((r: any) => r.category_primary).filter(Boolean) || [])
+
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
 
@@ -355,70 +361,80 @@ export default async function HomePage() {
           </h2>
           <nav aria-label="Browse by business category">
             <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 list-none">
-              <li>
-                <Link 
-                  href="/directory?category=Restaurant" 
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
-                  aria-label="Browse Filipino restaurants"
-                >
-                  <span className="text-6xl mb-4 block" role="img" aria-label="Restaurant">🍽️</span>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                    Restaurants
-                  </h3>
-                </Link>
-              </li>
-              
-              <li>
-                <Link 
-                  href="/directory?category=Supermarket%20%26%20Grocery" 
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
-                  aria-label="Browse Filipino grocery stores and markets"
-                >
-                  <span className="text-6xl mb-4 block" role="img" aria-label="Grocery store">🛒</span>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                    Grocery & Markets
-                  </h3>
-                </Link>
-              </li>
-              
-              <li>
-                <Link 
-                  href="/directory?category=Bakery%2C%20Dessert%20%26%20Cafe" 
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
-                  aria-label="Browse Filipino bakeries and cafes"
-                >
-                  <span className="text-6xl mb-4 block" role="img" aria-label="Bakery">🥐</span>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                    Bakery & Cafe
-                  </h3>
-                </Link>
-              </li>
-              
-              <li>
-                <Link 
-                  href="/directory?category=Quick%20Bites%20%26%20Turo-Turo" 
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
-                  aria-label="Browse Filipino quick bites and turo-turo"
-                >
-                  <span className="text-6xl mb-4 block" role="img" aria-label="Quick food">🌮</span>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                    Quick Bites
-                  </h3>
-                </Link>
-              </li>
-              
-              <li>
-                <Link 
-                  href="/directory?category=Food%20Truck%20%26%20Pop-Up" 
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
-                  aria-label="Browse Filipino food trucks"
-                >
-                  <span className="text-6xl mb-4 block" role="img" aria-label="Food truck">🚚</span>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                    Food Trucks
-                  </h3>
-                </Link>
-              </li>
+              {activeCategories.has('Restaurant') && (
+                <li>
+                  <Link
+                    href="/directory?category=Restaurant"
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
+                    aria-label="Browse Filipino restaurants"
+                  >
+                    <span className="text-6xl mb-4 block" role="img" aria-label="Restaurant">🍽️</span>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Restaurants
+                    </h3>
+                  </Link>
+                </li>
+              )}
+
+              {activeCategories.has('Supermarket & Grocery') && (
+                <li>
+                  <Link
+                    href="/directory?category=Supermarket%20%26%20Grocery"
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
+                    aria-label="Browse Filipino grocery stores and markets"
+                  >
+                    <span className="text-6xl mb-4 block" role="img" aria-label="Grocery store">🛒</span>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Grocery & Markets
+                    </h3>
+                  </Link>
+                </li>
+              )}
+
+              {activeCategories.has('Bakery, Dessert & Cafe') && (
+                <li>
+                  <Link
+                    href="/directory?category=Bakery%2C%20Dessert%20%26%20Cafe"
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
+                    aria-label="Browse Filipino bakeries and cafes"
+                  >
+                    <span className="text-6xl mb-4 block" role="img" aria-label="Bakery">🥐</span>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Bakery & Cafe
+                    </h3>
+                  </Link>
+                </li>
+              )}
+
+              {activeCategories.has('Quick Bites & Turo-Turo') && (
+                <li>
+                  <Link
+                    href="/directory?category=Quick%20Bites%20%26%20Turo-Turo"
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
+                    aria-label="Browse Filipino quick bites and turo-turo"
+                  >
+                    <span className="text-6xl mb-4 block" role="img" aria-label="Quick food">🌮</span>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Quick Bites
+                    </h3>
+                  </Link>
+                </li>
+              )}
+
+              {activeCategories.has('Food Truck & Pop-Up') && (
+                <li>
+                  <Link
+                    href="/directory?category=Food%20Truck%20%26%20Pop-Up"
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center hover:scale-105 block"
+                    aria-label="Browse Filipino food trucks"
+                  >
+                    <span className="text-6xl mb-4 block" role="img" aria-label="Food truck">🚚</span>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Food Trucks
+                    </h3>
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </section>

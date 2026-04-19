@@ -162,11 +162,6 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">{listing.name}</h1>
-              {!listing.is_claimed && (
-                <span className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 px-2 py-0.5 rounded-full font-medium mb-3">
-                  ⚠️ Unverified Listing
-                </span>
-              )}
               <p className="text-xl text-gray-600 mb-6">{listing.category_primary}</p>
 
               {listing.is_pickup_only && (
