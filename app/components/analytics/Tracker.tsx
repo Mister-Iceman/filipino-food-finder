@@ -4,6 +4,32 @@ import {
   createContext, useContext, useEffect, useRef, useCallback, ReactNode,
 } from 'react'
 import { usePathname } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
+
+// ─── Direct Supabase client (eliminates /api/track/* serverless invocations) ──
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+/**
+ * keepalive fetch to Supabase REST API — used for page-exit writes that must
+ * survive navigation (equivalent to navigator.sendBeacon but with auth headers).
+ */
+function restFetch(table: string, method: 'POST' | 'PATCH', data: object, filter = '') {
+  fetch(`${SUPABASE_URL}/rest/v1/${table}${filter ? `?${filter}` : ''}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify(data),
+    keepalive: true,
+  }).catch(() => {})
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -53,23 +79,6 @@ function getOrCreate(storage: Storage, key: string, factory: () => string): stri
 function uuid(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
-}
-
-function beacon(url: string, data: object) {
-  try {
-    navigator.sendBeacon(url, JSON.stringify(data))
-  } catch {
-    // silently ignore
-  }
-}
-
-function post(url: string, data: object) {
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-    keepalive: true,
-  }).catch(() => {})
 }
 
 function getUTMParams(): Record<string, string | null> {
@@ -132,7 +141,6 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
   // Page-level tracking state
   const pageStartRef = useRef<number>(Date.now())
   const maxScrollRef = useRef<number>(0)
-  const pageViewIdRef = useRef<string>('')
   const pagePathRef = useRef<string>('')
   const stepRef = useRef<number>(0)
 
@@ -149,29 +157,30 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
     if (!sessionStartedRef.current) {
       sessionStartedRef.current = true
       const utm = getUTMParams()
-      post('/api/track/session', {
+      // Direct Supabase write — zero serverless invocations
+      supabase.from('sessions').upsert({
         id: sessionIdRef.current,
         visitor_id: visitorIdRef.current,
-        action: 'start',
         entry_page: window.location.pathname,
         referrer: document.referrer || null,
+        utm_source: utm.utm_source ?? null,
+        utm_medium: utm.utm_medium ?? null,
+        utm_campaign: utm.utm_campaign ?? null,
         device_type: getDeviceType(),
         browser: getBrowser(),
         os: getOS(),
         screen_width: window.screen.width,
         screen_height: window.screen.height,
-        ...utm,
-      })
+        // country/city omitted — server-side IP geo not available client-side
+      }, { onConflict: 'id', ignoreDuplicates: true }).then(() => {}).catch(() => {})
     }
 
-    // End session on tab/window close
+    // End session on tab/window close — keepalive survives unload
     const handleUnload = () => {
-      beacon('/api/track/session', {
-        id: sessionIdRef.current,
-        visitor_id: visitorIdRef.current,
-        action: 'end',
+      restFetch('sessions', 'PATCH', {
         exit_page: pagePathRef.current,
-      })
+        ended_at: new Date().toISOString(),
+      }, `id=eq.${sessionIdRef.current}`)
     }
 
     window.addEventListener('beforeunload', handleUnload)
@@ -197,76 +206,86 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!visitorIdRef.current || !sessionIdRef.current) return
 
-    // If this is a page navigation (not first load), send exit beacon for previous page
+    // On page navigation, flush exit data for the previous page
     if (pagePathRef.current && pagePathRef.current !== pathname) {
       const elapsed = Math.round((Date.now() - pageStartRef.current) / 1000)
-      beacon('/api/track/pageview', {
-        session_id: sessionIdRef.current,
-        visitor_id: visitorIdRef.current,
-        page_path: pagePathRef.current,
-        action: 'update',
+      const prevPath = pagePathRef.current
+
+      // keepalive PATCH — survives client-side navigation
+      restFetch('page_views', 'PATCH', {
         duration_seconds: elapsed,
         scroll_depth: maxScrollRef.current,
         is_bounce: elapsed < 10 && stepRef.current <= 1,
-      })
+      }, `session_id=eq.${sessionIdRef.current}&page_path=eq.${encodeURIComponent(prevPath)}&order=created_at.desc&limit=1`)
 
-      // Update session page count / exit page
-      beacon('/api/track/session', {
-        id: sessionIdRef.current,
-        visitor_id: visitorIdRef.current,
-        action: 'update',
+      restFetch('sessions', 'PATCH', {
         exit_page: pathname,
         page_count: stepRef.current + 1,
-      })
+      }, `id=eq.${sessionIdRef.current}`)
     }
 
     // Reset per-page state
     pageStartRef.current = Date.now()
     maxScrollRef.current = 0
-    pageViewIdRef.current = uuid()
     pagePathRef.current = pathname
     stepRef.current += 1
 
     const utm = getUTMParams()
+    const currentStep = stepRef.current
 
-    post('/api/track/pageview', {
+    // Direct Supabase write — zero serverless invocations
+    supabase.from('page_views').insert({
       session_id: sessionIdRef.current,
       visitor_id: visitorIdRef.current,
       page_path: pathname,
       page_title: document.title || null,
       referrer: document.referrer || null,
+      utm_source: utm.utm_source ?? null,
+      utm_medium: utm.utm_medium ?? null,
+      utm_campaign: utm.utm_campaign ?? null,
       device_type: getDeviceType(),
       browser: getBrowser(),
       os: getOS(),
       screen_width: window.screen.width,
       screen_height: window.screen.height,
-      step_number: stepRef.current,
-      ...utm,
-    })
+      step_number: currentStep,
+      // country/region/city omitted — requires server-side IP geo
+    }).then(() => {}).catch(() => {})
+
+    // Also track user journey step
+    if (currentStep != null) {
+      supabase.from('user_journeys').insert({
+        session_id: sessionIdRef.current,
+        visitor_id: visitorIdRef.current,
+        step_number: currentStep,
+        page_path: pathname,
+      }).then(() => {}).catch(() => {})
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   // ── Tracking helpers ──────────────────────────────────────────────────────
 
   const trackInteraction = useCallback((params: InteractionParams) => {
-    post('/api/track/interaction', {
+    supabase.from('listing_interactions').insert({
       session_id: sessionIdRef.current,
       visitor_id: visitorIdRef.current,
       ...params,
       listing_id: params.listing_id != null ? String(params.listing_id) : undefined,
-    })
+    }).then(() => {}).catch(() => {})
   }, [])
 
   const trackSearch = useCallback((params: SearchParams) => {
-    post('/api/track/search', {
+    supabase.from('search_queries').insert({
       session_id: sessionIdRef.current,
       visitor_id: visitorIdRef.current,
       ...params,
-    })
+    }).then(() => {}).catch(() => {})
   }, [])
 
   const trackOutbound = useCallback((params: OutboundParams) => {
-    beacon('/api/track/outbound', {
+    // Use keepalive fetch — this fires on link click, page may navigate away
+    restFetch('outbound_clicks', 'POST', {
       session_id: sessionIdRef.current,
       visitor_id: visitorIdRef.current,
       ...params,
