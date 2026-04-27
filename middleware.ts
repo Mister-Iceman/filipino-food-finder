@@ -27,8 +27,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check for any URLs containing WordPress patterns
+  // Note: /restaurants/united-states/ is intentionally omitted — it is now
+  // handled by a 301 redirect in next.config.ts so middleware must not 410 it.
   const wordpressPatterns = [
-    '/restaurants/united-states/',
     '/restaurants/category/',
     '/tag/',
     '/listing/',

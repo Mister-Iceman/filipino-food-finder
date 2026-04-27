@@ -291,17 +291,19 @@ const nextConfig: NextConfig = {
       // Task 1B: Old /city/:city/* pattern — can't infer state, send to directory
       { source: '/city/:city*', destination: '/directory/', permanent: true },
 
-      // Task 1E: Broken/renamed paths
-      { source: '/submit',       destination: '/submit-business', permanent: true },
-      { source: '/submit/',      destination: '/submit-business', permanent: true },
-      { source: '/add-listing',  destination: '/submit-business', permanent: true },
-      { source: '/add-listing/', destination: '/submit-business', permanent: true },
+      // Task 1E: Broken/renamed paths — /add-business is the actual page
+      { source: '/submit',          destination: '/add-business', permanent: true },
+      { source: '/submit/',         destination: '/add-business', permanent: true },
+      { source: '/submit-business', destination: '/add-business', permanent: true },
+      { source: '/submit-business/',destination: '/add-business', permanent: true },
+      { source: '/add-listing',     destination: '/add-business', permanent: true },
+      { source: '/add-listing/',    destination: '/add-business', permanent: true },
       // Numeric event IDs (e.g. /events/123/) → events listing
       { source: '/events/:id(\\d+)',  destination: '/events/', permanent: true },
       { source: '/events/:id(\\d+)/', destination: '/events/', permanent: true },
 
       // GSC 404 cleanup — added 2026-03-13
-      { source: '/states/:state/:city*',                 destination: '/directory', permanent: true },
+      { source: '/states/:state/:city+',                 destination: '/directory', permanent: true },
       { source: '/restaurants/category/:slug*',          destination: '/directory', permanent: true },
       { source: '/classifieds-archive-item/',            destination: '/', permanent: true },
       { source: '/starting-a-small-business/',           destination: '/', permanent: true },
