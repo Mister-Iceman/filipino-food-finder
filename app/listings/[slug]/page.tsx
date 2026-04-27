@@ -13,6 +13,20 @@ import ListingDetailTracker from '../../components/analytics/ListingDetailTracke
 
 export const revalidate = 3600
 
+const STATE_TO_SLUG: Record<string, string> = {
+  'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
+  'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
+  'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
+  'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
+  'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
+  'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
+  'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
+  'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
+  'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
+  'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming',
+  'DC': 'district-of-columbia',
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,9 +40,27 @@ const supabase = createClient(
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
+
+  const { data: listing } = await supabase
+    .from('listings')
+    .select('state, city')
+    .eq('slug', slug)
+    .single()
+
+  if (listing?.state && listing?.city) {
+    const stateSlug = STATE_TO_SLUG[listing.state] || listing.state.toLowerCase()
+    const citySlug = listing.city.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    return {
+      alternates: {
+        canonical: `${baseUrl}/${stateSlug}/${citySlug}/restaurants/${slug}/`,
+      },
+    }
+  }
+
   return {
     alternates: {
-      canonical: `https://filipinofoodnearme.org/listings/${slug}/`,
+      canonical: `${baseUrl}/listings/${slug}/`,
     },
   }
 }
@@ -75,24 +107,11 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 
   const category = isGrocery ? 'grocery' : 'restaurant'
 
-  const STATE_TO_SLUG: Record<string, string> = {
-    'AL': 'alabama', 'AK': 'alaska', 'AZ': 'arizona', 'AR': 'arkansas', 'CA': 'california',
-    'CO': 'colorado', 'CT': 'connecticut', 'DE': 'delaware', 'FL': 'florida', 'GA': 'georgia',
-    'HI': 'hawaii', 'ID': 'idaho', 'IL': 'illinois', 'IN': 'indiana', 'IA': 'iowa',
-    'KS': 'kansas', 'KY': 'kentucky', 'LA': 'louisiana', 'ME': 'maine', 'MD': 'maryland',
-    'MA': 'massachusetts', 'MI': 'michigan', 'MN': 'minnesota', 'MS': 'mississippi', 'MO': 'missouri',
-    'MT': 'montana', 'NE': 'nebraska', 'NV': 'nevada', 'NH': 'new-hampshire', 'NJ': 'new-jersey',
-    'NM': 'new-mexico', 'NY': 'new-york', 'NC': 'north-carolina', 'ND': 'north-dakota', 'OH': 'ohio',
-    'OK': 'oklahoma', 'OR': 'oregon', 'PA': 'pennsylvania', 'RI': 'rhode-island', 'SC': 'south-carolina',
-    'SD': 'south-dakota', 'TN': 'tennessee', 'TX': 'texas', 'UT': 'utah', 'VT': 'vermont',
-    'VA': 'virginia', 'WA': 'washington', 'WV': 'west-virginia', 'WI': 'wisconsin', 'WY': 'wyoming',
-    'DC': 'district-of-columbia',
-  }
   const stateSlug = STATE_TO_SLUG[listing.state] || listing.state.toLowerCase()
   const citySlug = listing.city?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || ''
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
-  const listingUrl = `${baseUrl}/listings/${slug}`
+  const listingUrl = `${baseUrl}/${stateSlug}/${citySlug}/restaurants/${slug}/`
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -100,7 +119,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` },
       { '@type': 'ListItem', position: 2, name: 'Directory', item: `${baseUrl}/directory` },
-      { '@type': 'ListItem', position: 3, name: listing.state, item: `${baseUrl}/states/${stateSlug}` },
+      { '@type': 'ListItem', position: 3, name: listing.state, item: `${baseUrl}/states/${stateSlug}/` },
       { '@type': 'ListItem', position: 4, name: listing.city, item: `${baseUrl}/${stateSlug}/${citySlug}` },
       { '@type': 'ListItem', position: 5, name: listing.name, item: listingUrl },
     ],
@@ -392,7 +411,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <div className="mt-8">
-          <NearbyRestaurants city={listing.city} state={listing.state} currentListingId={listing.id} />
+          <NearbyRestaurants city={listing.city} state={listing.state} currentListingId={listing.id} stateSlug={stateSlug} citySlug={citySlug} />
         </div>
 
         {!listing.is_claimed && (
@@ -420,7 +439,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
   )
 }
 
-async function NearbyRestaurants({ city, state, currentListingId }: { city: string; state: string; currentListingId: number }) {
+async function NearbyRestaurants({ city, state, currentListingId, stateSlug, citySlug }: { city: string; state: string; currentListingId: number; stateSlug: string; citySlug: string }) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -453,7 +472,7 @@ async function NearbyRestaurants({ city, state, currentListingId }: { city: stri
         {nearbyListings.map((nearby) => (
           <Link
             key={nearby.id}
-            href={`/listings/${nearby.slug}`}
+            href={`/${stateSlug}/${citySlug}/restaurants/${nearby.slug}`}
             className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-bold text-gray-900 hover:text-blue-600 mb-1">

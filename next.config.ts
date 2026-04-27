@@ -56,6 +56,23 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   trailingSlash: true,
 
+  async rewrites() {
+    return {
+      // Hierarchical listing URLs: /:state/:city/restaurants/:slug → /listings/:slug
+      // This lets us set canonical tags on /listings/ pages pointing to these URLs
+      beforeFiles: [
+        {
+          source: '/:state/:city/restaurants/:slug',
+          destination: '/listings/:slug',
+        },
+        {
+          source: '/:state/:city/restaurants/:slug/',
+          destination: '/listings/:slug',
+        },
+      ],
+    }
+  },
+
   // Expose SENTRY_DSN to client-side bundles at build time
   env: {
     SENTRY_DSN: process.env.SENTRY_DSN,
@@ -96,12 +113,115 @@ const nextConfig: NextConfig = {
       { source: '/location/:path*',    destination: '/', permanent: true },
       { source: '/profile/:path*',     destination: '/', permanent: true },
 
-      // Legacy WordPress restaurant directory wildcard → /directory/
+      // Legacy WordPress restaurant directory — specific 4-segment pattern → hierarchical URL (Task 1C)
+      { source: '/restaurants/united-states/:state/:city/:name', destination: '/:state/:city/restaurants/:name', permanent: true },
+      // Remaining wildcard → /directory/
       { source: '/restaurants/united-states/:path*', destination: '/directory/', permanent: true },
 
-      // Old /states/ pattern
-      { source: '/states/:state',  destination: '/directory/', permanent: true },
-      { source: '/states/:state/', destination: '/directory/', permanent: true },
+      // Old /states/ pattern — 2-letter state codes → full state name pages (Task 1A)
+      // Full state-name slugs (e.g. /states/washington/) are served by app/states/[state]/page.tsx
+      { source: '/states/al',  destination: '/states/alabama/',          permanent: true },
+      { source: '/states/al/', destination: '/states/alabama/',          permanent: true },
+      { source: '/states/ak',  destination: '/states/alaska/',           permanent: true },
+      { source: '/states/ak/', destination: '/states/alaska/',           permanent: true },
+      { source: '/states/az',  destination: '/states/arizona/',          permanent: true },
+      { source: '/states/az/', destination: '/states/arizona/',          permanent: true },
+      { source: '/states/ar',  destination: '/states/arkansas/',         permanent: true },
+      { source: '/states/ar/', destination: '/states/arkansas/',         permanent: true },
+      { source: '/states/ca',  destination: '/states/california/',       permanent: true },
+      { source: '/states/ca/', destination: '/states/california/',       permanent: true },
+      { source: '/states/co',  destination: '/states/colorado/',         permanent: true },
+      { source: '/states/co/', destination: '/states/colorado/',         permanent: true },
+      { source: '/states/ct',  destination: '/states/connecticut/',      permanent: true },
+      { source: '/states/ct/', destination: '/states/connecticut/',      permanent: true },
+      { source: '/states/de',  destination: '/states/delaware/',         permanent: true },
+      { source: '/states/de/', destination: '/states/delaware/',         permanent: true },
+      { source: '/states/fl',  destination: '/states/florida/',          permanent: true },
+      { source: '/states/fl/', destination: '/states/florida/',          permanent: true },
+      { source: '/states/ga',  destination: '/states/georgia/',          permanent: true },
+      { source: '/states/ga/', destination: '/states/georgia/',          permanent: true },
+      { source: '/states/hi',  destination: '/states/hawaii/',           permanent: true },
+      { source: '/states/hi/', destination: '/states/hawaii/',           permanent: true },
+      { source: '/states/id',  destination: '/states/idaho/',            permanent: true },
+      { source: '/states/id/', destination: '/states/idaho/',            permanent: true },
+      { source: '/states/il',  destination: '/states/illinois/',         permanent: true },
+      { source: '/states/il/', destination: '/states/illinois/',         permanent: true },
+      { source: '/states/in',  destination: '/states/indiana/',          permanent: true },
+      { source: '/states/in/', destination: '/states/indiana/',          permanent: true },
+      { source: '/states/ia',  destination: '/states/iowa/',             permanent: true },
+      { source: '/states/ia/', destination: '/states/iowa/',             permanent: true },
+      { source: '/states/ks',  destination: '/states/kansas/',           permanent: true },
+      { source: '/states/ks/', destination: '/states/kansas/',           permanent: true },
+      { source: '/states/ky',  destination: '/states/kentucky/',         permanent: true },
+      { source: '/states/ky/', destination: '/states/kentucky/',         permanent: true },
+      { source: '/states/la',  destination: '/states/louisiana/',        permanent: true },
+      { source: '/states/la/', destination: '/states/louisiana/',        permanent: true },
+      { source: '/states/me',  destination: '/states/maine/',            permanent: true },
+      { source: '/states/me/', destination: '/states/maine/',            permanent: true },
+      { source: '/states/md',  destination: '/states/maryland/',         permanent: true },
+      { source: '/states/md/', destination: '/states/maryland/',         permanent: true },
+      { source: '/states/ma',  destination: '/states/massachusetts/',    permanent: true },
+      { source: '/states/ma/', destination: '/states/massachusetts/',    permanent: true },
+      { source: '/states/mi',  destination: '/states/michigan/',         permanent: true },
+      { source: '/states/mi/', destination: '/states/michigan/',         permanent: true },
+      { source: '/states/mn',  destination: '/states/minnesota/',        permanent: true },
+      { source: '/states/mn/', destination: '/states/minnesota/',        permanent: true },
+      { source: '/states/ms',  destination: '/states/mississippi/',      permanent: true },
+      { source: '/states/ms/', destination: '/states/mississippi/',      permanent: true },
+      { source: '/states/mo',  destination: '/states/missouri/',         permanent: true },
+      { source: '/states/mo/', destination: '/states/missouri/',         permanent: true },
+      { source: '/states/mt',  destination: '/states/montana/',          permanent: true },
+      { source: '/states/mt/', destination: '/states/montana/',          permanent: true },
+      { source: '/states/ne',  destination: '/states/nebraska/',         permanent: true },
+      { source: '/states/ne/', destination: '/states/nebraska/',         permanent: true },
+      { source: '/states/nv',  destination: '/states/nevada/',           permanent: true },
+      { source: '/states/nv/', destination: '/states/nevada/',           permanent: true },
+      { source: '/states/nh',  destination: '/states/new-hampshire/',    permanent: true },
+      { source: '/states/nh/', destination: '/states/new-hampshire/',    permanent: true },
+      { source: '/states/nj',  destination: '/states/new-jersey/',       permanent: true },
+      { source: '/states/nj/', destination: '/states/new-jersey/',       permanent: true },
+      { source: '/states/nm',  destination: '/states/new-mexico/',       permanent: true },
+      { source: '/states/nm/', destination: '/states/new-mexico/',       permanent: true },
+      { source: '/states/ny',  destination: '/states/new-york/',         permanent: true },
+      { source: '/states/ny/', destination: '/states/new-york/',         permanent: true },
+      { source: '/states/nc',  destination: '/states/north-carolina/',   permanent: true },
+      { source: '/states/nc/', destination: '/states/north-carolina/',   permanent: true },
+      { source: '/states/nd',  destination: '/states/north-dakota/',     permanent: true },
+      { source: '/states/nd/', destination: '/states/north-dakota/',     permanent: true },
+      { source: '/states/oh',  destination: '/states/ohio/',             permanent: true },
+      { source: '/states/oh/', destination: '/states/ohio/',             permanent: true },
+      { source: '/states/ok',  destination: '/states/oklahoma/',         permanent: true },
+      { source: '/states/ok/', destination: '/states/oklahoma/',         permanent: true },
+      { source: '/states/or',  destination: '/states/oregon/',           permanent: true },
+      { source: '/states/or/', destination: '/states/oregon/',           permanent: true },
+      { source: '/states/pa',  destination: '/states/pennsylvania/',     permanent: true },
+      { source: '/states/pa/', destination: '/states/pennsylvania/',     permanent: true },
+      { source: '/states/ri',  destination: '/states/rhode-island/',     permanent: true },
+      { source: '/states/ri/', destination: '/states/rhode-island/',     permanent: true },
+      { source: '/states/sc',  destination: '/states/south-carolina/',   permanent: true },
+      { source: '/states/sc/', destination: '/states/south-carolina/',   permanent: true },
+      { source: '/states/sd',  destination: '/states/south-dakota/',     permanent: true },
+      { source: '/states/sd/', destination: '/states/south-dakota/',     permanent: true },
+      { source: '/states/tn',  destination: '/states/tennessee/',        permanent: true },
+      { source: '/states/tn/', destination: '/states/tennessee/',        permanent: true },
+      { source: '/states/tx',  destination: '/states/texas/',            permanent: true },
+      { source: '/states/tx/', destination: '/states/texas/',            permanent: true },
+      { source: '/states/ut',  destination: '/states/utah/',             permanent: true },
+      { source: '/states/ut/', destination: '/states/utah/',             permanent: true },
+      { source: '/states/vt',  destination: '/states/vermont/',          permanent: true },
+      { source: '/states/vt/', destination: '/states/vermont/',          permanent: true },
+      { source: '/states/va',  destination: '/states/virginia/',         permanent: true },
+      { source: '/states/va/', destination: '/states/virginia/',         permanent: true },
+      { source: '/states/wa',  destination: '/states/washington/',       permanent: true },
+      { source: '/states/wa/', destination: '/states/washington/',       permanent: true },
+      { source: '/states/wv',  destination: '/states/west-virginia/',    permanent: true },
+      { source: '/states/wv/', destination: '/states/west-virginia/',    permanent: true },
+      { source: '/states/wi',  destination: '/states/wisconsin/',        permanent: true },
+      { source: '/states/wi/', destination: '/states/wisconsin/',        permanent: true },
+      { source: '/states/wy',  destination: '/states/wyoming/',          permanent: true },
+      { source: '/states/wy/', destination: '/states/wyoming/',          permanent: true },
+      { source: '/states/dc',  destination: '/states/district-of-columbia/', permanent: true },
+      { source: '/states/dc/', destination: '/states/district-of-columbia/', permanent: true },
 
       // Washington D.C. city guide — old slug used state as city segment
       { source: '/washington-dc/washington-dc',  destination: '/district-of-columbia/washington/', permanent: true },
@@ -167,6 +287,18 @@ const nextConfig: NextConfig = {
       { source: '/comments/feed/', destination: '/', permanent: true },
       { source: '/feed',           destination: '/', permanent: true },
       { source: '/feed/',          destination: '/', permanent: true },
+
+      // Task 1B: Old /city/:city/* pattern — can't infer state, send to directory
+      { source: '/city/:city*', destination: '/directory/', permanent: true },
+
+      // Task 1E: Broken/renamed paths
+      { source: '/submit',       destination: '/submit-business', permanent: true },
+      { source: '/submit/',      destination: '/submit-business', permanent: true },
+      { source: '/add-listing',  destination: '/submit-business', permanent: true },
+      { source: '/add-listing/', destination: '/submit-business', permanent: true },
+      // Numeric event IDs (e.g. /events/123/) → events listing
+      { source: '/events/:id(\\d+)',  destination: '/events/', permanent: true },
+      { source: '/events/:id(\\d+)/', destination: '/events/', permanent: true },
 
       // GSC 404 cleanup — added 2026-03-13
       { source: '/states/:state/:city*',                 destination: '/directory', permanent: true },
