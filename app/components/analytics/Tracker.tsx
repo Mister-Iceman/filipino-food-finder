@@ -172,7 +172,7 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
         screen_width: window.screen.width,
         screen_height: window.screen.height,
         // country/city omitted — server-side IP geo not available client-side
-      }, { onConflict: 'id', ignoreDuplicates: true }).then(() => {}).catch(() => {})
+      }, { onConflict: 'id', ignoreDuplicates: true }).then(() => {}, () => {})
     }
 
     // End session on tab/window close — keepalive survives unload
@@ -250,7 +250,7 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
       screen_height: window.screen.height,
       step_number: currentStep,
       // country/region/city omitted — requires server-side IP geo
-    }).then(() => {}).catch(() => {})
+    }).then(() => {}, () => {})
 
     // Also track user journey step
     if (currentStep != null) {
@@ -259,7 +259,7 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
         visitor_id: visitorIdRef.current,
         step_number: currentStep,
         page_path: pathname,
-      }).then(() => {}).catch(() => {})
+      }).then(() => {}, () => {})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
@@ -272,7 +272,7 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
       visitor_id: visitorIdRef.current,
       ...params,
       listing_id: params.listing_id != null ? String(params.listing_id) : undefined,
-    }).then(() => {}).catch(() => {})
+    }).then(() => {}, () => {})
   }, [])
 
   const trackSearch = useCallback((params: SearchParams) => {
@@ -280,7 +280,7 @@ export default function FFNMTracker({ children }: { children: ReactNode }) {
       session_id: sessionIdRef.current,
       visitor_id: visitorIdRef.current,
       ...params,
-    }).then(() => {}).catch(() => {})
+    }).then(() => {}, () => {})
   }, [])
 
   const trackOutbound = useCallback((params: OutboundParams) => {

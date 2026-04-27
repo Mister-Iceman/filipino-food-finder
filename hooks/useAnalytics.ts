@@ -73,7 +73,7 @@ export function trackEvent(eventType: string, data: EventData = {}): void {
       device_type: getDeviceType(),
       browser: getBrowser(),
       // country/city omitted — requires server-side IP geo lookup
-    }).then(() => {}).catch(() => {})
+    }).then(() => {}, () => {})
   } catch {
     // fail silently
   }
