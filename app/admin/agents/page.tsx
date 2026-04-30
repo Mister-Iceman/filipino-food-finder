@@ -38,6 +38,11 @@ interface ContentAgentResponse {
   hashtags: string[]
 }
 
+interface ImageAgentResponse {
+  imageData: string
+  slug: string
+}
+
 type CopySectionKey =
   | 'slug'
   | 'seo_title'
@@ -108,6 +113,10 @@ export default function ContentAgentPage() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedSection, setCopiedSection] = useState<CopySectionKey | null>(null)
+  const [heroImagePrompt, setHeroImagePrompt] = useState('')
+  const [generatedImage, setGeneratedImage] = useState<ImageAgentResponse | null>(null)
+  const [imageError, setImageError] = useState('')
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false)
 
   const handleCopy = async (section: CopySectionKey, content: string) => {
     try {
@@ -152,10 +161,56 @@ export default function ContentAgentPage() {
       }
 
       setResult(data)
+      setHeroImagePrompt(data.hero_image_prompt)
+      setGeneratedImage(null)
+      setImageError('')
     } catch {
       setError('Network error while generating the article draft.')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleGenerateImage = async () => {
+    if (!result) {
+      return
+    }
+
+    const trimmedPrompt = heroImagePrompt.trim()
+
+    if (!trimmedPrompt) {
+      setImageError('Please enter a hero image prompt.')
+      return
+    }
+
+    setImageError('')
+    setGeneratedImage(null)
+    setIsGeneratingImage(true)
+
+    try {
+      const response = await fetch('/api/agents/image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: trimmedPrompt,
+          slug: result.slug,
+        }),
+      })
+
+      const data = (await response.json()) as ImageAgentResponse | { error?: string }
+
+      if (!response.ok || !('imageData' in data)) {
+        setImageError('error' in data && data.error ? data.error : 'Failed to generate hero image.')
+        return
+      }
+
+      setGeneratedImage(data)
+    } catch {
+      setImageError('Network error while generating the hero image.')
+    } finally {
+      setIsGeneratingImage(false)
     }
   }
 
@@ -390,6 +445,64 @@ export default function ContentAgentPage() {
                     #{tag}
                   </span>
                 ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Hero Image</h2>
+                <p className="text-gray-600 mt-1">Generate a matched hero image for this article</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="hero-image-prompt" className="block text-sm font-bold text-gray-900 mb-2">
+                    Hero image prompt
+                  </label>
+                  <textarea
+                    id="hero-image-prompt"
+                    value={heroImagePrompt}
+                    onChange={(event) => setHeroImagePrompt(event.target.value)}
+                    rows={7}
+                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-gray-900"
+                  />
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={handleGenerateImage}
+                    disabled={isGeneratingImage}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 px-6 rounded-lg"
+                  >
+                    {isGeneratingImage ? 'Generating Image...' : 'Generate Hero Image'}
+                  </button>
+                  {imageError ? <p className="text-sm font-medium text-red-600">{imageError}</p> : null}
+                </div>
+
+                {generatedImage ? (
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    {/* Base64 preview uses a direct img tag per product requirement. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`data:image/png;base64,${generatedImage.imageData}`}
+                      alt={`Generated hero image for ${generatedImage.slug}`}
+                      className="w-full rounded-lg border border-gray-100"
+                    />
+                    <div className="mt-4 space-y-2">
+                      <a
+                        href={`data:image/png;base64,${generatedImage.imageData}`}
+                        download={`${generatedImage.slug}.jpg`}
+                        className="inline-flex text-blue-600 hover:text-blue-800 font-semibold"
+                      >
+                        Download Image
+                      </a>
+                      <p className="text-sm text-gray-500">
+                        Compress to under 500KB JPG before committing to the repo. Target path: public/images/hero/{generatedImage.slug}.jpg
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
