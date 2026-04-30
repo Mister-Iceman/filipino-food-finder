@@ -19,6 +19,7 @@ interface SocialSnippets {
 }
 
 interface InternalLinkSuggestionObject {
+  [key: string]: unknown
   page: string
   anchor_text: string
 }
@@ -133,7 +134,7 @@ function formatInternalLinkSuggestion(suggestion: InternalLinkSuggestion | Recor
   return JSON.stringify(suggestion)
 }
 
-function buildListCopy(items: Array<string | Record<string, unknown>>) {
+function buildListCopy(items: Array<string | InternalLinkSuggestionObject | Record<string, unknown>>) {
   return items.map((item) => `- ${formatInternalLinkSuggestion(item)}`).join('\n')
 }
 
