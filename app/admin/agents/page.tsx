@@ -18,13 +18,20 @@ interface SocialSnippets {
   x: string
 }
 
+interface InternalLinkSuggestionObject {
+  page: string
+  anchor_text: string
+}
+
+type InternalLinkSuggestion = string | InternalLinkSuggestionObject
+
 interface ArticleContent {
   headline: string
   intro: string
   sections: ArticleSection[]
   faq: ArticleFaqItem[]
   affiliate_opportunities: string[]
-  internal_link_suggestions: string[]
+  internal_link_suggestions: InternalLinkSuggestion[]
   social_snippets: SocialSnippets
 }
 
@@ -109,8 +116,25 @@ function buildArticleCopy(article: ArticleContent) {
   ].join('\n')
 }
 
-function buildListCopy(items: string[]) {
-  return items.map((item) => `- ${item}`).join('\n')
+function formatInternalLinkSuggestion(suggestion: InternalLinkSuggestion | Record<string, unknown>) {
+  if (typeof suggestion === 'string') {
+    return suggestion
+  }
+
+  if (
+    'page' in suggestion &&
+    'anchor_text' in suggestion &&
+    typeof suggestion.page === 'string' &&
+    typeof suggestion.anchor_text === 'string'
+  ) {
+    return `${suggestion.page} — ${suggestion.anchor_text}`
+  }
+
+  return JSON.stringify(suggestion)
+}
+
+function buildListCopy(items: Array<string | Record<string, unknown>>) {
+  return items.map((item) => `- ${formatInternalLinkSuggestion(item)}`).join('\n')
 }
 
 export default function ContentAgentPage() {
@@ -454,8 +478,11 @@ export default function ContentAgentPage() {
               </div>
               <ul className="space-y-2 text-gray-700">
                 {result.article.internal_link_suggestions.map((item) => (
-                  <li key={item} className="border border-gray-200 rounded-lg p-4">
-                    {item}
+                  <li
+                    key={typeof item === 'string' ? item : JSON.stringify(item)}
+                    className="border border-gray-200 rounded-lg p-4"
+                  >
+                    {formatInternalLinkSuggestion(item)}
                   </li>
                 ))}
               </ul>
