@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 interface ArticleSection {
   heading: string
@@ -41,6 +41,12 @@ interface ContentAgentResponse {
 interface ImageAgentResponse {
   imageData: string
   slug: string
+}
+
+interface TopicSuggestion {
+  topic_brief: string
+  why_timely: string
+  seo_opportunity: 'High' | 'Medium'
 }
 
 type CopySectionKey =
@@ -109,6 +115,8 @@ function buildListCopy(items: string[]) {
 
 export default function ContentAgentPage() {
   const [brief, setBrief] = useState('')
+  const [suggestions, setSuggestions] = useState<TopicSuggestion[]>([])
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true)
   const [result, setResult] = useState<ContentAgentResponse | null>(null)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -117,6 +125,36 @@ export default function ContentAgentPage() {
   const [generatedImage, setGeneratedImage] = useState<ImageAgentResponse | null>(null)
   const [imageError, setImageError] = useState('')
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
+
+  useEffect(() => {
+    let isActive = true
+
+    const loadSuggestions = async () => {
+      try {
+        const response = await fetch('/api/agents/suggestions')
+        if (!response.ok) {
+          return
+        }
+
+        const data = (await response.json()) as TopicSuggestion[]
+        if (isActive && Array.isArray(data)) {
+          setSuggestions(data.slice(0, 3))
+        }
+      } catch {
+        // Fail silently for suggestions.
+      } finally {
+        if (isActive) {
+          setIsLoadingSuggestions(false)
+        }
+      }
+    }
+
+    void loadSuggestions()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
 
   const handleCopy = async (section: CopySectionKey, content: string) => {
     try {
@@ -226,6 +264,39 @@ export default function ContentAgentPage() {
 
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isLoadingSuggestions ? (
+              <p className="text-sm text-gray-500">Finding this month&apos;s best topics...</p>
+            ) : null}
+
+            {suggestions.length > 0 ? (
+              <div className="grid gap-4 md:grid-cols-3">
+                {suggestions.map((suggestion) => (
+                  <div key={suggestion.topic_brief} className="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <span className="text-xs text-gray-500">{suggestion.why_timely}</span>
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                          suggestion.seo_opportunity === 'High'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        {suggestion.seo_opportunity}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-800 leading-relaxed mb-4">{suggestion.topic_brief}</p>
+                    <button
+                      type="button"
+                      onClick={() => setBrief(suggestion.topic_brief)}
+                      className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-4 py-2 rounded-lg text-sm font-semibold"
+                    >
+                      Use This Topic
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
             <div>
               <label htmlFor="brief" className="block text-sm font-bold text-gray-900 mb-2">
                 Topic brief

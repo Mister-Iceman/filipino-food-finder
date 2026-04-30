@@ -1,7 +1,8 @@
 // Requires OPENAI_API_KEY in Vercel environment variables
+import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const SYSTEM_PROMPT = `You are the Content Agent for FilipinoFoodNearMe.org, a Filipino-American food directory and cultural knowledge platform serving all 50 US states. Your job is to generate complete Cultural Knowledge Base article drafts from a brief topic description.
+const BASE_SYSTEM_PROMPT = `You are the Content Agent for FilipinoFoodNearMe.org, a Filipino-American food directory and cultural knowledge platform serving all 50 US states. Your job is to generate complete Cultural Knowledge Base article drafts from a brief topic description.
 
 Brand voice: warm, community-first, culturally respectful, story-driven, useful to both Filipino-Americans and non-Filipino food lovers. Occasional light Taglish only if natural. Never use best, top-rated, or Yelp-style judgment language. Never use generic filler adjectives like delicious, amazing, wonderful, or incredible in SEO titles or section headings.
 
@@ -33,7 +34,7 @@ Return this exact structure:
       "Name one specific product type with its use case. Example: A traditional wooden palayok clay pot — used in authentic Filipino cooking and a natural fit for readers wanting to recreate the dishes at home."
     ],
     "internal_link_suggestions": [
-      "Choose 2-3 pages from this exact list that are genuinely relevant to the article topic. Return only the page name and a suggested anchor text phrase. Do not invent pages. Only use pages from this list: Filipino Food Cultural Knowledge Base (/cultural-knowledge-base), The New Wave of Filipino-American Cuisine (/cultural-knowledge-base/new-wave-filipino-american-cuisine), Regional Masterpieces of Filipino Food (/cultural-knowledge-base/regional-masterpieces-filipino-food), The Ultimate Sawsawan Guide (/cultural-knowledge-base/ultimate-sawsawan-guide), Beyond Ube: Filipino Desserts and Bakery (/cultural-knowledge-base/filipino-sweet-tooth-desserts-bakery), Golden Crunch Lumpia (/cultural-knowledge-base/golden-crunch-lumpia), Filipino Food in Los Angeles (/cities/los-angeles), Filipino Food in San Francisco (/cities/san-francisco), Filipino Food in New York (/cities/new-york), Filipino Food in San Diego (/cities/san-diego), Filipino Food in Las Vegas (/cities/las-vegas), Filipino Food in Seattle (/cities/seattle), Filipino Food in Honolulu (/cities/honolulu), Filipino Food in Chicago (/cities/chicago), Filipino Food in Houston (/cities/houston), Filipino Food in Daly City (/cities/daly-city), Filipino Food in Sacramento (/cities/sacramento), Filipino Food in the Washington DC Metro (/cities/washington-dc), Filipino Events Near Me (/events), Add Your Filipino Food Business (/add-business), Advertise on FFNM (/advertise)"
+      "Choose 2-3 pages from this exact list that are genuinely relevant to the article topic. Return only the page name and a suggested anchor text phrase. Do not invent pages. Only use pages from this list:\n__INTERNAL_LINK_OPTIONS__"
     ],
     "social_snippets": {
       "instagram": "Instagram caption. Open with a hook line. Include FilipinoFoodNearMe.org. Close with: Flavor With Soul Deserves to Be Found.",
@@ -46,6 +47,15 @@ Return this exact structure:
 
 interface ContentAgentRequestBody {
   brief?: unknown
+}
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+function buildSystemPrompt(internalLinkOptions: string) {
+  return BASE_SYSTEM_PROMPT.replace('__INTERNAL_LINK_OPTIONS__', internalLinkOptions)
 }
 
 export async function POST(request: NextRequest) {
@@ -69,6 +79,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const { data: publishedArticles, error: publishedArticlesError } = await supabase
+      .from('articles')
+      .select('slug, title')
+      .eq('category', 'knowledge-base')
+      .eq('status', 'published')
+      .order('title', { ascending: true })
+
+    if (publishedArticlesError) {
+      console.error('Failed to load knowledge-base articles for Content Agent:', publishedArticlesError)
+      return NextResponse.json(
+        { error: 'Failed to load article link suggestions' },
+        { status: 500 }
+      )
+    }
+
+    const internalLinkOptions = [
+      ...(publishedArticles ?? []).map((article) => `- [${article.title}] (/cultural-knowledge-base/${article.slug})`),
+      '- The New Wave of Filipino-American Cuisine (/culture/new-wave-filipino-american-cuisine)',
+    ].join('\n')
+
     const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -79,7 +109,7 @@ export async function POST(request: NextRequest) {
         model: 'gpt-4o-mini',
         response_format: { type: 'json_object' },
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'system', content: buildSystemPrompt(internalLinkOptions) },
           {
             role: 'user',
             content: `Topic brief: ${brief}`,
