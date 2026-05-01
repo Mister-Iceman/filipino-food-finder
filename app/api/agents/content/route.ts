@@ -31,7 +31,11 @@ Return this exact structure:
       { "question": "What makes [topic] significant to Filipino culture or the diaspora?", "answer": "Answer under 100 words" }
     ],
     "affiliate_opportunities": [
-      "Name one specific product type with its use case. Example: A traditional wooden palayok clay pot — used in authentic Filipino cooking and a natural fit for readers wanting to recreate the dishes at home."
+      {
+        "product_description": "One sentence describing the product and why it fits this article naturally",
+        "amazon_search_query": "3-5 word Amazon search query for this product, no brand names",
+        "suggested_anchor_text": "2-4 word anchor text phrase for the in-article link"
+      }
     ],
     "internal_link_suggestions": [
       "Choose 2-3 pages from this exact list that are genuinely relevant to the article topic. Return only the page name and a suggested anchor text phrase. Do not invent pages. Only use pages from this list:\n__INTERNAL_LINK_OPTIONS__"
@@ -47,6 +51,48 @@ Return this exact structure:
 
 interface ContentAgentRequestBody {
   brief?: unknown
+}
+
+interface AffiliateOpportunityResponseItem extends Record<string, unknown> {
+  product_description: string
+  amazon_search_query: string
+  suggested_anchor_text: string
+  affiliate_url: string
+}
+
+interface RawAffiliateOpportunity extends Record<string, unknown> {
+  product_description?: unknown
+  amazon_search_query?: unknown
+  suggested_anchor_text?: unknown
+  affiliate_url?: string
+}
+
+interface ParsedContentAgentResponse {
+  slug?: string
+  seo_title?: string
+  meta_description?: string
+  geo_snippet?: string
+  hero_image_prompt?: string
+  article?: {
+    headline?: string
+    intro?: string
+    sections?: Array<{
+      heading?: string
+      body?: string
+    }>
+    faq?: Array<{
+      question?: string
+      answer?: string
+    }>
+    affiliate_opportunities?: RawAffiliateOpportunity[]
+    internal_link_suggestions?: unknown[]
+    social_snippets?: {
+      instagram?: string
+      facebook?: string
+      x?: string
+    }
+  }
+  hashtags?: string[]
 }
 
 const supabase = createClient(
@@ -145,7 +191,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const parsed = JSON.parse(content) as unknown
+    const parsed = JSON.parse(content) as ParsedContentAgentResponse
+
+    const AFFILIATE_TAG = 'filipinofoodn-20'
+    if (Array.isArray(parsed.article?.affiliate_opportunities)) {
+      parsed.article.affiliate_opportunities = parsed.article.affiliate_opportunities.map(
+        (item: RawAffiliateOpportunity) => ({
+          ...item,
+          affiliate_url: `https://www.amazon.com/s?k=${encodeURIComponent(String(item.amazon_search_query ?? ''))}&tag=${AFFILIATE_TAG}`,
+        })
+      ) as AffiliateOpportunityResponseItem[]
+    }
 
     return NextResponse.json(parsed)
   } catch (error) {

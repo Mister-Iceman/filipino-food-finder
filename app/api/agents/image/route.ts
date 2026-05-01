@@ -11,6 +11,7 @@ interface ImageAgentRequestBody {
 interface OpenAiImageGenerationResponse {
   data?: Array<{
     b64_json?: string
+    url?: string
   }>
 }
 
@@ -43,6 +44,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const fullPrompt = `${IMAGE_PROMPT_PREFIX}${prompt}`
+
     const openAiResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
@@ -51,10 +54,11 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: 'gpt-image-1',
-        prompt: `${IMAGE_PROMPT_PREFIX}${prompt}`,
+        prompt: fullPrompt,
         size: '1536x1024',
         quality: 'standard',
-        response_format: 'b64_json',
+        n: 1,
+        output_format: 'jpeg',
       }),
     })
 
@@ -68,12 +72,11 @@ export async function POST(request: NextRequest) {
     }
 
     const imageResponse = (await openAiResponse.json()) as OpenAiImageGenerationResponse
-    const imageData = imageResponse.data?.[0]?.b64_json
+    const imageData = imageResponse.data?.[0]?.b64_json ?? imageResponse.data?.[0]?.url ?? null
 
     if (!imageData) {
-      console.error('OpenAI image agent returned empty image data:', imageResponse)
       return NextResponse.json(
-        { error: 'OpenAI returned no image data' },
+        { error: 'No image data returned' },
         { status: 500 }
       )
     }
@@ -81,6 +84,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       imageData,
       slug,
+      isUrl: !imageResponse.data?.[0]?.b64_json,
     })
   } catch (error) {
     console.error('Image agent route error:', error)

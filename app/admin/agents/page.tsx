@@ -56,6 +56,7 @@ interface ContentAgentResponse {
 interface ImageAgentResponse {
   imageData: string
   slug: string
+  isUrl: boolean
 }
 
 interface TopicSuggestion {
@@ -136,6 +137,10 @@ function formatLinkSuggestion(item: unknown): string {
 
 function formatAffiliateOpportunity(item: AffiliateOpportunity) {
   return `${item.product_description} — ${item.affiliate_url}`
+}
+
+function formatHashtag(tag: string) {
+  return `#${tag.replace(/^#+/, '')}`
 }
 
 function buildListCopy(
@@ -297,6 +302,12 @@ export default function ContentAgentPage() {
       setIsGeneratingImage(false)
     }
   }
+
+  const heroImageSrc = generatedImage
+    ? generatedImage.isUrl
+      ? generatedImage.imageData
+      : `data:image/jpeg;base64,${generatedImage.imageData}`
+    : null
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -579,7 +590,7 @@ export default function ContentAgentPage() {
               <div className="flex items-center justify-between gap-3 mb-3">
                 <h2 className="text-xl font-bold text-gray-900">Hashtags</h2>
                 <CopyButton
-                  onCopy={() => handleCopy('hashtags', result.hashtags.map((tag) => `#${tag}`).join(' '))}
+                  onCopy={() => handleCopy('hashtags', result.hashtags.map((tag) => formatHashtag(tag)).join(' '))}
                   copied={copiedSection === 'hashtags'}
                 />
               </div>
@@ -589,7 +600,7 @@ export default function ContentAgentPage() {
                     key={tag}
                     className="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full text-sm font-medium"
                   >
-                    #{tag}
+                    {formatHashtag(tag)}
                   </span>
                 ))}
               </div>
@@ -632,13 +643,13 @@ export default function ContentAgentPage() {
                     {/* Base64 preview uses a direct img tag per product requirement. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={`data:image/png;base64,${generatedImage.imageData}`}
+                      src={heroImageSrc ?? undefined}
                       alt={`Generated hero image for ${generatedImage.slug}`}
                       className="w-full rounded-lg border border-gray-100"
                     />
                     <div className="mt-4 space-y-2">
                       <a
-                        href={`data:image/png;base64,${generatedImage.imageData}`}
+                        href={heroImageSrc ?? undefined}
                         download={`${generatedImage.slug}.jpg`}
                         className="inline-flex text-blue-600 hover:text-blue-800 font-semibold"
                       >
