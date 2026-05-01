@@ -43,6 +43,12 @@ interface CityGuideResponse {
   seo_title: string
 }
 
+interface CityGuideSaveResponse {
+  success?: boolean
+  slug?: string
+  error?: string
+}
+
 type CopySectionKey =
   | 'slug'
   | 'seo_title'
@@ -169,6 +175,10 @@ export default function CityGuideAgentPage() {
   const [error, setError] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [copiedSection, setCopiedSection] = useState<CopySectionKey | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveMessage, setSaveMessage] = useState('')
+  const [saveMessageTone, setSaveMessageTone] = useState<'success' | 'warning' | 'error' | null>(null)
 
   useEffect(() => {
     let isActive = true
@@ -219,6 +229,9 @@ export default function CityGuideAgentPage() {
   }) => {
     setError('')
     setResult(null)
+    setSaveSuccess(false)
+    setSaveMessage('')
+    setSaveMessageTone(null)
     setIsGenerating(true)
 
     try {
@@ -260,6 +273,49 @@ export default function CityGuideAgentPage() {
     }
 
     await generateGuide(payload)
+  }
+
+  const handleSaveToSupabase = async () => {
+    if (!result) {
+      return
+    }
+
+    setIsSaving(true)
+    setSaveMessage('')
+    setSaveMessageTone(null)
+
+    try {
+      const response = await fetch('/api/agents/city-guide/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result),
+      })
+
+      const data = (await response.json()) as CityGuideSaveResponse
+
+      if (response.ok && data.success) {
+        setSaveSuccess(true)
+        setSaveMessage('City guide saved. You can now deploy the page via Claude Code.')
+        setSaveMessageTone('success')
+        return
+      }
+
+      if (response.status === 409) {
+        setSaveMessage('A city guide for this city already exists in the database. Check Supabase before saving again.')
+        setSaveMessageTone('warning')
+        return
+      }
+
+      setSaveMessage(data.error ?? 'Failed to save city guide to Supabase.')
+      setSaveMessageTone('error')
+    } catch {
+      setSaveMessage('Network error while saving the city guide.')
+      setSaveMessageTone('error')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleSuggestionClick = async (suggestion: CityGuideSuggestion) => {
@@ -394,6 +450,33 @@ export default function CityGuideAgentPage() {
                 />
               </div>
               <p className="text-sm text-gray-600">Copy Full Row as JSON</p>
+              <div className="mt-4 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => void handleSaveToSupabase()}
+                  disabled={isSaving || saveSuccess}
+                  className={`font-bold py-3 px-6 rounded-lg text-white ${
+                    saveSuccess
+                      ? 'bg-green-600 cursor-default'
+                      : 'bg-green-600 hover:bg-green-700 disabled:opacity-60'
+                  }`}
+                >
+                  {saveSuccess ? '✓ Saved to Supabase' : isSaving ? 'Saving...' : 'Save City Guide to Supabase'}
+                </button>
+                {saveMessage ? (
+                  <p
+                    className={`text-sm font-medium ${
+                      saveMessageTone === 'success'
+                        ? 'text-green-700'
+                        : saveMessageTone === 'warning'
+                        ? 'text-yellow-700'
+                        : 'text-red-600'
+                    }`}
+                  >
+                    {saveMessage}
+                  </p>
+                ) : null}
+              </div>
             </div>
 
             <LabeledTextSection
