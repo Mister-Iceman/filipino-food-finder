@@ -26,12 +26,19 @@ interface InternalLinkSuggestionObject {
 
 type InternalLinkSuggestion = string | InternalLinkSuggestionObject
 
+interface AffiliateOpportunity {
+  product_description: string
+  amazon_search_query: string
+  suggested_anchor_text: string
+  affiliate_url: string
+}
+
 interface ArticleContent {
   headline: string
   intro: string
   sections: ArticleSection[]
   faq: ArticleFaqItem[]
-  affiliate_opportunities: string[]
+  affiliate_opportunities: AffiliateOpportunity[]
   internal_link_suggestions: InternalLinkSuggestion[]
   social_snippets: SocialSnippets
 }
@@ -117,25 +124,39 @@ function buildArticleCopy(article: ArticleContent) {
   ].join('\n')
 }
 
-function formatInternalLinkSuggestion(suggestion: InternalLinkSuggestion | Record<string, unknown>) {
-  if (typeof suggestion === 'string') {
-    return suggestion
+function formatLinkSuggestion(item: unknown): string {
+  if (typeof item === 'string') return item
+  if (item && typeof item === 'object') {
+    const obj = item as Record<string, unknown>
+    if (obj.page && obj.anchor_text) return `${obj.page} — ${obj.anchor_text}`
+    return JSON.stringify(obj)
   }
-
-  if (
-    'page' in suggestion &&
-    'anchor_text' in suggestion &&
-    typeof suggestion.page === 'string' &&
-    typeof suggestion.anchor_text === 'string'
-  ) {
-    return `${suggestion.page} — ${suggestion.anchor_text}`
-  }
-
-  return JSON.stringify(suggestion)
+  return String(item)
 }
 
-function buildListCopy(items: Array<string | InternalLinkSuggestionObject | Record<string, unknown>>) {
-  return items.map((item) => `- ${formatInternalLinkSuggestion(item)}`).join('\n')
+function formatAffiliateOpportunity(item: AffiliateOpportunity) {
+  return `${item.product_description} — ${item.affiliate_url}`
+}
+
+function buildListCopy(
+  items: Array<string | InternalLinkSuggestionObject | AffiliateOpportunity | Record<string, unknown>>
+) {
+  return items
+    .map((item) => {
+      if (
+        typeof item === 'object' &&
+        item !== null &&
+        'product_description' in item &&
+        'affiliate_url' in item &&
+        typeof item.product_description === 'string' &&
+        typeof item.affiliate_url === 'string'
+      ) {
+        return `- ${formatAffiliateOpportunity(item as AffiliateOpportunity)}`
+      }
+
+      return `- ${formatLinkSuggestion(item)}`
+    })
+    .join('\n')
 }
 
 export default function ContentAgentPage() {
@@ -460,10 +481,37 @@ export default function ContentAgentPage() {
                   copied={copiedSection === 'affiliate_opportunities'}
                 />
               </div>
-              <ul className="space-y-2 text-gray-700">
+              <ul className="space-y-3 text-gray-700">
                 {result.article.affiliate_opportunities.map((item) => (
-                  <li key={item} className="border border-gray-200 rounded-lg p-4">
-                    {item}
+                  <li
+                    key={`${item.product_description}-${item.affiliate_url}`}
+                    className="border border-gray-200 rounded-lg p-4"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-gray-800">{item.product_description}</p>
+                        <a
+                          href={item.affiliate_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex mt-3 text-blue-600 hover:text-blue-800 font-semibold break-all"
+                        >
+                          Preview on Amazon
+                        </a>
+                        <p className="mt-2 text-sm text-gray-500">
+                          Anchor text: {item.suggested_anchor_text}
+                        </p>
+                      </div>
+                      <CopyButton
+                        onCopy={() =>
+                          handleCopy(
+                            'affiliate_opportunities',
+                            `[${item.suggested_anchor_text}](${item.affiliate_url})`
+                          )
+                        }
+                        copied={copiedSection === 'affiliate_opportunities'}
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -483,7 +531,7 @@ export default function ContentAgentPage() {
                     key={typeof item === 'string' ? item : JSON.stringify(item)}
                     className="border border-gray-200 rounded-lg p-4"
                   >
-                    {formatInternalLinkSuggestion(item)}
+                    {formatLinkSuggestion(item)}
                   </li>
                 ))}
               </ul>
