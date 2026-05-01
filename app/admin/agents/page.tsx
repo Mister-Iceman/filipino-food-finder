@@ -12,13 +12,6 @@ interface ArticleFaqItem {
   answer: string
 }
 
-interface SocialSnippets {
-  instagram: string
-  facebook: string
-  x: string
-  tiktok: string
-}
-
 interface InternalLinkSuggestionObject {
   [key: string]: unknown
   page: string
@@ -39,8 +32,6 @@ interface ArticleContent {
   intro: string
   sections: ArticleSection[]
   faq: ArticleFaqItem[]
-  affiliate_opportunities: AffiliateOpportunity[]
-  internal_link_suggestions: InternalLinkSuggestion[]
 }
 
 interface ContentAgentResponse {
@@ -48,16 +39,9 @@ interface ContentAgentResponse {
   seo_title: string
   meta_description: string
   geo_snippet: string
-  hero_image_prompt: string
   article: ArticleContent
-  social_snippets: SocialSnippets
-  hashtags: string[]
-}
-
-interface ImageAgentResponse {
-  imageData: string
-  slug: string
-  isUrl: boolean
+  affiliate_opportunities: AffiliateOpportunity[]
+  internal_link_suggestions: InternalLinkSuggestion[]
 }
 
 interface TopicSuggestion {
@@ -71,15 +55,9 @@ type CopySectionKey =
   | 'seo_title'
   | 'meta_description'
   | 'geo_snippet'
-  | 'hero_image_prompt'
   | 'full_article'
   | 'affiliate_opportunities'
   | 'internal_link_suggestions'
-  | 'social_instagram'
-  | 'social_facebook'
-  | 'social_x'
-  | 'social_tiktok'
-  | 'hashtags'
 
 function CopyButton({
   onCopy,
@@ -141,23 +119,6 @@ function formatAffiliateOpportunity(item: AffiliateOpportunity) {
   return `${item.product_description} — ${item.affiliate_url}`
 }
 
-function formatHashtag(tag: string) {
-  return `#${tag.replace(/^#+/, '')}`
-}
-
-function normalizeCaptionText(text: string) {
-  return text.replace(/\\n/g, '\n')
-}
-
-function renderCaptionLines(text: string) {
-  return normalizeCaptionText(text).split('\n').map((line, index) => (
-    <span key={`${line}-${index}`}>
-      {line}
-      <br />
-    </span>
-  ))
-}
-
 function buildListCopy(
   items: Array<string | InternalLinkSuggestionObject | AffiliateOpportunity | Record<string, unknown>>
 ) {
@@ -187,10 +148,6 @@ export default function ContentAgentPage() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedSection, setCopiedSection] = useState<CopySectionKey | null>(null)
-  const [heroImagePrompt, setHeroImagePrompt] = useState('')
-  const [generatedImage, setGeneratedImage] = useState<ImageAgentResponse | null>(null)
-  const [imageError, setImageError] = useState('')
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false)
 
   useEffect(() => {
     let isActive = true
@@ -265,64 +222,12 @@ export default function ContentAgentPage() {
       }
 
       setResult(data)
-      setHeroImagePrompt(data.hero_image_prompt)
-      setGeneratedImage(null)
-      setImageError('')
     } catch {
       setError('Network error while generating the article draft.')
     } finally {
       setIsLoading(false)
     }
   }
-
-  const handleGenerateImage = async () => {
-    if (!result) {
-      return
-    }
-
-    const trimmedPrompt = heroImagePrompt.trim()
-
-    if (!trimmedPrompt) {
-      setImageError('Please enter a hero image prompt.')
-      return
-    }
-
-    setImageError('')
-    setGeneratedImage(null)
-    setIsGeneratingImage(true)
-
-    try {
-      const response = await fetch('/api/agents/image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: trimmedPrompt,
-          slug: result.slug,
-        }),
-      })
-
-      const data = (await response.json()) as ImageAgentResponse | { error?: string }
-
-      if (!response.ok || !('imageData' in data)) {
-        setImageError('error' in data && data.error ? data.error : 'Failed to generate hero image.')
-        return
-      }
-
-      setGeneratedImage(data)
-    } catch {
-      setImageError('Network error while generating the hero image.')
-    } finally {
-      setIsGeneratingImage(false)
-    }
-  }
-
-  const heroImageSrc = generatedImage
-    ? generatedImage.isUrl
-      ? generatedImage.imageData
-      : `data:image/jpeg;base64,${generatedImage.imageData}`
-    : null
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -443,17 +348,6 @@ export default function ContentAgentPage() {
             </div>
 
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <h2 className="text-xl font-bold text-gray-900">Hero Image Prompt</h2>
-                <CopyButton
-                  onCopy={() => handleCopy('hero_image_prompt', result.hero_image_prompt)}
-                  copied={copiedSection === 'hero_image_prompt'}
-                />
-              </div>
-              <p className="text-gray-700 whitespace-pre-wrap">{result.hero_image_prompt}</p>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center justify-between gap-3 mb-4">
                 <h2 className="text-xl font-bold text-gray-900">Full Article</h2>
                 <CopyButton
@@ -503,12 +397,12 @@ export default function ContentAgentPage() {
               <div className="flex items-center justify-between gap-3 mb-3">
                 <h2 className="text-xl font-bold text-gray-900">Affiliate Opportunities</h2>
                 <CopyButton
-                  onCopy={() => handleCopy('affiliate_opportunities', buildListCopy(result.article.affiliate_opportunities))}
+                  onCopy={() => handleCopy('affiliate_opportunities', buildListCopy(result.affiliate_opportunities))}
                   copied={copiedSection === 'affiliate_opportunities'}
                 />
               </div>
               <ul className="space-y-3 text-gray-700">
-                {result.article.affiliate_opportunities.map((item) => (
+                {result.affiliate_opportunities.map((item) => (
                   <li
                     key={`${item.product_description}-${item.affiliate_url}`}
                     className="border border-gray-200 rounded-lg p-4"
@@ -547,12 +441,12 @@ export default function ContentAgentPage() {
               <div className="flex items-center justify-between gap-3 mb-3">
                 <h2 className="text-xl font-bold text-gray-900">Internal Link Suggestions</h2>
                 <CopyButton
-                  onCopy={() => handleCopy('internal_link_suggestions', buildListCopy(result.article.internal_link_suggestions))}
+                  onCopy={() => handleCopy('internal_link_suggestions', buildListCopy(result.internal_link_suggestions))}
                   copied={copiedSection === 'internal_link_suggestions'}
                 />
               </div>
               <ul className="space-y-2 text-gray-700">
-                {result.article.internal_link_suggestions.map((item) => (
+                {result.internal_link_suggestions.map((item) => (
                   <li
                     key={typeof item === 'string' ? item : JSON.stringify(item)}
                     className="border border-gray-200 rounded-lg p-4"
@@ -563,132 +457,6 @@ export default function ContentAgentPage() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Social Snippets</h2>
-              <div className="space-y-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <h3 className="font-bold text-gray-900">Instagram</h3>
-                    <CopyButton
-                      onCopy={() => handleCopy('social_instagram', normalizeCaptionText(result.social_snippets.instagram))}
-                      copied={copiedSection === 'social_instagram'}
-                    />
-                  </div>
-                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.instagram)}</p>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <h3 className="font-bold text-gray-900">Facebook</h3>
-                    <CopyButton
-                      onCopy={() => handleCopy('social_facebook', normalizeCaptionText(result.social_snippets.facebook))}
-                      copied={copiedSection === 'social_facebook'}
-                    />
-                  </div>
-                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.facebook)}</p>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <h3 className="font-bold text-gray-900">X</h3>
-                    <CopyButton
-                      onCopy={() => handleCopy('social_x', normalizeCaptionText(result.social_snippets.x))}
-                      copied={copiedSection === 'social_x'}
-                    />
-                  </div>
-                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.x)}</p>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <h3 className="font-bold text-gray-900">TikTok</h3>
-                    <CopyButton
-                      onCopy={() => handleCopy('social_tiktok', normalizeCaptionText(result.social_snippets.tiktok))}
-                      copied={copiedSection === 'social_tiktok'}
-                    />
-                  </div>
-                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.tiktok)}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <h2 className="text-xl font-bold text-gray-900">Hashtags</h2>
-                <CopyButton
-                  onCopy={() => handleCopy('hashtags', result.hashtags.map((tag) => formatHashtag(tag)).join(' '))}
-                  copied={copiedSection === 'hashtags'}
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {result.hashtags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full text-sm font-medium"
-                  >
-                    {formatHashtag(tag)}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Hero Image</h2>
-                <p className="text-gray-600 mt-1">Generate a matched hero image for this article</p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="hero-image-prompt" className="block text-sm font-bold text-gray-900 mb-2">
-                    Hero image prompt
-                  </label>
-                  <textarea
-                    id="hero-image-prompt"
-                    value={heroImagePrompt}
-                    onChange={(event) => setHeroImagePrompt(event.target.value)}
-                    rows={7}
-                    className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-gray-900"
-                  />
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={handleGenerateImage}
-                    disabled={isGeneratingImage}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 px-6 rounded-lg"
-                  >
-                    {isGeneratingImage ? 'Generating Image...' : 'Generate Hero Image'}
-                  </button>
-                  {imageError ? <p className="text-sm font-medium text-red-600">{imageError}</p> : null}
-                </div>
-
-                {generatedImage ? (
-                  <div className="border border-gray-200 rounded-lg p-4">
-                    {/* Base64 preview uses a direct img tag per product requirement. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={heroImageSrc ?? undefined}
-                      alt={`Generated hero image for ${generatedImage.slug}`}
-                      className="w-full rounded-lg border border-gray-100"
-                    />
-                    <div className="mt-4 space-y-2">
-                      <a
-                        href={heroImageSrc ?? undefined}
-                        download={`${generatedImage.slug}.jpg`}
-                        className="inline-flex text-blue-600 hover:text-blue-800 font-semibold"
-                      >
-                        Download Image
-                      </a>
-                      <p className="text-sm text-gray-500">
-                        Compress to under 500KB JPG before committing to the repo. Target path: public/images/hero/{generatedImage.slug}.jpg
-                      </p>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
           </div>
         ) : null}
       </div>
