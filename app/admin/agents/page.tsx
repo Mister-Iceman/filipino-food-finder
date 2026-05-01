@@ -16,6 +16,7 @@ interface SocialSnippets {
   instagram: string
   facebook: string
   x: string
+  tiktok: string
 }
 
 interface InternalLinkSuggestionObject {
@@ -40,7 +41,6 @@ interface ArticleContent {
   faq: ArticleFaqItem[]
   affiliate_opportunities: AffiliateOpportunity[]
   internal_link_suggestions: InternalLinkSuggestion[]
-  social_snippets: SocialSnippets
 }
 
 interface ContentAgentResponse {
@@ -50,6 +50,7 @@ interface ContentAgentResponse {
   geo_snippet: string
   hero_image_prompt: string
   article: ArticleContent
+  social_snippets: SocialSnippets
   hashtags: string[]
 }
 
@@ -77,6 +78,7 @@ type CopySectionKey =
   | 'social_instagram'
   | 'social_facebook'
   | 'social_x'
+  | 'social_tiktok'
   | 'hashtags'
 
 function CopyButton({
@@ -141,6 +143,19 @@ function formatAffiliateOpportunity(item: AffiliateOpportunity) {
 
 function formatHashtag(tag: string) {
   return `#${tag.replace(/^#+/, '')}`
+}
+
+function normalizeCaptionText(text: string) {
+  return text.replace(/\\n/g, '\n')
+}
+
+function renderCaptionLines(text: string) {
+  return normalizeCaptionText(text).split('\n').map((line, index) => (
+    <span key={`${line}-${index}`}>
+      {line}
+      <br />
+    </span>
+  ))
 }
 
 function buildListCopy(
@@ -555,33 +570,44 @@ export default function ContentAgentPage() {
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <h3 className="font-bold text-gray-900">Instagram</h3>
                     <CopyButton
-                      onCopy={() => handleCopy('social_instagram', result.article.social_snippets.instagram)}
+                      onCopy={() => handleCopy('social_instagram', normalizeCaptionText(result.social_snippets.instagram))}
                       copied={copiedSection === 'social_instagram'}
                     />
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap">{result.article.social_snippets.instagram}</p>
+                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.instagram)}</p>
                 </div>
 
                 <div className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <h3 className="font-bold text-gray-900">Facebook</h3>
                     <CopyButton
-                      onCopy={() => handleCopy('social_facebook', result.article.social_snippets.facebook)}
+                      onCopy={() => handleCopy('social_facebook', normalizeCaptionText(result.social_snippets.facebook))}
                       copied={copiedSection === 'social_facebook'}
                     />
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap">{result.article.social_snippets.facebook}</p>
+                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.facebook)}</p>
                 </div>
 
                 <div className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <h3 className="font-bold text-gray-900">X</h3>
                     <CopyButton
-                      onCopy={() => handleCopy('social_x', result.article.social_snippets.x)}
+                      onCopy={() => handleCopy('social_x', normalizeCaptionText(result.social_snippets.x))}
                       copied={copiedSection === 'social_x'}
                     />
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap">{result.article.social_snippets.x}</p>
+                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.x)}</p>
+                </div>
+
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <h3 className="font-bold text-gray-900">TikTok</h3>
+                    <CopyButton
+                      onCopy={() => handleCopy('social_tiktok', normalizeCaptionText(result.social_snippets.tiktok))}
+                      copied={copiedSection === 'social_tiktok'}
+                    />
+                  </div>
+                  <p className="text-gray-700">{renderCaptionLines(result.social_snippets.tiktok)}</p>
                 </div>
               </div>
             </div>

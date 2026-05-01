@@ -39,14 +39,80 @@ Return this exact structure:
     ],
     "internal_link_suggestions": [
       "Choose 2-3 pages from this exact list that are genuinely relevant to the article topic. Return only the page name and a suggested anchor text phrase. Do not invent pages. Only use pages from this list:\n__INTERNAL_LINK_OPTIONS__"
-    ],
-    "social_snippets": {
-      "instagram": "Instagram caption. Open with a hook line. Include FilipinoFoodNearMe.org. Close with: Flavor With Soul Deserves to Be Found.",
-      "facebook": "Facebook caption. 2-3 sentences. Warm community tone. Occasional light Taglish if natural. Include FilipinoFoodNearMe.org URL.",
-      "x": "X post under 260 characters. Punchy. Include FilipinoFoodNearMe.org."
-    }
+    ]
   },
   "hashtags": ["10 hashtags without the hash symbol. Mix Filipino-specific tags such as FilipinoFood FilAm PinoyFood with broader cultural tags such as FoodCulture DiasporaFood AsianAmericanFood. Avoid generic tags like FoodLovers ComfortFood FoodBlogger."]
+}`
+
+const SOCIAL_AND_IMAGE_SYSTEM_PROMPT = `You are the Social Media Copy and Image Prompt Agent for FilipinoFoodNearMe.org — a Filipino-American food directory and cultural knowledge platform serving all 50 US states. Tagline: Flavor With Soul Deserves to Be Found.
+
+You generate two things: platform-native social media captions and a cinematic hero image prompt.
+
+SOCIAL COPY RULES:
+Write like a culturally fluent Filipino-American who genuinely loves the food and community. Use emojis naturally to add energy — not decoratively. Emojis should punctuate ideas, not replace words.
+
+Brand voice rules:
+- Warm, specific, story-driven, community-first
+- Name actual dishes, regions, traditions — never be generic
+- Light Taglish only when natural: sarap, masarap, ulam, merienda, lodi — never forced
+- Banned words: vibrant, delicious, amazing, incredible, join us, explore, journey
+- Banned openers: "Are you ready", "Have you tried", "Did you know"
+- Always include FilipinoFoodNearMe.org as plain text URL — never as a markdown link
+- Instagram and Facebook always close with: Flavor With Soul Deserves to Be Found. 🌺
+
+Platform rules:
+Instagram:
+- Open with a punchy culturally specific hook — a sensory detail or cultural truth
+- 3-4 short punchy lines with \n line breaks between them
+- 2-4 emojis placed where they add energy
+- URL on its own line at the end, preceded by tagline on its own line
+- Never combine URL with the \n prefix — URL must be clean plain text on its own line
+
+Facebook:
+- 3-5 lines with \n line breaks
+- Include a community memory question
+- 2-4 emojis
+- URL as clean plain text on its own line at the end
+
+X/Twitter:
+- Under 240 characters total including URL
+- One sharp cultural insight or dish callout
+- 1-2 emojis max
+- URL as plain text
+
+TikTok:
+- Under 150 characters total including URL
+- Hook-first, sounds like a discovery
+- 1-2 emojis
+- URL as plain text
+
+HERO IMAGE PROMPT RULES:
+Generate a cinematic, specific image generation prompt for a 1536x1024 landscape article hero image.
+
+Split composition:
+- TOP HALF: Clean warm cream background with subtle banig woven texture. Bold dark maroon headline text matching the article headline exactly. Smaller tagline: "Flavor With Soul Deserves to Be Found." and URL "FilipinoFoodNearMe.org" below it. Philippine sun motif (Sun of Liberty with 8 rays) as a restrained gold decorative element top center. Gold diamond divider elements.
+- BOTTOM HALF: Photorealistic horizontal food strip on banana leaves and dark wood surface. Warm natural light from the left. Each dish must be described with specific visual texture cues.
+
+CRITICAL food realism rules:
+- Always specify exact visual details: glistening, lacquered skin, char marks, condensation, steam rising, rendered fat, glossy sauce
+- Never use "colorful array" or "spread of dishes" — describe each dish individually with specific visual details
+- Lechon: describe as whole roasted pig with mahogany lacquered crackling skin, deep amber color, rendered fat visible
+- Halo-halo: describe as tall glass with layered shaved ice, purple ube ice cream scoop on top, condensation on glass exterior, colorful layers visible through glass
+- Grilled items: char marks clearly visible, glistening with marinade glaze, slight smoke haze
+- All food must look photorealistic and appetizing — shot by a professional food photographer
+
+Always respond with valid JSON only. No markdown, no preamble, no explanation outside the JSON.
+
+Return exactly:
+{
+  "social_snippets": {
+    "instagram": "caption with \n line breaks, URL as clean plain text on its own line",
+    "facebook": "caption with \n line breaks, URL as clean plain text on its own line",
+    "x": "caption under 240 chars with plain text URL",
+    "tiktok": "caption under 150 chars with plain text URL"
+  },
+  "hashtags": ["10 hashtags without # symbol — mix: FilipinoFood FilAm PinoyFood FilipinoFoodNearMe with cultural tags DiasporaFood AsianAmericanFood FoodCulture FilAmFood — no generic tags like FoodLovers ComfortFood FoodBlogger"],
+  "hero_image_prompt": "Single cinematic image generation prompt as plain text. Between 100-140 words. No JSON inside this field. Specific food visual details for each dish mentioned."
 }`
 
 interface ContentAgentRequestBody {
@@ -72,7 +138,6 @@ interface ParsedContentAgentResponse {
   seo_title?: string
   meta_description?: string
   geo_snippet?: string
-  hero_image_prompt?: string
   article?: {
     headline?: string
     intro?: string
@@ -86,13 +151,19 @@ interface ParsedContentAgentResponse {
     }>
     affiliate_opportunities?: RawAffiliateOpportunity[]
     internal_link_suggestions?: unknown[]
-    social_snippets?: {
-      instagram?: string
-      facebook?: string
-      x?: string
-    }
   }
   hashtags?: string[]
+}
+
+interface SocialAndImageResponse {
+  social_snippets?: {
+    instagram?: string
+    facebook?: string
+    x?: string
+    tiktok?: string
+  }
+  hashtags?: string[]
+  hero_image_prompt?: string
 }
 
 const supabase = createClient(
@@ -102,6 +173,41 @@ const supabase = createClient(
 
 function buildSystemPrompt(internalLinkOptions: string) {
   return BASE_SYSTEM_PROMPT.replace('__INTERNAL_LINK_OPTIONS__', internalLinkOptions)
+}
+
+function extractKeyTopics(article: NonNullable<ParsedContentAgentResponse['article']>) {
+  const text = [
+    article.headline ?? '',
+    ...(article.sections ?? []).flatMap((section) => [section.heading ?? '', section.body ?? '']),
+    ...(article.faq ?? []).flatMap((item) => [item.question ?? '', item.answer ?? '']),
+  ].join(' ')
+
+  const matches = text.match(/\b[A-Z][a-z]+(?:[-'][A-Za-z]+)?(?:\s+[A-Z][a-z]+(?:[-'][A-Za-z]+)?){0,2}\b/g) ?? []
+  const blocked = new Set([
+    'What',
+    'How',
+    'Where',
+    'Filipino',
+    'Filipino-Americans',
+    'United States',
+    'Flavor With Soul Deserves',
+  ])
+
+  const uniqueTopics: string[] = []
+  for (const match of matches) {
+    const cleaned = match.trim()
+    if (blocked.has(cleaned) || cleaned.length < 3) {
+      continue
+    }
+    if (!uniqueTopics.includes(cleaned)) {
+      uniqueTopics.push(cleaned)
+    }
+    if (uniqueTopics.length >= 12) {
+      break
+    }
+  }
+
+  return uniqueTopics.join(', ')
 }
 
 export async function POST(request: NextRequest) {
@@ -203,7 +309,65 @@ export async function POST(request: NextRequest) {
       ) as AffiliateOpportunityResponseItem[]
     }
 
-    return NextResponse.json(parsed)
+    const articleHeadline = parsed.article?.headline ?? ''
+    const articleIntro = (parsed.article?.intro ?? '').slice(0, 300)
+    const keyTopics = parsed.article ? extractKeyTopics(parsed.article) : ''
+
+    const socialAndImageResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        max_tokens: 1500,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: SOCIAL_AND_IMAGE_SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content: `Article headline: ${articleHeadline}
+Intro: ${articleIntro}
+Key dishes and topics: ${keyTopics}`,
+          },
+        ],
+      }),
+    })
+
+    if (!socialAndImageResponse.ok) {
+      const errorText = await socialAndImageResponse.text()
+      console.error('OpenAI social/image agent error:', errorText)
+      return NextResponse.json(
+        { error: 'Failed to generate social snippets and hero image prompt' },
+        { status: 500 }
+      )
+    }
+
+    const socialAndImageCompletion = (await socialAndImageResponse.json()) as {
+      choices?: Array<{
+        message?: {
+          content?: string | null
+        }
+      }>
+    }
+
+    const socialAndImageContent = socialAndImageCompletion.choices?.[0]?.message?.content
+
+    if (!socialAndImageContent) {
+      console.error('OpenAI social/image agent returned empty content:', socialAndImageCompletion)
+      return NextResponse.json(
+        { error: 'OpenAI returned an empty social/image response' },
+        { status: 500 }
+      )
+    }
+
+    const socialAndImageParsed = JSON.parse(socialAndImageContent) as SocialAndImageResponse
+
+    return NextResponse.json({
+      ...parsed,
+      ...socialAndImageParsed,
+    })
   } catch (error) {
     console.error('Content agent route error:', error)
     return NextResponse.json(
