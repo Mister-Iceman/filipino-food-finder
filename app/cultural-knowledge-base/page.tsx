@@ -429,6 +429,27 @@ export default async function CulturalKnowledgeBasePage() {
               </div>
             </Link>
 
+            <Link href="/cultural-knowledge-base/michelin-guide-filipino-food-2026"
+              className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+              <div className="h-40 overflow-hidden bg-gray-100">
+                <img
+                  src="/images/cultural-kb/michelin-guide-2026.jpg"
+                  alt="What the 2026 Michelin Guide Means for Filipino Food"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Culture &amp; History</span>
+                <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">
+                  What the 2026 Michelin Guide Means for Filipino Food
+                </h3>
+                <p className="text-gray-500 text-xs line-clamp-2">
+                  The Michelin Guide has arrived in the Philippines. Here&rsquo;s what this historic global culinary awakening means for Filipino food worldwide.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">8 min read</p>
+              </div>
+            </Link>
+
             {rest.map(article => (
                 <Link key={article.id} href={'/cultural-knowledge-base/' + article.slug}
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
