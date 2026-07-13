@@ -36,28 +36,16 @@ const supabase = createClient(
 )
 
 export default async function HomePage() {
-  // Fetch stats for hero bar
-  const { count: listingCount } = await supabase
+  // Single query for all hero-bar stats — replaces 4 separate round-trips.
+  // Selects only the 3 columns needed; count: 'exact' returns total row count
+  // alongside the minimal payload for Set-based deduplication.
+  const { count: listingCount, data: statsRows } = await supabase
     .from('listings')
-    .select('*', { count: 'exact', head: true })
+    .select('state, city, category_primary', { count: 'exact' })
 
-  const { data: stateRows } = await supabase
-    .from('listings')
-    .select('state')
-
-  const stateCount = new Set(stateRows?.map(r => r.state).filter(Boolean)).size
-
-  const { data: cityRows } = await supabase
-    .from('listings')
-    .select('city')
-
-  const cityCount = new Set(cityRows?.map(r => r.city).filter(Boolean)).size
-
-  // Fetch active categories
-  const { data: categoryRows } = await supabase
-    .from('listings')
-    .select('category_primary')
-  const activeCategories = new Set(categoryRows?.map((r: any) => r.category_primary).filter(Boolean) || [])
+  const stateCount = new Set(statsRows?.map(r => r.state).filter(Boolean)).size
+  const cityCount = new Set(statsRows?.map(r => r.city).filter(Boolean)).size
+  const activeCategories = new Set(statsRows?.map((r: any) => r.category_primary).filter(Boolean) || [])
 
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
