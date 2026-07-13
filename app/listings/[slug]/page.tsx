@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
@@ -38,6 +39,17 @@ const supabase = createClient(
   }
 )
 
+// Cached fetcher — called by both generateMetadata and ListingPage within the same request.
+// React's cache() deduplicates to a single Supabase round-trip per request.
+const getListing = cache(async (slug: string) => {
+  const { data } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+  return data
+})
+
 export async function generateStaticParams() {
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -58,11 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
 
-  const { data: listing } = await supabase
-    .from('listings')
-    .select('state, city')
-    .eq('slug', slug)
-    .single()
+  const listing = await getListing(slug)
 
   if (listing?.state && listing?.city) {
     const stateSlug = STATE_TO_SLUG[listing.state] || listing.state.toLowerCase()
@@ -83,11 +91,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ListingPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const { data: listing } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('slug', slug)
-    .single()
+  const listing = await getListing(slug)
 
   // Fetch approved photos (service role for signed URLs)
   const supabaseAdmin = createClient(
