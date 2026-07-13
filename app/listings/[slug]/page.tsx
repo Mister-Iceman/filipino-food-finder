@@ -38,6 +38,22 @@ const supabase = createClient(
   }
 )
 
+export async function generateStaticParams() {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  // Pre-build all known listing slugs at deploy time, ordered by popularity so the
+  // most-visited pages are generated first if the build is time-constrained.
+  // ISR (revalidate = 3600) handles any slugs not covered here.
+  const { data } = await supabaseAdmin
+    .from('listings')
+    .select('slug')
+    .not('slug', 'is', null)
+    .order('google_reviews_count', { ascending: false })
+  return (data ?? []).map(({ slug }) => ({ slug }))
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
@@ -85,11 +101,13 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     .eq('status', 'approved')
     .order('created_at', { ascending: true })
   const photos: { url: string; caption: string | null }[] = []
-  for (const p of rawPhotos ?? []) {
-    const { data: signed } = await supabaseAdmin.storage
+  if (rawPhotos && rawPhotos.length > 0) {
+    const { data: signedUrls } = await supabaseAdmin.storage
       .from('listing-photos')
-      .createSignedUrl(p.storage_path, 3600)
-    if (signed?.signedUrl) photos.push({ url: signed.signedUrl, caption: p.caption ?? null })
+      .createSignedUrls(rawPhotos.map(p => p.storage_path), 3600)
+    signedUrls?.forEach((signed, i) => {
+      if (signed.signedUrl) photos.push({ url: signed.signedUrl, caption: rawPhotos[i].caption ?? null })
+    })
   }
 
   if (!listing) {
@@ -99,6 +117,14 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     // only reliable place to handle it.
     permanentRedirect('/directory/')
   }
+
+  // Fetch ratings server-side — eliminates the separate client-side Supabase call
+  // that RatingSummary was making on every page view.
+  const { data: ratingsData } = await supabase
+    .from('ratings')
+    .select('*')
+    .eq('listing_id', listing.id)
+  const ratings = ratingsData ?? []
 
   const isGrocery =
     listing.category_primary?.toLowerCase().includes('supermarket') ||
@@ -345,7 +371,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 
               <div className="mb-8">
                 <RatingSummary
-                  listingId={listing.id}
+                  ratings={ratings}
                   category={category}
                 />
               </div>
