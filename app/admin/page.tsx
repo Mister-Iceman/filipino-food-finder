@@ -277,6 +277,8 @@ export default function AdminPage() {
       .insert([dataToSubmit])
     if (!error) {
       alert('Restaurant added!')
+      // Bust the /directory data cache so the new listing appears immediately
+      fetch('/api/admin/revalidate-directory', { method: 'POST' }).catch(() => {})
       resetForm()
       if (searchQuery.trim()) {
         performSearch(searchQuery.trim(), currentPage)

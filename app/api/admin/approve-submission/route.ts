@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -63,6 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('✅ Added to listings table')
+    revalidatePath('/directory')
 
     const { error: updateError } = await supabase
       .from('business_submissions')

@@ -17,7 +17,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, cache: 'no-store' }),
+        fetch(url, { ...options, next: { revalidate: 120 } }),
     },
   }
 )
