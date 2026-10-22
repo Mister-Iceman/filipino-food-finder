@@ -47,8 +47,13 @@ next-env.d.ts
 .env*.local
 
 # Claude Code
+# Worktrees are local-only scratch space
 .claude/worktrees/
+# settings.local.json holds per-machine permission grants — not for sharing
 .claude/settings.local.json
+# mcp.json holds MCP server config, which may include DB connection strings
+# Copy .claude/mcp.example.json → .claude/mcp.json and fill in real values locally
+.claude/mcp.json
 
 # Scrapers and archives
 filam-scraper/
