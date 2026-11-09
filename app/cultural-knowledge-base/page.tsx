@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { optimizedImageUrl } from '../../lib/optimized-image'
 
 export const metadata: Metadata = {
   title: 'Cultural Knowledge Base | FilipinoFoodNearMe.org',
@@ -51,7 +52,7 @@ export default async function CulturalKnowledgeBasePage() {
                   className="group block rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {article.hero_image_url && (
                     <div className="h-52 overflow-hidden bg-gray-100">
-                      <img src={article.hero_image_url} alt={article.title}
+                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   )}
@@ -455,7 +456,7 @@ export default async function CulturalKnowledgeBasePage() {
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {article.hero_image_url && (
                     <div className="h-40 overflow-hidden bg-gray-100">
-                      <img src={article.hero_image_url} alt={article.title}
+                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   )}

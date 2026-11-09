@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { optimizedImageUrl, optimizeContentImages } from '../../../lib/optimized-image'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -62,7 +63,7 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
 
       {article.hero_image_url && (
         <div style={{width:"100%",backgroundColor:"#f3f4f6"}}>
-          <img src={article.hero_image_url} alt={article.hero_image_alt || article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
+          <img src={optimizedImageUrl(article.hero_image_url, 1920)} alt={article.hero_image_alt || article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
         </div>
       )}
       <div className="max-w-3xl mx-auto px-4 py-10">
@@ -91,7 +92,7 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
         {article.content && (
           <div
             className="article-body"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: optimizeContentImages(article.content) }}
           />
         )}
 

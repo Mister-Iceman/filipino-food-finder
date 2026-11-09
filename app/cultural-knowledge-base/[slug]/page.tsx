@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import MakeItAtHome from '../../components/MakeItAtHome'
 import ArticleReadTracker from '../../components/ArticleReadTracker'
+import { optimizedImageUrl, optimizeContentImages } from '../../../lib/optimized-image'
 
 // ---------------------------------------------------------------------------
 // Affiliate links keyed by partial slug match.
@@ -104,7 +105,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       {article.hero_image_url ? (
         <div style={{width:"100%",backgroundColor:"#f3f4f6"}}>
-          <img src={article.hero_image_url} alt={article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
+          <img src={optimizedImageUrl(article.hero_image_url, 1920)} alt={article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
         </div>
       ) : (
         <div className="w-full h-48 bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26]" />
@@ -136,7 +137,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         {article.content && (
           <div
             className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-purple-700 prose-ul:my-4 prose-li:text-gray-700"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: optimizeContentImages(article.content) }}
           />
         )}
 
@@ -160,7 +161,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <Link key={r.id} href={'/cultural-knowledge-base/' + r.slug}
                   className="group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {r.hero_image_url
-                    ? <div className="h-36 overflow-hidden"><img src={r.hero_image_url} alt={r.title} className="w-full h-full object-cover" /></div>
+                    ? <div className="h-36 overflow-hidden"><img src={optimizedImageUrl(r.hero_image_url, 640)} alt={r.title} className="w-full h-full object-cover" /></div>
                     : <div className="h-36 bg-gradient-to-br from-[#62438D] to-[#BF2F26] flex items-center justify-center"><span className="text-3xl">🍽️</span></div>
                   }
                   <div className="p-4">

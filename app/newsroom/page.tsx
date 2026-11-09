@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { optimizedImageUrl } from '../../lib/optimized-image'
 
 export const metadata: Metadata = {
   title: 'Newsroom | FilipinoFoodNearMe.org',
@@ -57,7 +58,7 @@ export default async function NewsroomPage() {
                 className="group flex gap-6 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
                 {article.hero_image_url && (
                   <div className="hidden md:block w-32 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                    <img src={article.hero_image_url} alt={article.title} className="w-full h-full object-cover" />
+                    <img src={optimizedImageUrl(article.hero_image_url, 640)} alt={article.title} className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div className="flex-1">
