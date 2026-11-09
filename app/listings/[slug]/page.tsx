@@ -257,6 +257,17 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                     🌐 <LeadLink href={listing.website} leadType="website_click" listingId={listing.id} className="text-blue-600 hover:underline">Visit Website</LeadLink>
                   </p>
                 )}
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                  {[
+                    ['Google Maps', listing.google_maps_url],
+                    ['Instagram', listing.instagram_url],
+                    ['Facebook', listing.facebook_url],
+                    ['TikTok', listing.tiktok_url],
+                    ['X', listing.x_url || listing.twitter_url],
+                  ].map(([label, href]) => typeof href === 'string' && /^https?:\/\//i.test(href) && (
+                    <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{label}</a>
+                  ))}
+                </div>
                 
                 {/* Last Updated & Report Info */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200">
