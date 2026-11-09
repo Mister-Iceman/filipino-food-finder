@@ -2,7 +2,7 @@
 
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 import { cookies } from 'next/headers'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { parseBatch } from './draft'
@@ -105,6 +105,7 @@ async function decideDraft(action: 'publish' | 'reject', form: FormData) {
     notice('Could not save the decision. The draft is still available for review.', true)
   }
   if (data?.status === 'published' && data.slug) {
+    updateTag('ffnm-directory')
     for (const target of ['/', '/directory', '/restaurants', '/quick-bites', '/listings/' + data.slug, '/sitemap.xml']) {
       revalidatePath(target)
     }

@@ -13,8 +13,8 @@ export const metadata = {
 
 // The directory loads every listing (about 1 MB from Supabase per refresh).
 // Refreshing every 2 minutes made it the largest database egress source, so the
-// cached copy is now kept for 6 hours. Admin add/edit routes already call
-// revalidatePath('/directory'), so admin changes still show up right away.
+// cached copy is kept for 6 hours. Research approvals expire this cache tag
+// after the listing and review decision commit.
 const DIRECTORY_REVALIDATE_SECONDS = 6 * 60 * 60
 
 const supabase = createClient(
@@ -23,7 +23,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: DIRECTORY_REVALIDATE_SECONDS } }),
+        fetch(url, { ...options, next: { revalidate: DIRECTORY_REVALIDATE_SECONDS, tags: ['ffnm-directory'] } }),
     },
   }
 )
@@ -39,6 +39,7 @@ async function fetchAllListings() {
       .select('id, name, slug, city, state, zip, address_street, phone, website, google_maps_url, category_primary, category_secondary, google_rating, google_reviews_count, hours, instagram_url, facebook_url, tiktok_url, x_url, is_pickup_only, review_keywords')
       .range(from, from + batchSize - 1)
       .order('name', { ascending: true })
+      .order('id', { ascending: true })
 
     if (!data || data.length === 0) break
     allData = [...allData, ...data]

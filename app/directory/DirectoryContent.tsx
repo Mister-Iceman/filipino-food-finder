@@ -30,6 +30,10 @@ interface CommunityInsight {
 
 const ITEMS_PER_PAGE = 24
 
+function normalizeSearch(text: string) {
+  return text.normalize('NFKD').toLowerCase().replace(/\p{M}/gu, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+}
+
 interface Props {
   initialListings: any[]
   photoSlugs?: string[]
@@ -40,7 +44,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
   const searchParams = useSearchParams()
   const { trackInteraction, trackSearch, trackOutbound } = useTracker()
 
-  const [listings] = useState<any[]>(initialListings)
+  const listings = initialListings
   const [filteredListings, setFilteredListings] = useState<any[]>([])
   const [communityInsights, setCommunityInsights] = useState<Map<number, CommunityInsight>>(new Map())
   const [searchQuery, setSearchQuery] = useState('')
@@ -77,7 +81,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     const cityParam = searchParams.get('city')
 
     if (categoryParam) setCategoryFilter(decodeURIComponent(categoryParam))
-    if (searchParam) setSearchQuery(decodeURIComponent(searchParam))
+    setSearchQuery(searchParam ?? '')
     if (stateParam) setStateFilter(decodeURIComponent(stateParam))
     if (cityParam) setCityFilter(decodeURIComponent(cityParam))
 
@@ -225,17 +229,16 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
   const filterAndSortListings = () => {
     let filtered = [...listings]
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase()
-      filtered = filtered.filter(listing =>
-        listing.name?.toLowerCase().includes(q) ||
-        listing.city?.toLowerCase().includes(q) ||
-        listing.category_primary?.toLowerCase().includes(q) ||
-        listing.review_keywords?.toLowerCase().includes(q) ||
-        listing.state?.toLowerCase().includes(q) ||
-        listing.zip?.toLowerCase().includes(q) ||
-        listing.address_street?.toLowerCase().includes(q)
-      )
+    const query = normalizeSearch(searchQuery)
+    if (query) {
+      const terms = query.split(' ')
+      filtered = filtered.filter(listing => {
+        const text = normalizeSearch([
+          listing.name, listing.city, listing.category_primary, listing.category_secondary,
+          listing.review_keywords, listing.state, listing.zip, listing.address_street,
+        ].join(' '))
+        return terms.every(term => text.includes(term))
+      })
     }
 
     if (categoryFilter) {
