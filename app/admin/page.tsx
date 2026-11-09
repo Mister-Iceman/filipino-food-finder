@@ -347,6 +347,9 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
           <div className="flex gap-3 flex-wrap">
+            <a href="/admin/restaurant-research" className="bg-green-700 hover:bg-green-800 text-white px-5 py-3 rounded-lg font-bold text-sm">
+              Restaurant Research →
+            </a>
             <a
               href="/admin/photos"
               className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-bold text-sm relative"
