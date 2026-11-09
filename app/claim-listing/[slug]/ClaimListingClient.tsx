@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
@@ -18,13 +18,13 @@ export default function ClaimListingClient() {
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-  const [loaded, setLoaded] = useState(false)
 
-  // Load listing info on mount
-  useState(() => {
-    if (!slug || loaded) return
-    setLoaded(true)
-    fetch(`/api/listing-info?slug=${slug}`)
+  // Load listing info in the browser after mount. This used to run inside a
+  // useState initializer, which also runs during server rendering, where a
+  // relative URL can't be fetched ("Failed to parse URL").
+  useEffect(() => {
+    if (!slug) return
+    fetch(`/api/listing-info?slug=${encodeURIComponent(slug)}`)
       .then(r => r.json())
       .then(data => {
         if (data.id) {
@@ -34,7 +34,8 @@ export default function ClaimListingClient() {
           setListingState(data.state)
         }
       })
-  })
+      .catch(() => {})
+  }, [slug])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
