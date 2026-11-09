@@ -88,7 +88,11 @@ const nextConfig: NextConfig = {
   },
 
   images: {
+    // Optimized copies are cached for 31 days, so Supabase is rarely hit.
+    minimumCacheTTL: 2678400,
     remotePatterns: [
+      // Article images in Supabase Storage (see lib/optimized-image.ts)
+      { protocol: 'https', hostname: 'kjhufdervnyuayhiwqtc.supabase.co', pathname: '/storage/v1/object/public/**' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'placehold.co' },

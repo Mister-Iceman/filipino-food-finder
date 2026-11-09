@@ -11,13 +11,19 @@ export const metadata = {
   },
 }
 
+// The directory loads every listing (about 1 MB from Supabase per refresh).
+// Refreshing every 2 minutes made it the largest database egress source, so the
+// cached copy is now kept for 6 hours. Admin add/edit routes already call
+// revalidatePath('/directory'), so admin changes still show up right away.
+const DIRECTORY_REVALIDATE_SECONDS = 6 * 60 * 60
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: 120 } }),
+        fetch(url, { ...options, next: { revalidate: DIRECTORY_REVALIDATE_SECONDS } }),
     },
   }
 )
