@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { decideDraft, queueDrafts, readQueue, signIn, signOut } from './actions'
+import { approveDraft, queueDrafts, readQueue, rejectDraft, signIn, signOut } from './actions'
 
 export const metadata = { title: 'FFNM Restaurant Research', robots: { index: false, follow: false } }
 
@@ -40,12 +40,12 @@ function DraftCard({ row }: { row: Row }) {
         {row.review_note && <p>{row.review_note}</p>}
         {row.listing_slug && <Link href={'/listings/' + row.listing_slug} className="underline">View live listing</Link>}
         {row.status === 'pending' && (
-          <form action={decideDraft} className="flex flex-wrap gap-2 border-t pt-3">
+          <form action={approveDraft} className="flex flex-wrap gap-2 border-t pt-3">
             <input type="hidden" name="id" value={row.id} />
             <input type="hidden" name="hash" value={row.draft_hash} />
             <input name="note" aria-label="Review note" maxLength={1000} placeholder="Optional review note" className="rounded border p-2" />
-            <button name="action" value="publish" className="rounded bg-green-700 px-3 py-2 text-white">Approve &amp; Publish</button>
-            <button name="action" value="reject" className="rounded border px-3 py-2">Reject</button>
+            <button type="submit" className="rounded bg-green-700 px-3 py-2 text-white">Approve &amp; Publish</button>
+            <button type="submit" formAction={rejectDraft} className="rounded border px-3 py-2">Reject</button>
           </form>
         )}
       </div>

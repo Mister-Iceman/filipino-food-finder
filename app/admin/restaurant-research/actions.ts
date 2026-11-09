@@ -85,16 +85,16 @@ export async function queueDrafts(form: FormData) {
   notice('Drafts received. Existing copies keep their current status.')
 }
 
-export async function decideDraft(form: FormData) {
+async function decideDraft(action: 'publish' | 'reject', form: FormData) {
   if (!await authorized()) notice('Sign in to review a draft.', true)
   const id = form.get('id')
   const hash = form.get('hash')
-  const action = form.get('action')
-  const note = form.get('note')
+  const note = form.get('note') ?? ''
   if (typeof id !== 'string' || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(id) ||
-      typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash) ||
-      (action !== 'publish' && action !== 'reject') ||
-      typeof note !== 'string' || note.length > 1000) notice('Check the decision and try again.', true)
+      typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash)) {
+    notice('Refresh the queue and reopen this draft before trying again.', true)
+  }
+  if (typeof note !== 'string' || note.length > 1000) notice('Keep the optional note under 1,000 characters.', true)
 
   const { data, error } = await db().rpc('ffnm_decide_restaurant_draft', {
     p_id: id, p_hash: hash, p_action: action, p_note: note.trim(),
@@ -112,6 +112,14 @@ export async function decideDraft(form: FormData) {
     revalidatePath('/[state]/[city]', 'page')
   }
   notice(data?.status === 'published' ? 'Restaurant published to FFNM.' : 'Draft rejected and archived.')
+}
+
+export async function approveDraft(form: FormData) {
+  await decideDraft('publish', form)
+}
+
+export async function rejectDraft(form: FormData) {
+  await decideDraft('reject', form)
 }
 
 type DraftRow = {
