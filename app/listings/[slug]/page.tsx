@@ -46,6 +46,7 @@ const getListing = cache(async (slug: string) => {
     .from('listings')
     .select('*')
     .eq('slug', slug)
+    .limit(1)
     .single()
   return data
 })
