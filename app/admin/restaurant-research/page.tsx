@@ -25,6 +25,9 @@ function DraftCard({ row }: { row: Row }) {
         <p>{draft.description}</p>
         {draft.phone && <p>{draft.phone}</p>}
         {draft.hours && <p>{draft.hours}</p>}
+        {draft.google_rating != null && (
+          <p>Google: {draft.google_rating} / 5 · {draft.google_reviews_count?.toLocaleString('en-US')} reviews · checked {draft.google_rating_checked_on}</p>
+        )}
         {draft.is_pickup_only && <p>Pickup only</p>}
         <div className="flex flex-wrap gap-3">
           {links.map(([label, url]) => url && <a key={label} href={url} target="_blank" rel="noreferrer" className="underline">{label}</a>)}

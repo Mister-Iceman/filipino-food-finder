@@ -49,6 +49,21 @@ export function parseDraft(value: unknown) {
   }
   const service = field(item.service_mode, 'service mode', 150, true)!
   if (item.is_pickup_only != null && typeof item.is_pickup_only !== 'boolean') throw Error('Check the pickup-only setting.')
+  const mapsUrl = link(item.google_maps_url, 'map')
+  const rating = item.google_rating ?? null
+  const reviews = item.google_reviews_count ?? null
+  const ratingDate = field(item.google_rating_checked_on, 'Google rating check date', 10)
+  if (rating !== null || reviews !== null || ratingDate !== null) {
+    if (typeof rating !== 'number' || !Number.isFinite(rating) || rating < 1 || rating > 5 ||
+        typeof reviews !== 'number' || !Number.isInteger(reviews) || reviews < 1 || reviews > 2147483647 ||
+        !mapsUrl || !ratingDate || !/^\d{4}-\d{2}-\d{2}$/.test(ratingDate) || ratingDate > today) {
+      throw Error('Provide the Google rating, review count, Maps link, and date checked together.')
+    }
+    const checked = new Date(ratingDate)
+    if (!Number.isFinite(checked.getTime()) || checked.toISOString().slice(0, 10) !== ratingDate) {
+      throw Error('Use a valid Google rating check date.')
+    }
+  }
   return {
     name: field(item.name, 'name', 160, true)!, category_primary: category,
     category_secondary: field(item.category_secondary, 'secondary category', 80),
@@ -56,7 +71,9 @@ export function parseDraft(value: unknown) {
     city: field(item.city, 'city', 100, true)!, state, zip,
     description: field(item.description, 'description', 3000, true)!,
     phone: field(item.phone, 'phone', 40), hours: field(item.hours, 'hours', 600),
-    website: link(item.website, 'website'), google_maps_url: link(item.google_maps_url, 'map'),
+    website: link(item.website, 'website'), google_maps_url: mapsUrl,
+    ...(rating !== null ? { google_rating: rating as number, google_reviews_count: reviews as number,
+      google_rating_checked_on: ratingDate! } : {}),
     instagram_url: link(item.instagram_url, 'Instagram'), facebook_url: link(item.facebook_url, 'Facebook'),
     tiktok_url: link(item.tiktok_url, 'TikTok'), x_url: link(item.x_url, 'X'),
     is_pickup_only: item.is_pickup_only === true || /^(?:limited )?(?:takeout|pickup)(?: only)?$/i.test(service),
