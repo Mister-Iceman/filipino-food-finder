@@ -90,7 +90,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: `${event.title} | Filipino Food Events`,
     description,
     alternates: {
-      canonical: `https://www.filipinofoodnearme.org/events/${id}`,
+      canonical: `https://filipinofoodnearme.org/events/${id}/`,
     },
     openGraph: {
       title: event.title,

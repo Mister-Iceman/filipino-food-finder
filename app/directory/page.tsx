@@ -7,7 +7,7 @@ export const metadata = {
   description: 'Browse our complete directory of Filipino restaurants, bakeries, grocery stores, and food trucks across America.',
   robots: 'noindex, follow',
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/directory',
+    canonical: 'https://filipinofoodnearme.org/directory/',
   },
 }
 

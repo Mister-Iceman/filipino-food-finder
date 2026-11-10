@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/long-life-of-pancit-filipino-noodle-culture',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/long-life-of-pancit-filipino-noodle-culture/',
   },
   openGraph: {
     title: 'The Long Life of Pancit: Unraveling the Philippines\' Noodle Culture',

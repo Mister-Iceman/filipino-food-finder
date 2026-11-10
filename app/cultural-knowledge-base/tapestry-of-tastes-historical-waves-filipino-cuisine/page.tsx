@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/tapestry-of-tastes-historical-waves-filipino-cuisine',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/tapestry-of-tastes-historical-waves-filipino-cuisine/',
   },
   openGraph: {
     title: 'A Tapestry of Tastes: The Historical Waves That Shaped the \'Original Fusion\' Cuisine',

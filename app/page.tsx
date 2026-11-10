@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: "Flavor With Soul Deserves to Be Found. Discover Filipino restaurants, bakeries, grocery stores and food trucks across America.",
   },
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/',
+    canonical: 'https://filipinofoodnearme.org/',
   },
 }
 

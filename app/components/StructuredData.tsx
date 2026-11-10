@@ -36,11 +36,8 @@ export function RestaurantStructuredData({ restaurant }: { restaurant: any }) {
     telephone: restaurant.phone,
     url: restaurant.website,
     servesCuisine: 'Filipino',
-    aggregateRating: restaurant.google_rating ? {
-      '@type': 'AggregateRating',
-      ratingValue: restaurant.google_rating,
-      reviewCount: restaurant.google_reviews_count,
-    } : undefined,
+    // No aggregateRating: these are Google's ratings, which Google's
+    // review-snippet rules forbid marking up on another site.
   }
 
   return (
