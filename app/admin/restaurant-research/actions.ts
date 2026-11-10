@@ -75,14 +75,39 @@ export async function queueDrafts(form: FormData) {
   const rows = drafts.map(draft => ({
     draft, draft_hash: createHash('sha256').update(JSON.stringify(draft)).digest('hex'),
   }))
-  const { error } = await db().from('ffnm_restaurant_drafts').upsert(rows, {
+  const { data: inserted, error } = await db().from('ffnm_restaurant_drafts').upsert(rows, {
     onConflict: 'draft_hash', ignoreDuplicates: true,
-  })
+  }).select('id')
   if (error) {
     console.error('[restaurant-research] intake failed', error.code)
     notice('Could not queue the drafts.', true)
   }
-  notice('Drafts received. Existing copies keep their current status.')
+  const count = inserted?.length ?? 0
+  if (!count) notice('These drafts are already in the queue or archive.')
+
+  const recipient = process.env.RESEARCH_REVIEW_EMAIL
+  const apiKey = process.env.BREVO_API_KEY
+  if (!recipient || !apiKey) notice('Drafts queued. Review email is unavailable.')
+
+  const description = count === 1 ? '1 restaurant draft' : `${count} restaurant drafts`
+  try {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': apiKey, 'content-type': 'application/json' },
+      signal: AbortSignal.timeout(5_000),
+      body: JSON.stringify({
+        sender: { name: 'Filipino Food Near Me', email: 'info@filipinofoodnearme.org' },
+        to: [{ email: recipient }],
+        subject: `FFNM: ${description} ready for review`,
+        textContent: `${description} added to the FFNM review queue. Review them at https://www.filipinofoodnearme.org${path}`,
+      }),
+    })
+    if (!response.ok) throw new Error(`Brevo returned ${response.status}`)
+  } catch (error) {
+    console.error('[restaurant-research] review email failed', error)
+    notice('Drafts queued. The review email could not be confirmed.')
+  }
+  notice('Drafts queued and review email sent.')
 }
 
 async function decideDraft(action: 'publish' | 'reject', form: FormData) {
