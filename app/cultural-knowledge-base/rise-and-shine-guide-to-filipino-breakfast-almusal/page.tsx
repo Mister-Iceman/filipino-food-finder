@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal/',
   },
   openGraph: {
     title: "Rise and Shine: The Ultimate Guide to 'Almusal' and the Filipino Breakfast Universe",

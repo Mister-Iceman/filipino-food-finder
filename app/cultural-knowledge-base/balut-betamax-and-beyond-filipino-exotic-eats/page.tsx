@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/balut-betamax-and-beyond-filipino-exotic-eats',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/balut-betamax-and-beyond-filipino-exotic-eats/',
   },
   openGraph: {
     title: 'Balut, Betamax, and Beyond: The Adventurous Side of Filipino Exotic Eats',

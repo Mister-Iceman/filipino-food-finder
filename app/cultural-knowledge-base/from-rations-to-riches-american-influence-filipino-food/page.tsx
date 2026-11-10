@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food/',
   },
   openGraph: {
     title: 'From Rations to Riches: How American Influence Birthed Filipino Spaghetti and Fast Food',

@@ -155,13 +155,8 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
     }),
     ...(listing.phone && { telephone: listing.phone }),
     ...(listing.website && { url: listing.website }),
-    ...(listing.google_rating && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: listing.google_rating,
-        reviewCount: listing.google_reviews_count || 0,
-      },
-    }),
+    // No aggregateRating: the ratings shown come from Google, and Google's
+    // review-snippet rules forbid marking up ratings collected on another site.
     ...(listing.hours && { openingHours: listing.hours }),
     ...(listing.image_url && { image: listing.image_url }),
     ...((listing.instagram_url || listing.facebook_url || listing.twitter_url || listing.tiktok_url) && {

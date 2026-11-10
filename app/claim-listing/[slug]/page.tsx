@@ -7,7 +7,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     robots: 'noindex, nofollow',
     alternates: {
-      canonical: `https://www.filipinofoodnearme.org/listings/${params.slug}`,
+      canonical: `https://filipinofoodnearme.org/listings/${params.slug}/`,
     },
   }
 }

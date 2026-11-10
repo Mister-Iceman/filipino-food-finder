@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/tree-of-life-coconut-gata-filipino-cuisine',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/tree-of-life-coconut-gata-filipino-cuisine/',
   },
   openGraph: {
     title: "The Tree of Life: How Coconut ('Gata') Shapes the Savory and Sweet Wonders of Filipino Cuisine",

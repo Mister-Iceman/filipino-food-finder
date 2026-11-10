@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/sour-power-and-sawsawan-acidity-in-filipino-cooking',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/sour-power-and-sawsawan-acidity-in-filipino-cooking/',
   },
   openGraph: {
     title: 'Sour Power and Sawsawan: The Science and Soul of Acidity in Filipino Cooking',

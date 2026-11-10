@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     'Filipino food near me',
   ],
   alternates: {
-    canonical: 'https://www.filipinofoodnearme.org/cultural-knowledge-base/merienda-culture-filipino-snacks-street-food',
+    canonical: 'https://filipinofoodnearme.org/cultural-knowledge-base/merienda-culture-filipino-snacks-street-food/',
   },
   openGraph: {
     title: "'Merienda' Culture and the Vibrant Streets: A Deep Dive into Filipino Snacks and Street Food",
