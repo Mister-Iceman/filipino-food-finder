@@ -12,7 +12,7 @@ import type { DishTag } from '../../lib/types/dish-tags'
 import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
 import { trackEvent, trackLeadAction } from '../../hooks/useAnalytics'
 import { useTracker } from '../components/analytics/Tracker'
-import { listingPath } from '@/lib/listing-url'
+import { listingPath, cleanStreet, formatZip, cleanMapsUrl } from '@/lib/listing-url'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,6 +30,45 @@ interface CommunityInsight {
 }
 
 const ITEMS_PER_PAGE = 24
+const DEFAULT_SORT = 'rating'
+
+// Coordinates are inside most Google Maps place links ("!3d34.14!4d-118.23").
+function coordsOf(listing: any): [number, number] | null {
+  const m = /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/.exec(listing.google_maps_url || '')
+  return m ? [parseFloat(m[1]), parseFloat(m[2])] : null
+}
+
+function milesBetween(a: [number, number], b: [number, number]): number {
+  const R = 3958.8
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const dLat = toRad(b[0] - a[0])
+  const dLng = toRad(b[1] - a[1])
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(h))
+}
+
+// Small edit-distance check so "marrieta" still finds Marietta.
+function editDistance(a: string, b: string, max: number): number {
+  if (Math.abs(a.length - b.length) > max) return max + 1
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i)
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i]
+    let rowMin = i
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1))
+      rowMin = Math.min(rowMin, cur[j])
+    }
+    if (rowMin > max) return max + 1
+    prev = cur
+  }
+  return prev[b.length]
+}
+
+function fuzzyTermMatch(term: string, words: string[]): boolean {
+  if (term.length < 4) return false
+  const max = term.length >= 7 ? 2 : 1
+  return words.some((w) => w.length >= 3 && editDistance(term, w, max) <= max)
+}
 
 function normalizeSearch(text: string) {
   return text.normalize('NFKD').toLowerCase().replace(/\p{M}/gu, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
@@ -46,14 +85,26 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
   const { trackInteraction, trackSearch, trackOutbound } = useTracker()
 
   const listings = initialListings
-  const [filteredListings, setFilteredListings] = useState<any[]>([])
+  // Start with the server's list so the first page of cards is in the HTML.
+  const [filteredListings, setFilteredListings] = useState<any[]>(() => [...initialListings].sort((a, b) =>
+    (b.google_rating || 0) - (a.google_rating || 0) ||
+    (b.google_reviews_count || 0) - (a.google_reviews_count || 0) ||
+    (a.name || '').localeCompare(b.name || '')))
   const [communityInsights, setCommunityInsights] = useState<Map<number, CommunityInsight>>(new Map())
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [stateFilter, setStateFilter] = useState('')
   const [cityFilter, setCityFilter] = useState('')
-  const [sortOption, setSortOption] = useState('az')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [sortOption, setSortOption] = useState(DEFAULT_SORT)
+  const [currentPage, setCurrentPage] = useState(() => {
+    const n = parseInt(searchParams.get('page') || '1', 10)
+    return Number.isFinite(n) && n > 0 ? n : 1
+  })
+  const [userLoc, setUserLoc] = useState<[number, number] | null>(null)
+  const [locStatus, setLocStatus] = useState<'' | 'finding' | 'denied'>('')
+  const [searchNote, setSearchNote] = useState('')
+  const [distances, setDistances] = useState<Map<number, number>>(new Map())
+  const skipFirstPageResetRef = useRef(true)
   const [loading] = useState(false)
 
   // Tag data
@@ -85,6 +136,8 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     setSearchQuery(searchParam ?? '')
     if (stateParam) setStateFilter(decodeURIComponent(stateParam))
     if (cityParam) setCityFilter(decodeURIComponent(cityParam))
+    const sortParam = searchParams.get('sort')
+    if (sortParam && ['az', 'rating', 'reviews'].includes(sortParam)) setSortOption(sortParam)
 
     if (!tagUrlReadRef.current) {
       tagUrlReadRef.current = true
@@ -111,9 +164,10 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     selectedDishSlugs.forEach((s) => params.append('dish', s))
     selectedGrocerySlugs.forEach((s) => params.append('product', s))
     selectedUniversalSlugs.forEach((s) => params.append('tag', s))
+    if (sortOption !== DEFAULT_SORT) params.set('sort', sortOption)
     const qs = params.toString()
     window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
-  }, [searchQuery, categoryFilter, stateFilter, cityFilter, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
+  }, [sortOption, searchQuery, categoryFilter, stateFilter, cityFilter, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
 
   useEffect(() => {
     loadCommunityInsights()
@@ -123,15 +177,19 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
   useEffect(() => {
     filterAndSortListings()
   }, [
-    listings, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption,
+    listings, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, userLoc,
     selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs,
     dishTags, groceryTags, universalTags, dishTagsByBiz, groceryTagsByBiz, universalTagsByBiz,
   ])
 
-  // Reset to page 1 whenever filters change
+  // Reset to page 1 whenever filters change (but keep ?page=N on first load)
   useEffect(() => {
+    if (skipFirstPageResetRef.current) {
+      skipFirstPageResetRef.current = false
+      return
+    }
     setCurrentPage(1)
-  }, [searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
+  }, [userLoc, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
 
   const loadCommunityInsights = async () => {
     const { data: ratings } = await supabase
@@ -231,15 +289,53 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     let filtered = [...listings]
 
     const query = normalizeSearch(searchQuery)
+    let note = ''
+    let center: [number, number] | null = userLoc
     if (query) {
-      const terms = query.split(' ')
-      filtered = filtered.filter(listing => {
-        const text = normalizeSearch([
+      const zipQuery = /^\d{5}$/.test(query) ? query : null
+      if (zipQuery) {
+        // Zip search: listings in that zip, then everything within 25 miles of it.
+        const inZip = filtered.filter((l) => formatZip(l.zip) === zipQuery)
+        const anchors = (inZip.length ? inZip : filtered.filter((l) => formatZip(l.zip).slice(0, 3) === zipQuery.slice(0, 3)))
+          .map(coordsOf).filter(Boolean) as [number, number][]
+        if (anchors.length) {
+          center = [
+            anchors.reduce((s, c) => s + c[0], 0) / anchors.length,
+            anchors.reduce((s, c) => s + c[1], 0) / anchors.length,
+          ]
+          const zc = center
+          filtered = filtered.filter((l) => {
+            if (formatZip(l.zip) === zipQuery) return true
+            const c = coordsOf(l)
+            return c ? milesBetween(zc, c) <= 25 : false
+          })
+          note = `Filipino food in and around ${zipQuery}, nearest first`
+        } else {
+          filtered = filtered.filter((l) => formatZip(l.zip).slice(0, 3) === zipQuery.slice(0, 3))
+          note = filtered.length ? `Showing spots in the ${zipQuery.slice(0, 3)}xx zip area` : ''
+        }
+      } else {
+        const terms = query.split(' ')
+        const textOf = (listing: any) => normalizeSearch([
           listing.name, listing.city, listing.category_primary, listing.category_secondary,
-          listing.review_keywords, listing.state, listing.zip, listing.address_street,
+          listing.review_keywords, listing.state, formatZip(listing.zip), listing.address_street,
         ].join(' '))
-        return terms.every(term => text.includes(term))
-      })
+        const exact = filtered.filter(listing => {
+          const text = textOf(listing)
+          return terms.every(term => text.includes(term))
+        })
+        if (exact.length > 0) {
+          filtered = exact
+        } else {
+          // Nothing exact: forgive small typos ("marrieta" → Marietta).
+          filtered = filtered.filter(listing => {
+            const text = textOf(listing)
+            const words = text.split(' ')
+            return terms.every(term => text.includes(term) || fuzzyTermMatch(term, words))
+          })
+          if (filtered.length) note = `No exact matches for "${searchQuery.trim()}". Showing close matches.`
+        }
+      }
     }
 
     if (categoryFilter) {
@@ -319,11 +415,28 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
       selectedGrocerySlugs.length > 0 ||
       selectedUniversalSlugs.length > 0
 
-    // Sort: by community score when tag filters active (and default sort); otherwise respect user choice
-    if (hasActiveTagFilters && sortOption === 'az') {
+    // Distance from the visitor (Near me) or from the zip they searched.
+    const dist = new Map<number, number>()
+    if (center) {
+      for (const l of filtered) {
+        const c = coordsOf(l)
+        if (c) dist.set(l.id, milesBetween(center, c))
+      }
+    }
+    setDistances(dist)
+    setSearchNote(note)
+
+    // Sort: nearest first when there's a location; community score when tag
+    // filters are active with the default sort; otherwise the chosen sort.
+    if (center) {
+      filtered.sort((a, b) => (dist.get(a.id) ?? 1e9) - (dist.get(b.id) ?? 1e9))
+    } else if (hasActiveTagFilters && sortOption === DEFAULT_SORT) {
       filtered.sort((a, b) => getCommunityScore(b.id) - getCommunityScore(a.id))
     } else if (sortOption === 'rating') {
-      filtered.sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0))
+      filtered.sort((a, b) =>
+        (b.google_rating || 0) - (a.google_rating || 0) ||
+        (b.google_reviews_count || 0) - (a.google_reviews_count || 0) ||
+        (a.name || '').localeCompare(b.name || ''))
     } else if (sortOption === 'reviews') {
       filtered.sort((a, b) => (b.google_reviews_count || 0) - (a.google_reviews_count || 0))
     } else {
@@ -362,8 +475,38 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     setCategoryFilter('')
     setStateFilter('')
     setCityFilter('')
-    setSortOption('az')
+    setSortOption(DEFAULT_SORT)
+    setUserLoc(null)
+    setLocStatus('')
     clearTagFilters()
+  }
+
+  const findNearMe = () => {
+    if (userLoc) { setUserLoc(null); setLocStatus(''); return }
+    if (typeof navigator === 'undefined' || !navigator.geolocation) { setLocStatus('denied'); return }
+    setLocStatus('finding')
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { setUserLoc([pos.coords.latitude, pos.coords.longitude]); setLocStatus('') },
+      () => setLocStatus('denied'),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+    )
+  }
+
+  const goToPage = (n: number) => {
+    setCurrentPage(n)
+    const params = new URLSearchParams(window.location.search)
+    if (n > 1) params.set('page', String(n)); else params.delete('page')
+    const qs = params.toString()
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Real ?page=N links so crawlers can follow the directory past page 1.
+  const pageHref = (n: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (n > 1) params.set('page', String(n)); else params.delete('page')
+    const qs = params.toString()
+    return qs ? `/directory/?${qs}` : '/directory/'
   }
 
   const getTasteLabel = (taste: string) => {
@@ -399,7 +542,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
     groceryTagsByBiz.size > 0 ||
     universalTagsByBiz.size > 0
 
-  const hasActiveFilters = searchQuery || categoryFilter || stateFilter || cityFilter || hasActiveTagFilters || sortOption !== 'az'
+  const hasActiveFilters = searchQuery || categoryFilter || stateFilter || cityFilter || hasActiveTagFilters || sortOption !== DEFAULT_SORT || userLoc
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -414,16 +557,26 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
           {/* Category Quick Links */}
           {(() => {
             const quickLinks = [
-              { cat: 'Restaurant', href: '/directory?category=Restaurant', emoji: '🍽️', label: 'Restaurants' },
-              { cat: 'Supermarket & Grocery', href: '/directory?category=Supermarket%20%26%20Grocery', emoji: '🛒', label: 'Grocery' },
-              { cat: 'Bakery, Dessert & Cafe', href: '/directory?category=Bakery%2C%20Dessert%20%26%20Cafe', emoji: '🥐', label: 'Bakeries' },
-              { cat: 'Quick Bites & Turo-Turo', href: '/directory?category=Quick%20Bites%20%26%20Turo-Turo', emoji: '🌮', label: 'Quick Bites' },
-              { cat: 'Food Truck & Pop-Up', href: '/directory?category=Food%20Truck%20%26%20Pop-Up', emoji: '🚚', label: 'Food Trucks' },
+              { cat: 'Restaurant', href: '/directory/?category=Restaurant', emoji: '🍽️', label: 'Restaurants' },
+              { cat: 'Supermarket & Grocery', href: '/directory/?category=Supermarket%20%26%20Grocery', emoji: '🛒', label: 'Grocery' },
+              { cat: 'Bakery, Dessert & Cafe', href: '/directory/?category=Bakery%2C%20Dessert%20%26%20Cafe', emoji: '🥐', label: 'Bakeries' },
+              { cat: 'Quick Bites & Turo-Turo', href: '/directory/?category=Quick%20Bites%20%26%20Turo-Turo', emoji: '🌮', label: 'Quick Bites' },
+              { cat: 'Food Truck & Pop-Up', href: '/directory/?category=Food%20Truck%20%26%20Pop-Up', emoji: '🚚', label: 'Food Trucks' },
             ].filter(link => allCategoryValues.has(link.cat))
             return (
               <div className={`grid grid-cols-2 gap-4 mb-6 ${quickLinks.length <= 3 ? 'md:grid-cols-3' : 'md:grid-cols-5'}`}>
                 {quickLinks.map(link => (
-                  <Link key={link.cat} href={link.href} className="bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-lg p-4 text-center transition-all">
+                  <Link
+                    key={link.cat}
+                    href={link.href}
+                    aria-pressed={categoryFilter === link.cat}
+                    onClick={(e) => {
+                      // Toggle the filter in place instead of reloading the directory.
+                      e.preventDefault()
+                      setCategoryFilter(categoryFilter === link.cat ? '' : link.cat)
+                    }}
+                    className={`border-2 rounded-lg p-4 text-center transition-all ${categoryFilter === link.cat ? 'bg-blue-50 border-blue-600' : 'bg-white hover:bg-blue-50 border-gray-200 hover:border-blue-400'}`}
+                  >
                     <div className="text-3xl mb-2">{link.emoji}</div>
                     <div className="font-semibold text-gray-900">{link.label}</div>
                   </Link>
@@ -492,11 +645,19 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
                   onChange={(e) => setSortOption(e.target.value)}
                   className="px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                 >
-                  <option value="az">A–Z</option>
                   <option value="rating">Highest Rated</option>
                   <option value="reviews">Most Reviewed</option>
+                  <option value="az">A–Z</option>
                 </select>
               </div>
+
+              <button
+                type="button"
+                onClick={findNearMe}
+                className={`px-4 py-3 rounded-lg font-medium text-sm border-2 transition-colors ${userLoc ? 'bg-blue-600 border-blue-600 text-white' : 'border-blue-600 text-blue-700 hover:bg-blue-50'}`}
+              >
+                {locStatus === 'finding' ? 'Finding you…' : userLoc ? '📍 Nearest first' : '📍 Near me'}
+              </button>
 
               {hasActiveFilters && (
                 <button
@@ -511,11 +672,18 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
               <p className="text-sm text-gray-600 ml-auto">
                 Showing {filteredListings.length} of {listings.length} spots
                 {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
-                {hasActiveTagFilters && sortOption === 'az' && hasCommunityTagData && (
+                {hasActiveTagFilters && sortOption === DEFAULT_SORT && !userLoc && hasCommunityTagData && (
                   <span className="ml-2 text-blue-600 font-medium">· Sorted by community score</span>
                 )}
               </p>
             </div>
+            {(searchNote || locStatus === 'denied') && (
+              <p className="mt-3 text-sm text-gray-600">
+                {locStatus === 'denied'
+                  ? 'Location is off for this site, so we can’t sort by distance. Try searching a zip code instead.'
+                  : searchNote}
+              </p>
+            )}
           </form>
 
           {/* Tag Filter Panels */}
@@ -706,7 +874,12 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
                       )}
 
                       <div className="space-y-2 text-sm text-gray-600 mb-4">
-                        <p>📍 {listing.address_street}, {listing.city}, {listing.state} {listing.zip}</p>
+                        <p>
+                          📍 {[cleanStreet(listing.address_street, listing.city, listing.state), listing.city, `${listing.state} ${formatZip(listing.zip)}`.trim()].filter(Boolean).join(', ')}
+                          {distances.has(listing.id) && (
+                            <span className="ml-1 font-medium text-blue-700">· {distances.get(listing.id)!.toFixed(1)} mi</span>
+                          )}
+                        </p>
                         {listing.phone && (
                           <p><PhoneReveal phone={listing.phone} className="text-blue-600 hover:underline" listingId={listing.id} /></p>
                         )}
@@ -743,7 +916,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
 
                       <div className="flex gap-2">
                         {listing.google_maps_url && (
-                          <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => { trackLeadAction('directions_click', listing.id); trackOutbound({ destination_url: listing.google_maps_url, link_type: 'directions', source_page: '/directory', listing_id: listing.id }) }}>
+                          <a href={cleanMapsUrl(listing.google_maps_url) ?? listing.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center text-sm" onClick={() => { trackLeadAction('directions_click', listing.id); trackOutbound({ destination_url: listing.google_maps_url, link_type: 'directions', source_page: '/directory', listing_id: listing.id }) }}>
                             Maps
                           </a>
                         )}
@@ -761,67 +934,38 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-10 flex flex-wrap justify-center items-center gap-2">
-                <button
-                  onClick={() => { setCurrentPage(1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  « First
-                </button>
-                <button
-                  onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  ‹ Prev
-                </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(page =>
-                    page === 1 ||
-                    page === totalPages ||
-                    Math.abs(page - currentPage) <= 2
+              <nav aria-label="Directory pages" className="mt-10 flex flex-wrap justify-center items-center gap-2">
+                {(() => {
+                  const base = 'px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium hover:bg-gray-50'
+                  const off = 'px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium opacity-40 cursor-not-allowed'
+                  const link = (n: number, label: string, cls: string, rel?: string) => (
+                    <a
+                      key={`${label}-${n}`}
+                      href={pageHref(n)}
+                      rel={rel}
+                      aria-current={label === String(currentPage) ? 'page' : undefined}
+                      onClick={(e) => { e.preventDefault(); goToPage(n) }}
+                      className={cls}
+                    >
+                      {label}
+                    </a>
                   )
-                  .reduce((acc: (number | string)[], page, idx, arr) => {
-                    if (idx > 0 && (page as number) - (arr[idx - 1] as number) > 1) acc.push('...')
-                    acc.push(page)
-                    return acc
-                  }, [])
-                  .map((item, idx) =>
-                    item === '...'
-                      ? <span key={`dots-${idx}`} className="px-2 text-gray-400">…</span>
-                      : (
-                        <button
-                          key={item}
-                          onClick={() => { setCurrentPage(item as number); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                            currentPage === item
-                              ? 'bg-blue-600 text-white border-blue-600'
-                              : 'border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          {item}
-                        </button>
-                      )
-                  )
-                }
-
-                <button
-                  onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  Next ›
-                </button>
-                <button
-                  onClick={() => { setCurrentPage(totalPages); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  Last »
-                </button>
-              </div>
+                  const items: React.ReactNode[] = []
+                  items.push(currentPage === 1 ? <span key="first" className={off}>« First</span> : link(1, '« First', base))
+                  items.push(currentPage === 1 ? <span key="prev" className={off}>‹ Prev</span> : link(currentPage - 1, '‹ Prev', base, 'prev'))
+                  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 2)
+                  pages.forEach((page, idx) => {
+                    if (idx > 0 && page - pages[idx - 1] > 1) items.push(<span key={`dots-${page}`} className="px-2 text-gray-400">…</span>)
+                    items.push(link(page, String(page), `px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                      currentPage === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'
+                    }`))
+                  })
+                  items.push(currentPage === totalPages ? <span key="next" className={off}>Next ›</span> : link(currentPage + 1, 'Next ›', base, 'next'))
+                  items.push(currentPage === totalPages ? <span key="last" className={off}>Last »</span> : link(totalPages, 'Last »', base))
+                  return items
+                })()}
+              </nav>
             )}
           </>
         )}

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import MakeItAtHome from '../../components/MakeItAtHome'
 import ArticleReadTracker from '../../components/ArticleReadTracker'
 import { optimizedImageUrl, optimizeContentImages } from '../../../lib/optimized-image'
+import { displayTitle } from '@/lib/article-title'
 
 // ---------------------------------------------------------------------------
 // Affiliate links keyed by partial slug match.
@@ -64,8 +65,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', slug).single()
   if (!data) return { title: 'Article Not Found' }
   return {
-    title: data.meta_title || data.title + ' | FilipinoFoodNearMe.org',
+    title: data.meta_title || displayTitle(data.title) + ' | FilipinoFoodNearMe.org',
     description: data.meta_description || data.excerpt || '',
+    alternates: { canonical: `https://filipinofoodnearme.org/cultural-knowledge-base/${slug}/` },
   }
 }
 
@@ -90,8 +92,33 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     .neq('slug', slug)
     .limit(3)
 
+  const pageUrl = `https://filipinofoodnearme.org/cultural-knowledge-base/${slug}/`
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: displayTitle(article.title).slice(0, 110),
+    description: article.meta_description || article.excerpt || undefined,
+    ...(article.hero_image_url && { image: [article.hero_image_url] }),
+    datePublished: article.published_at || article.created_at || undefined,
+    dateModified: article.updated_at || article.published_at || undefined,
+    mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'Filipino Food Near Me', url: 'https://filipinofoodnearme.org/about/' },
+    publisher: { '@type': 'Organization', name: 'Filipino Food Near Me', url: 'https://filipinofoodnearme.org/' },
+  }
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://filipinofoodnearme.org/' },
+      { '@type': 'ListItem', position: 2, name: 'Food Culture', item: 'https://filipinofoodnearme.org/cultural-knowledge-base/' },
+      { '@type': 'ListItem', position: 3, name: displayTitle(article.title), item: pageUrl },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <ArticleReadTracker articleSlug={slug} />
       <div className="bg-gray-50 border-b border-gray-100 px-4 py-3">
         <div className="max-w-3xl mx-auto text-sm text-gray-500">
@@ -99,13 +126,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span className="mx-2">/</span>
           <Link href="/cultural-knowledge-base" className="hover:text-purple-700">Cultural Knowledge Base</Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-800">{article.title}</span>
+          <span className="text-gray-800">{displayTitle(article.title)}</span>
         </div>
       </div>
 
       {article.hero_image_url ? (
         <div style={{width:"100%",backgroundColor:"#f3f4f6"}}>
-          <img src={optimizedImageUrl(article.hero_image_url, 1920)} alt={article.title} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
+          <img src={optimizedImageUrl(article.hero_image_url, 1920)} alt={displayTitle(article.title)} style={{width:"100%",maxWidth:"100%",height:"auto",display:"block"}} />
         </div>
       ) : (
         <div className="w-full h-48 bg-gradient-to-br from-[#62438D] via-[#92345A] to-[#BF2F26]" />
@@ -120,7 +147,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         )}
 
-        <h1 className={article.hero_image_url ? "sr-only" : "text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"}>{article.title}</h1>
+        <h1 className={article.hero_image_url ? "sr-only" : "text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"}>{displayTitle(article.title)}</h1>
 
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8 pb-8 border-b border-gray-100">
           <span className="font-medium text-gray-600">{article.author_name}</span>
@@ -161,11 +188,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <Link key={r.id} href={'/cultural-knowledge-base/' + r.slug}
                   className="group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {r.hero_image_url
-                    ? <div className="h-36 overflow-hidden"><img src={optimizedImageUrl(r.hero_image_url, 640)} alt={r.title} className="w-full h-full object-cover" /></div>
+                    ? <div className="h-36 overflow-hidden"><img src={optimizedImageUrl(r.hero_image_url, 640)} alt={displayTitle(r.title)} className="w-full h-full object-cover" /></div>
                     : <div className="h-36 bg-gradient-to-br from-[#62438D] to-[#BF2F26] flex items-center justify-center"><span className="text-3xl">🍽️</span></div>
                   }
                   <div className="p-4">
-                    <h3 className="font-bold text-gray-900 group-hover:text-purple-700 text-sm mb-1">{r.title}</h3>
+                    <h3 className="font-bold text-gray-900 group-hover:text-purple-700 text-sm mb-1">{displayTitle(r.title)}</h3>
                     {r.read_time_minutes && <p className="text-xs text-gray-400">{r.read_time_minutes} min read</p>}
                   </div>
                 </Link>

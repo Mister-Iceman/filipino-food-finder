@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import { optimizedImageUrl } from '../../lib/optimized-image'
+import { displayTitle } from '@/lib/article-title'
 
 export const metadata: Metadata = {
   title: 'Cultural Knowledge Base | FilipinoFoodNearMe.org',
@@ -52,7 +53,7 @@ export default async function CulturalKnowledgeBasePage() {
                   className="group block rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {article.hero_image_url && (
                     <div className="h-52 overflow-hidden bg-gray-100">
-                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={article.title}
+                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={displayTitle(article.title)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   )}
@@ -69,7 +70,7 @@ export default async function CulturalKnowledgeBasePage() {
                         ))}
                       </div>
                     )}
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors mb-2">{article.title}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors mb-2">{displayTitle(article.title)}</h3>
                     {article.excerpt && <p className="text-gray-500 text-sm line-clamp-2">{article.excerpt}</p>}
                     <div className="flex items-center gap-3 mt-4 text-xs text-gray-400">
                       {article.read_time_minutes && <span>{article.read_time_minutes} min read</span>}
@@ -456,7 +457,7 @@ export default async function CulturalKnowledgeBasePage() {
                   className="group block rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
                   {article.hero_image_url && (
                     <div className="h-40 overflow-hidden bg-gray-100">
-                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={article.title}
+                      <img src={optimizedImageUrl(article.hero_image_url, 828)} alt={displayTitle(article.title)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   )}
@@ -469,7 +470,7 @@ export default async function CulturalKnowledgeBasePage() {
                     {article.tags && article.tags.length > 0 && (
                       <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">{article.tags[0]}</span>
                     )}
-                    <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">{article.title}</h3>
+                    <h3 className="text-base font-bold text-gray-900 group-hover:text-purple-700 transition-colors mt-2 mb-1">{displayTitle(article.title)}</h3>
                     {article.excerpt && <p className="text-gray-500 text-xs line-clamp-2">{article.excerpt}</p>}
                     {article.read_time_minutes && <p className="text-xs text-gray-400 mt-2">{article.read_time_minutes} min read</p>}
                   </div>

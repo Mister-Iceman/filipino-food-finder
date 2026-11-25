@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { optimizedImageUrl } from '../../lib/optimized-image'
+import { displayTitle } from '@/lib/article-title'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -49,7 +50,7 @@ export default async function FeaturedArticles() {
                 <div className="h-44 overflow-hidden bg-gray-100">
                   <img
                     src={optimizedImageUrl(article.hero_image_url, 828)}
-                    alt={article.title}
+                    alt={displayTitle(article.title)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
@@ -82,7 +83,7 @@ export default async function FeaturedArticles() {
                 </div>
 
                 <h3 className="font-bold text-gray-900 group-hover:text-purple-700 transition-colors leading-snug mb-2">
-                  {article.title}
+                  {displayTitle(article.title)}
                 </h3>
 
                 {article.excerpt && (

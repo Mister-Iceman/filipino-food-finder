@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import { optimizedImageUrl } from '../../lib/optimized-image'
+import { displayTitle } from '@/lib/article-title'
 
 export const metadata: Metadata = {
   title: 'Newsroom | FilipinoFoodNearMe.org',
@@ -58,7 +59,7 @@ export default async function NewsroomPage() {
                 className="group flex gap-6 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
                 {article.hero_image_url && (
                   <div className="hidden md:block w-32 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                    <img src={optimizedImageUrl(article.hero_image_url, 640)} alt={article.title} className="w-full h-full object-cover" />
+                    <img src={optimizedImageUrl(article.hero_image_url, 640)} alt={displayTitle(article.title)} className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div className="flex-1">
@@ -69,7 +70,7 @@ export default async function NewsroomPage() {
                       ))}
                     </div>
                   )}
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-700 transition-colors mb-1">{article.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-700 transition-colors mb-1">{displayTitle(article.title)}</h3>
                   {article.excerpt && <p className="text-gray-500 text-sm line-clamp-2">{article.excerpt}</p>}
                   <div className="flex gap-3 mt-3 text-xs text-gray-400">
                     {article.published_at && <span>{new Date(article.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>}

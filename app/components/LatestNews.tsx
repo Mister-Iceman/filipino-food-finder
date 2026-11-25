@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import { displayTitle } from '@/lib/article-title'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,7 +25,7 @@ export default async function LatestNews() {
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">Latest News</span>
-          <p className="text-white font-medium text-sm md:text-base line-clamp-1">{latest.title}</p>
+          <p className="text-white font-medium text-sm md:text-base line-clamp-1">{displayTitle(latest.title)}</p>
         </div>
         <Link href={'/newsroom/' + latest.slug}
           className="whitespace-nowrap text-yellow-400 hover:text-yellow-300 text-sm font-bold transition-colors">

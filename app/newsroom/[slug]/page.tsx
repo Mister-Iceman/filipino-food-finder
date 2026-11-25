@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { optimizedImageUrl, optimizeContentImages } from '../../../lib/optimized-image'
+import { displayTitle } from '@/lib/article-title'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,8 +29,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { data } = await supabase.from('articles').select('title, meta_title, meta_description, excerpt').eq('slug', slug).single()
   if (!data) return { title: 'Not Found' }
   return {
-    title: data.meta_title || data.title + ' | FilipinoFoodNearMe.org Newsroom',
+    title: data.meta_title || displayTitle(data.title) + ' | FilipinoFoodNearMe.org Newsroom',
     description: data.meta_description || data.excerpt || '',
+    alternates: { canonical: `https://filipinofoodnearme.org/newsroom/${slug}/` },
   }
 }
 
@@ -45,15 +47,40 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
 
   if (!article) notFound()
 
+  const pageUrl = `https://filipinofoodnearme.org/newsroom/${slug}/`
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: displayTitle(article.title).slice(0, 110),
+    description: article.meta_description || article.excerpt || undefined,
+    ...(article.hero_image_url && { image: [article.hero_image_url] }),
+    datePublished: article.published_at || article.created_at || undefined,
+    dateModified: article.updated_at || article.published_at || undefined,
+    mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'Filipino Food Near Me', url: 'https://filipinofoodnearme.org/about/' },
+    publisher: { '@type': 'Organization', name: 'Filipino Food Near Me', url: 'https://filipinofoodnearme.org/' },
+  }
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://filipinofoodnearme.org/' },
+      { '@type': 'ListItem', position: 2, name: 'Newsroom', item: 'https://filipinofoodnearme.org/newsroom/' },
+      { '@type': 'ListItem', position: 3, name: displayTitle(article.title), item: pageUrl },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <div className="bg-gray-50 border-b border-gray-100 px-4 py-3">
         <div className="max-w-3xl mx-auto text-sm text-gray-500">
           <Link href="/" className="hover:text-purple-700">Home</Link>
           <span className="mx-2">/</span>
           <Link href="/newsroom" className="hover:text-purple-700">Newsroom</Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-800">{article.title}</span>
+          <span className="text-gray-800">{displayTitle(article.title)}</span>
         </div>
       </div>
 
@@ -75,7 +102,7 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
           </div>
         )}
 
-        <h1 className={article.hero_image_url ? "sr-only" : "text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"}>{article.title}</h1>
+        <h1 className={article.hero_image_url ? "sr-only" : "text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"}>{displayTitle(article.title)}</h1>
 
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8 pb-8 border-b border-gray-100">
           <span className="font-medium text-gray-600">{article.author_name}</span>
