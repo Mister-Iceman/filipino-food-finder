@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '../../../lib/supabase'
+import { listingPath } from '@/lib/listing-url'
 
 interface SponsoredBusiness {
   name: string
@@ -69,7 +70,7 @@ export default function WhereToTryThis({ dishName, sponsoredBusiness }: Props) {
               <p className="text-xs text-gray-400 mt-0.5">{sponsoredBusiness.category.replace(/&amp;/g, '&')}</p>
             </div>
             <Link
-              href={`/listings/${sponsoredBusiness.slug}`}
+              href={listingPath(sponsoredBusiness)}
               className="mt-3 inline-block text-center text-xs font-bold px-3 py-1.5 rounded-lg text-white transition-opacity hover:opacity-90"
               style={{ background: '#62438D' }}
             >
@@ -89,7 +90,7 @@ export default function WhereToTryThis({ dishName, sponsoredBusiness }: Props) {
               <p className="text-xs text-gray-400 mt-0.5">{listing.category_primary?.replace(/&amp;/g, '&')}</p>
             </div>
             <Link
-              href={`/listings/${listing.slug}`}
+              href={listingPath(listing)}
               className="mt-3 inline-block text-center text-xs font-bold px-3 py-1.5 rounded-lg text-white transition-opacity hover:opacity-90"
               style={{ background: '#62438D' }}
             >

@@ -63,6 +63,7 @@ export async function PUT(request: NextRequest, context: Context) {
   revalidatePath('/quick-bites')
   if (current?.slug) {
     revalidatePath(`/listings/${current.slug}`)
+    revalidatePath('/[state]/[city]/restaurants/[slug]', 'page')
   }
 
   return NextResponse.json({ success: true })
@@ -98,6 +99,7 @@ export async function DELETE(request: NextRequest, context: Context) {
   revalidatePath('/quick-bites')
   if (current?.slug) {
     revalidatePath(`/listings/${current.slug}`)
+    revalidatePath('/[state]/[city]/restaurants/[slug]', 'page')
   }
 
   return NextResponse.json({ success: true })

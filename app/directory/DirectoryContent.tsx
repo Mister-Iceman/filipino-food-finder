@@ -12,6 +12,7 @@ import type { DishTag } from '../../lib/types/dish-tags'
 import type { GroceryTag, UniversalTag, BusinessTagMap } from '../../lib/types/search-filters'
 import { trackEvent, trackLeadAction } from '../../hooks/useAnalytics'
 import { useTracker } from '../components/analytics/Tracker'
+import { listingPath } from '@/lib/listing-url'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -621,7 +622,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
                       trackEvent('listing_click', { listing_id: String(listing.id), page: '/directory' })
                       trackInteraction({ interaction_type: 'listing_click', listing_id: listing.id, listing_name: listing.name, listing_category: listing.category_primary, listing_city: listing.city })
                     }}>
-                      <Link href={`/listings/${listing.slug}`}>
+                      <Link href={listingPath(listing)}>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer transition">
                           {listing.name}
                         </h2>
@@ -674,7 +675,7 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
                           </div>
                         </div>
                       ) : (
-                        <Link href={`/listings/${listing.slug}`}>
+                        <Link href={listingPath(listing)}>
                           <div className="bg-blue-50 border-l-4 border-blue-400 px-3 py-2 rounded-lg mb-4 cursor-pointer hover:bg-blue-100 transition">
                             <div className="flex items-center gap-2">
                               <span className="text-lg">✨</span>

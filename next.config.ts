@@ -40,7 +40,7 @@ const ContentSecurityPolicy = [
     "https://res.cloudinary.com",
   ].join(" "),
   // hCaptcha renders its challenge inside an iframe on newassets.hcaptcha.com
-  "frame-src https://newassets.hcaptcha.com",
+  "frame-src https://newassets.hcaptcha.com https://www.google.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -56,22 +56,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   trailingSlash: true,
 
-  async rewrites() {
-    return {
-      // Hierarchical listing URLs: /:state/:city/restaurants/:slug → /listings/:slug
-      // This lets us set canonical tags on /listings/ pages pointing to these URLs
-      beforeFiles: [
-        {
-          source: '/:state/:city/restaurants/:slug',
-          destination: '/listings/:slug',
-        },
-        {
-          source: '/:state/:city/restaurants/:slug/',
-          destination: '/listings/:slug',
-        },
-      ],
-    }
-  },
+  // Listing pages live at /:state/:city/restaurants/:slug/ as a real route now
+  // (app/[state]/[city]/restaurants/[slug]); /listings/:slug/ 301-redirects there.
 
   // Expose SENTRY_DSN to client-side bundles at build time
   env: {

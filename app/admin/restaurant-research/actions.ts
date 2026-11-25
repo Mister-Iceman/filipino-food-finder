@@ -136,6 +136,7 @@ async function decideDraft(action: 'publish' | 'reject', form: FormData) {
     }
     revalidatePath('/states/[state]', 'page')
     revalidatePath('/[state]/[city]', 'page')
+    revalidatePath('/[state]/[city]/restaurants/[slug]', 'page')
   }
   notice(data?.status === 'published' ? 'Restaurant published to FFNM.' : 'Draft rejected and archived.')
 }

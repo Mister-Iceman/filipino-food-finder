@@ -22,13 +22,17 @@ function daysAgo(timestamp: string | null): string {
 
 interface AvailableDishesDisplayProps {
   listingId: number
+  // Server-fetched dishes, so the block renders in the HTML that crawlers see
+  // instead of a "Loading…" placeholder.
+  initialDishes?: BusinessDishTag[]
 }
 
-export default function AvailableDishesDisplay({ listingId }: AvailableDishesDisplayProps) {
-  const [dishes, setDishes] = useState<BusinessDishTag[]>([])
-  const [loading, setLoading] = useState(true)
+export default function AvailableDishesDisplay({ listingId, initialDishes }: AvailableDishesDisplayProps) {
+  const [dishes, setDishes] = useState<BusinessDishTag[]>(initialDishes ?? [])
+  const [loading, setLoading] = useState(initialDishes === undefined)
 
   useEffect(() => {
+    if (initialDishes !== undefined) return
     async function fetchDishes() {
       const { data } = await supabase
         .from('business_dish_tags')
@@ -41,15 +45,10 @@ export default function AvailableDishesDisplay({ listingId }: AvailableDishesDis
     }
 
     fetchDishes()
-  }, [listingId])
+  }, [listingId, initialDishes])
 
-  if (loading) {
-    return (
-      <div className="bg-gray-50 rounded-lg p-6">
-        <p className="text-gray-500 text-sm">Loading available dishes...</p>
-      </div>
-    )
-  }
+  // Nothing to show until there are dishes: no empty "Loading…" box.
+  if (loading) return null
 
   if (dishes.length === 0) return null
 

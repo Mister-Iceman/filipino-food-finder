@@ -6,9 +6,6 @@ export const dynamic = 'force-dynamic'
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   return {
     robots: 'noindex, nofollow',
-    alternates: {
-      canonical: `https://filipinofoodnearme.org/listings/${params.slug}/`,
-    },
   }
 }
 

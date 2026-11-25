@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { listingPath } from '@/lib/listing-url'
 
 export const revalidate = 3600
 
@@ -173,7 +174,7 @@ export default async function DishPage({
               {listings.map((listing) => (
                 <Link
                   key={listing.id}
-                  href={`/listings/${listing.slug}`}
+                  href={listingPath(listing)}
                   className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-all"
                 >
                   <h2 className="text-xl font-bold text-gray-900 mb-1 hover:text-blue-600">

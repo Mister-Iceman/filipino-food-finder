@@ -11,13 +11,16 @@ const supabase = createClient(
 interface RatingSummaryProps {
   listingId: number
   category: 'restaurant' | 'grocery'
+  // Server-fetched ratings, so crawlers see the real block, not "Loading…".
+  initialRatings?: any[]
 }
 
-export default function RatingSummary({ listingId, category }: RatingSummaryProps) {
-  const [ratings, setRatings] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+export default function RatingSummary({ listingId, category, initialRatings }: RatingSummaryProps) {
+  const [ratings, setRatings] = useState<any[]>(initialRatings ?? [])
+  const [loading, setLoading] = useState(initialRatings === undefined)
 
   useEffect(() => {
+    if (initialRatings !== undefined) return
     async function fetchRatings() {
       const { data } = await supabase
         .from('ratings')
@@ -29,15 +32,9 @@ export default function RatingSummary({ listingId, category }: RatingSummaryProp
     }
 
     fetchRatings()
-  }, [listingId])
+  }, [listingId, initialRatings])
 
-  if (loading) {
-    return (
-      <div className="bg-gray-50 rounded-lg p-6">
-        <p className="text-gray-500">Loading community insights...</p>
-      </div>
-    )
-  }
+  if (loading) return null
 
   if (ratings.length === 0) {
     return (

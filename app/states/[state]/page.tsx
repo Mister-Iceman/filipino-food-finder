@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { listingPath } from '@/lib/listing-url'
 
 export const revalidate = 3600
 
@@ -303,7 +304,7 @@ export default async function StatePage({ params }: StatePageProps) {
                 {citiesMap[city].map((listing: any) => (
                   <Link
                     key={listing.id}
-                    href={`/listings/${listing.slug}`}
+                    href={listingPath(listing)}
                     className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
                     <h3 className="font-bold text-gray-900 hover:text-blue-600 mb-1">

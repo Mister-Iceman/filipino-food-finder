@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import PhoneReveal from '../components/PhoneReveal'
+import { listingPath } from '@/lib/listing-url'
 
 export const revalidate = 86400
 
@@ -71,7 +72,7 @@ export default async function GroceryStoresPage() {
           {listings?.map((listing) => (
             <Link
               key={listing.id}
-              href={`/listings/${listing.slug}`}
+              href={listingPath(listing)}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-all"
             >
               <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600">
