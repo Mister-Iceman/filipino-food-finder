@@ -100,7 +100,7 @@ export default async function NewsroomArticlePage({ params }: { params: Promise<
           <h3 className="font-bold text-gray-900 mb-3">Media Contact</h3>
           <p className="text-sm text-gray-600">FilipinoFoodNearMe.org</p>
           <p className="text-sm text-gray-600">Email: <a href="mailto:info@filipinofoodnearme.org" className="text-purple-700 hover:underline">info@filipinofoodnearme.org</a></p>
-          <p className="text-sm text-gray-600">Website: <a href="https://www.filipinofoodnearme.org" className="text-purple-700 hover:underline">www.filipinofoodnearme.org</a></p>
+          <p className="text-sm text-gray-600">Website: <a href="https://filipinofoodnearme.org" className="text-purple-700 hover:underline">filipinofoodnearme.org</a></p>
         </div>
 
         <div className="mt-6 text-center">

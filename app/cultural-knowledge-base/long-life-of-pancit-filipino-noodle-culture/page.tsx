@@ -56,7 +56,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/long-life-pancit.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/long-life-of-pancit-filipino-noodle-culture',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/long-life-of-pancit-filipino-noodle-culture',
   },
 }
 

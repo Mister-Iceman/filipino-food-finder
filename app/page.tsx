@@ -7,6 +7,8 @@ import InstagramFeed from './components/InstagramFeed'
 import FeaturedArticles from './components/FeaturedArticles'
 import LatestNews from './components/LatestNews'
 import HeroImageCarousel from './components/HeroImageCarousel'
+import FeaturedSlot from './components/FeaturedSlot'
+import { getNetworkStats, latestSaneDate } from '../lib/site-stats'
 
 export const revalidate = 86400
 
@@ -36,16 +38,12 @@ const supabase = createClient(
 )
 
 export default async function HomePage() {
-  // Single query for all hero-bar stats — replaces 4 separate round-trips.
-  // Selects only the 3 columns needed; count: 'exact' returns total row count
-  // alongside the minimal payload for Set-based deduplication.
-  const { count: listingCount, data: statsRows } = await supabase
-    .from('listings')
-    .select('state, city, category_primary', { count: 'exact' })
-
-  const stateCount = new Set(statsRows?.map(r => r.state).filter(Boolean)).size
-  const cityCount = new Set(statsRows?.map(r => r.city).filter(Boolean)).size
-  const activeCategories = new Set(statsRows?.map((r: any) => r.category_primary).filter(Boolean) || [])
+  // Shared with the Advertise page so both always show the same numbers.
+  const stats = await getNetworkStats()
+  const listingCount = stats.ffnm.listings
+  const stateCount = stats.ffnm.states
+  const cityCount = stats.ffnm.cities
+  const activeCategories = new Set(stats.ffnm.categoryNames)
 
   // Fetch top 3 upcoming events
   const today = new Date().toISOString().split('T')[0]
@@ -54,7 +52,9 @@ export default async function HomePage() {
     .from('fenm_events')
     .select('*')
     .eq('show_on_ffnm', true)
+    .eq('status', 'active')
     .gte('start_date', today)
+    .lte('start_date', latestSaneDate())
     .order('start_date', { ascending: true })
     .limit(3)
 
@@ -114,7 +114,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center sm:divide-x divide-gray-200">
             <div className="text-center px-12 py-4 sm:py-0">
               <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
-                {(listingCount ?? 0).toLocaleString()}+
+                {listingCount.toLocaleString()}
               </p>
               <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Listings Nationwide</p>
             </div>
@@ -126,13 +126,13 @@ export default async function HomePage() {
             </div>
             <div className="text-center px-12 py-4 sm:py-0">
               <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
-                {cityCount}+
+                {cityCount.toLocaleString()}
               </p>
               <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Cities</p>
             </div>
             <div className="text-center px-12 py-4 sm:py-0">
               <p className="text-6xl font-bold leading-none" style={{ color: '#62438D' }}>
-                5
+                {stats.ffnm.categories}
               </p>
               <p className="text-gray-500 mt-2 text-sm font-semibold uppercase tracking-widest">Food Categories</p>
             </div>
@@ -141,104 +141,8 @@ export default async function HomePage() {
       </section>
 
       <main role="main">
-        {/* Featured Listing Demo */}
-        <section className="py-14 px-4 border-y border-gray-100" style={{ backgroundColor: '#FAFAF8' }}>
-          <div className="max-w-2xl mx-auto">
-
-            {/* Eyebrow */}
-            <p className="text-center text-sm font-semibold tracking-wide mb-5" style={{ color: '#B45309' }}>
-              ⭐ Featured Listing — This Could Be Your Business
-            </p>
-
-            {/* Demo Card */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-amber-200">
-
-              {/* Hero image with FEATURED badge */}
-              <div style={{ position: 'relative', width: '100%', height: '200px', overflow: 'hidden', borderRadius: '8px 8px 0 0' }}>
-                <img
-                  src="/images/manila-kitchen-demo.jpg"
-                  alt="Manila Kitchen Filipino food spread"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
-                />
-                <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: '#D4A017', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
-                  FEATURED
-                </div>
-              </div>
-
-              {/* Card body */}
-              <div className="p-6">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">Manila Kitchen</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">📍 Historic Filipinotown, Los Angeles, CA</p>
-                  </div>
-                  <span className="inline-block self-start text-xs bg-purple-100 text-purple-700 font-semibold px-3 py-1 rounded-full whitespace-nowrap">
-                    Filipino Restaurant
-                  </span>
-                </div>
-
-                <p className="text-gray-500 text-sm italic mb-3">
-                  &ldquo;Authentic home-style Filipino cooking in the heart of HiFi&rdquo;
-                </p>
-
-                {/* Cuisine tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {['Adobo', 'Sinigang', 'Kare-Kare', 'Lechon'].map(tag => (
-                    <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{tag}</span>
-                  ))}
-                </div>
-
-                {/* Rating */}
-                <p className="text-sm font-semibold mb-2" style={{ color: '#D97706' }}>
-                  ★★★★★{' '}
-                  <span className="text-gray-700 font-normal">5.0 · 124 reviews</span>
-                </p>
-
-                {/* Info row */}
-                <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-gray-500 mb-5">
-                  <span>📞 (213) 555-0192</span>
-                  <span>🕐 Mon–Sun 10am–9pm</span>
-                </div>
-
-                {/* Demo CTA buttons */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {['Get Directions', 'Visit Website', 'Call Now'].map(label => (
-                    <button
-                      key={label}
-                      disabled
-                      className="text-sm px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed select-none"
-                      title="Demo only — not a real listing"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                  <span className="text-xs text-gray-400 italic">demo</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Conversion block */}
-            <div className="mt-10 text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Get your Filipino food business featured like this
-              </h3>
-              <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                Join the FilAm Network and reach thousands of Filipino-Americans actively searching for businesses like yours.
-              </p>
-              <Link
-                href="/advertise"
-                className="inline-block px-8 py-4 rounded-full font-bold text-white shadow-lg hover:brightness-110 transition-all text-base"
-                style={{ backgroundColor: '#D4A017' }}
-              >
-                Become a Founding Advertiser →
-              </Link>
-              <p className="mt-3 text-sm font-medium" style={{ color: '#92400E' }}>
-                30% off for life · Limited spots · No contracts
-              </p>
-            </div>
-
-          </div>
-        </section>
+        {/* Featured slot: a real featured business, or an open spot that links to Advertise */}
+        <FeaturedSlot />
 
         {/* Upcoming Events / Featured Section */}
         <section data-section="events" className="py-16 bg-gradient-to-br from-purple-50 to-blue-50">

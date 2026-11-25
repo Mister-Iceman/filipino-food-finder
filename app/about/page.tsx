@@ -101,6 +101,46 @@ export default function AboutPage() {
           </section>
 
           <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Who Runs This Site</h2>
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              FilipinoFoodNearMe.org is an independent, Filipino-American-run project and part of the FilAm Network,
+              alongside its sister site <a href="https://www.filipinoeventsnearme.org" className="text-purple-700 hover:underline">FilipinoEventsNearMe.org</a>.
+              It is not owned by, or paid to rank, any of the businesses it lists.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How We Choose and Check Listings</h2>
+            <ul className="list-disc pl-6 space-y-3 text-lg text-gray-700 leading-relaxed">
+              <li>
+                A business is listed when Filipino food is a real part of what it sells. The full rules are in our{' '}
+                <a href="/listing-policy" className="text-purple-700 hover:underline">Listing Policy</a>.
+              </li>
+              <li>
+                New listings come from owners, from the community through{' '}
+                <a href="/add-business" className="text-purple-700 hover:underline">Add Your Business</a>, and from our own research.
+                Each one is reviewed before it goes live.
+              </li>
+              <li>
+                Placement in the directory is never for sale. Paid featured spots are always labeled as featured, and a free
+                listing stays in the directory whether or not a business advertises.
+              </li>
+              <li>
+                Business owners can claim their listing from its page to correct hours, phone numbers and other details.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Report an Error</h2>
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Spotted a closed business, wrong hours or a place that isn&rsquo;t Filipino? Email{' '}
+              <a href="mailto:info@filipinofoodnearme.org?subject=Report%20an%20error" className="text-purple-700 hover:underline">info@filipinofoodnearme.org</a>{' '}
+              or use our <a href="/contact" className="text-purple-700 hover:underline">contact page</a>, and we&rsquo;ll fix it.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Join Our Community</h2>
             <p className="text-lg text-gray-700 leading-relaxed mb-4">
               We're always looking to expand our directory and connect more people to Filipino food. If you own a 

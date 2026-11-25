@@ -57,7 +57,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/merienda.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/merienda-culture-filipino-snacks-street-food',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/merienda-culture-filipino-snacks-street-food',
   },
 }
 

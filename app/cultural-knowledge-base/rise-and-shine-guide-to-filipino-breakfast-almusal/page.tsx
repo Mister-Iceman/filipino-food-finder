@@ -56,7 +56,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/rise-and-shine.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/rise-and-shine-guide-to-filipino-breakfast-almusal',
   },
 }
 

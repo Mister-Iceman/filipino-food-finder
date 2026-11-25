@@ -5,6 +5,7 @@ import Link from 'next/link'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { trackLeadAction } from '../../hooks/useAnalytics'
 import { useTracker } from '../components/analytics/Tracker'
+import ListingPreviewCard from '../components/ListingPreviewCard'
 
 export default function AddBusinessPage() {
   const { trackInteraction } = useTracker()
@@ -120,6 +121,9 @@ export default function AddBusinessPage() {
             <h2 className="text-2xl font-bold text-blue-900 mb-3">Join 1,200+ Filipino Businesses</h2>
             <p className="text-blue-800 text-lg">Get featured in the community-powered Filipino food directory across America — completely free.</p>
           </div>
+
+          {/* Labeled sample so owners can picture their finished listing */}
+          <ListingPreviewCard className="mb-10" />
 
           {/* ELIGIBILITY — QUALIFIES */}
           <section className="mb-6">

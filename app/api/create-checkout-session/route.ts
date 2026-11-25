@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     const mode: Stripe.Checkout.SessionCreateParams.Mode =
       sites === 'fenm' ? 'payment' : 'subscription'
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.filipinofoodnearme.org'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filipinofoodnearme.org'
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode,

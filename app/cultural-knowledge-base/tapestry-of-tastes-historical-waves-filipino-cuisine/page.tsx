@@ -55,7 +55,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/tapestry-of-tastes.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/tapestry-of-tastes-historical-waves-filipino-cuisine',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/tapestry-of-tastes-historical-waves-filipino-cuisine',
   },
 }
 

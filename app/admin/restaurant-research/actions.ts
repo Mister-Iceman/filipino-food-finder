@@ -99,7 +99,7 @@ export async function queueDrafts(form: FormData) {
         sender: { name: 'Filipino Food Near Me', email: 'info@filipinofoodnearme.org' },
         to: [{ email: recipient }],
         subject: `FFNM: ${description} ready for review`,
-        textContent: `${description} added to the FFNM review queue. Review them at https://www.filipinofoodnearme.org${path}`,
+        textContent: `${description} added to the FFNM review queue. Review them at https://filipinofoodnearme.org${path}`,
       }),
     })
     if (!response.ok) throw new Error(`Brevo returned ${response.status}`)

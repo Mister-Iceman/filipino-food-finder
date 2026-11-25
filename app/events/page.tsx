@@ -2,6 +2,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import AdSlot from '../components/AdSlot'
+import { latestSaneDate } from '../../lib/site-stats'
 
 export const revalidate = 3600
 
@@ -31,7 +32,9 @@ export default async function EventsPage() {
     .from('fenm_events')
     .select('*')
     .eq('show_on_ffnm', true)
+    .eq('status', 'active')
     .gte('start_date', today)
+    .lte('start_date', latestSaneDate())
     .order('start_date', { ascending: true })
     .limit(50)
 
@@ -39,6 +42,7 @@ export default async function EventsPage() {
     .from('fenm_events')
     .select('*')
     .eq('show_on_ffnm', true)
+    .eq('status', 'active')
     .lt('start_date', today)
     .order('start_date', { ascending: false })
     .limit(10)

@@ -55,7 +55,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/balut-betamax-and-beyond.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/balut-betamax-and-beyond-filipino-exotic-eats',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/balut-betamax-and-beyond-filipino-exotic-eats',
   },
 }
 

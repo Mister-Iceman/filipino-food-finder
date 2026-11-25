@@ -56,7 +56,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/tree-of-life.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/tree-of-life-coconut-gata-filipino-cuisine',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/tree-of-life-coconut-gata-filipino-cuisine',
   },
 }
 

@@ -1264,7 +1264,7 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
               <a
-                href="https://filipinoeventsnearme.org"
+                href="https://www.filipinoeventsnearme.org"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-block text-xs text-[#0038A8] hover:underline"

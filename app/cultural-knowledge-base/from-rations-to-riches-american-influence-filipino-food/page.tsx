@@ -55,7 +55,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/rations-to-riches.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/from-rations-to-riches-american-influence-filipino-food',
   },
 }
 

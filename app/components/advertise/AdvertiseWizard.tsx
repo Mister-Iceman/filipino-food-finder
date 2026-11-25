@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { PACKAGES, calculateOrderTotal } from '../../../lib/ad-packages'
 import type { FfnmPackage, FenmPackage } from '../../../lib/ad-packages'
-import { supabase } from '../../../lib/supabase'
+import type { NetworkStats } from '../../../lib/site-stats'
+import ListingPreviewCard from '../ListingPreviewCard'
 
 type Site = 'ffnm' | 'fenm' | 'both' | null
 
@@ -265,51 +266,19 @@ const VALUE_PROPS = [
   },
 ]
 
-function WhyAdvertise() {
-  const [ffnmCounts, setFfnmCounts] = useState({ businesses: '1,237+', states: '34', cities: '423+' })
-  const [fenmCounts, setFenmCounts] = useState({
-    events: '102+',
-    cities: '64+',
-    states: '18+',
-    categories: '7+',
-  })
-
-  useEffect(() => {
-    async function fetchStats() {
-      const [bizRes, stateRes, cityRes] = await Promise.all([
-        supabase.from('listings').select('*', { count: 'exact', head: true }),
-        supabase.from('listings').select('state').not('state', 'is', null),
-        supabase.from('listings').select('city').not('city', 'is', null),
-      ])
-      const businesses = bizRes.count ?? null
-      const states = stateRes.data ? new Set(stateRes.data.map((r: any) => r.state)).size : null
-      const cities = cityRes.data ? new Set(cityRes.data.map((r: any) => r.city)).size : null
-      setFfnmCounts({
-        businesses: businesses !== null ? `${businesses.toLocaleString()}+` : '1,237+',
-        states: states !== null ? String(states) : '34',
-        cities: cities !== null ? `${cities.toLocaleString()}+` : '423+',
-      })
-
-      // FENM stats — query fenm_events table
-      const [fenmEventsRes, fenmCitiesRes, fenmStatesRes, fenmCatsRes] = await Promise.all([
-        supabase.from('fenm_events').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('fenm_events').select('city').eq('status', 'active'),
-        supabase.from('fenm_events').select('state').eq('status', 'active'),
-        supabase.from('fenm_events').select('category').eq('status', 'active'),
-      ])
-      const fenmEventCount = fenmEventsRes.count ?? null
-      const fenmCityCount = fenmCitiesRes.data ? new Set(fenmCitiesRes.data.map((r: any) => r.city).filter(Boolean)).size : null
-      const fenmStateCount = fenmStatesRes.data ? new Set(fenmStatesRes.data.map((r: any) => r.state).filter(Boolean)).size : null
-      const fenmCatCount = fenmCatsRes.data ? new Set(fenmCatsRes.data.map((r: any) => r.category).filter(Boolean)).size : null
-      setFenmCounts({
-        events:     fenmEventCount !== null ? fenmEventCount + '+' : '102+',
-        cities:     fenmCityCount  !== null ? fenmCityCount  + '+' : '64+',
-        states:     fenmStateCount !== null ? fenmStateCount + '+' : '18+',
-        categories: fenmCatCount   !== null ? fenmCatCount   + '+' : '7+',
-      })
-    }
-    fetchStats()
-  }, [])
+function WhyAdvertise({ stats }: { stats: NetworkStats }) {
+  // Numbers come from the server (lib/site-stats) so they match the home pages.
+  const ffnmCounts = {
+    businesses: stats.ffnm.listings.toLocaleString(),
+    states:     String(stats.ffnm.states),
+    cities:     stats.ffnm.cities.toLocaleString(),
+  }
+  const fenmCounts = {
+    events:     String(stats.fenm.upcomingEvents),
+    cities:     String(stats.fenm.cities),
+    states:     String(stats.fenm.states),
+    categories: String(stats.fenm.categories),
+  }
 
   const FFNM_STATS = [
     { icon: '🍽️', number: ffnmCounts.businesses, label: 'Filipino food businesses listed' },
@@ -333,7 +302,7 @@ function WhyAdvertise() {
         </h2>
         <p className="text-sm text-gray-500 max-w-lg mx-auto">
           The FilAm Network connects Filipino-Americans to food, events, and culture across the U.S. — through
-          FilipinoFoodNearMe.org and FilipinoEventsNearMe.org. 1,237+ food businesses. 64+ events. Community-built. Zero pay-to-rank.
+          FilipinoFoodNearMe.org and FilipinoEventsNearMe.org. {ffnmCounts.businesses} food businesses. {fenmCounts.events} upcoming events. Community-built. Zero pay-to-rank.
         </p>
       </div>
 
@@ -364,8 +333,8 @@ function WhyAdvertise() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {[
-          { icon: '📅', number: fenmCounts.events,     label: 'Events listed' },
-          { icon: '📍', number: fenmCounts.cities,     label: 'Cities' },
+          { icon: '📅', number: fenmCounts.events,     label: 'Upcoming events' },
+          { icon: '📍', number: fenmCounts.cities,     label: 'Cities covered' },
           { icon: '🗺️', number: fenmCounts.states,     label: 'States covered' },
           { icon: '🎭', number: fenmCounts.categories, label: 'Event categories' },
         ].map((s) => (
@@ -867,7 +836,7 @@ function PlacementPreviews() {
 
 // ── Main wizard ────────────────────────────────────────────────────────────
 
-export default function AdvertiseWizard() {
+export default function AdvertiseWizard({ stats }: { stats: NetworkStats }) {
   const [step, setStep] = useState(1)
   const [site, setSite] = useState<Site>(null)
   const [selectedFfnm, setSelectedFfnm] = useState<FfnmPackage | null>(null)
@@ -1056,7 +1025,10 @@ export default function AdvertiseWizard() {
         </div>
 
         {/* Why advertise */}
-        <WhyAdvertise />
+        <WhyAdvertise stats={stats} />
+
+        {/* Labeled sample of a finished listing, so owners see what they get */}
+        <ListingPreviewCard className="mb-8" />
 
         {/* Placement preview */}
         <PlacementPreviews />

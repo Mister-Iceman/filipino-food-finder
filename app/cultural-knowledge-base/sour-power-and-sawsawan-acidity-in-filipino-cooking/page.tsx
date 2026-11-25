@@ -55,7 +55,7 @@ const jsonLd = {
   image: 'https://filipinofoodnearme.org/images/cultural-kb/sour-power.jpg',
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': 'https://www.filipinofoodnearme.org/cultural-knowledge-base/sour-power-and-sawsawan-acidity-in-filipino-cooking',
+    '@id': 'https://filipinofoodnearme.org/cultural-knowledge-base/sour-power-and-sawsawan-acidity-in-filipino-cooking',
   },
 }
 
