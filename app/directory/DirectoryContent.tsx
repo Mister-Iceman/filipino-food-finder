@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
 import PhoneReveal from '../components/PhoneReveal'
 import SearchFilters from '../components/SearchFilters'
 import ActiveFilterChips from '../components/ActiveFilterChips'
@@ -81,7 +80,16 @@ interface Props {
 
 export default function DirectoryContent({ initialListings, photoSlugs = [] }: Props) {
   const photoSlugSet = new Set(photoSlugs)
-  const searchParams = useSearchParams()
+  // Read the query string after mount instead of useSearchParams(), which would
+  // make this statically cached page render nothing on the server. With this,
+  // the first page of cards is in the HTML.
+  const [searchParams, setSearchParams] = useState<URLSearchParams>(() => new URLSearchParams())
+  useEffect(() => {
+    const read = () => setSearchParams(new URLSearchParams(window.location.search))
+    read()
+    window.addEventListener('popstate', read)
+    return () => window.removeEventListener('popstate', read)
+  }, [])
   const { trackInteraction, trackSearch, trackOutbound } = useTracker()
 
   const listings = initialListings
@@ -96,15 +104,13 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
   const [stateFilter, setStateFilter] = useState('')
   const [cityFilter, setCityFilter] = useState('')
   const [sortOption, setSortOption] = useState(DEFAULT_SORT)
-  const [currentPage, setCurrentPage] = useState(() => {
-    const n = parseInt(searchParams.get('page') || '1', 10)
-    return Number.isFinite(n) && n > 0 ? n : 1
-  })
+  const [currentPage, setCurrentPage] = useState(1)
+  // ?page=N from the URL, applied after the URL filters settle; any user input clears it.
+  const pendingPageRef = useRef<number | null>(null)
   const [userLoc, setUserLoc] = useState<[number, number] | null>(null)
   const [locStatus, setLocStatus] = useState<'' | 'finding' | 'denied'>('')
   const [searchNote, setSearchNote] = useState('')
   const [distances, setDistances] = useState<Map<number, number>>(new Map())
-  const skipFirstPageResetRef = useRef(true)
   const [loading] = useState(false)
 
   // Tag data
@@ -127,6 +133,11 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
 
   // Read URL params (category/state/city/search always; tag slugs only once on first load)
   useEffect(() => {
+    const pageParam = parseInt(searchParams.get('page') || '', 10)
+    if (Number.isFinite(pageParam) && pageParam > 1) {
+      pendingPageRef.current = pageParam
+      setCurrentPage(pageParam)
+    }
     const categoryParam = searchParams.get('category')
     const searchParam = searchParams.get('search') || searchParams.get('q')
     const stateParam = searchParams.get('state')
@@ -184,12 +195,22 @@ export default function DirectoryContent({ initialListings, photoSlugs = [] }: P
 
   // Reset to page 1 whenever filters change (but keep ?page=N on first load)
   useEffect(() => {
-    if (skipFirstPageResetRef.current) {
-      skipFirstPageResetRef.current = false
+    if (pendingPageRef.current) {
+      setCurrentPage(pendingPageRef.current)
       return
     }
     setCurrentPage(1)
   }, [userLoc, searchQuery, categoryFilter, stateFilter, cityFilter, sortOption, selectedDishSlugs, selectedGrocerySlugs, selectedUniversalSlugs])
+
+  useEffect(() => {
+    const clear = () => { pendingPageRef.current = null }
+    window.addEventListener('pointerdown', clear, { once: true, capture: true })
+    window.addEventListener('keydown', clear, { once: true, capture: true })
+    return () => {
+      window.removeEventListener('pointerdown', clear, { capture: true })
+      window.removeEventListener('keydown', clear, { capture: true })
+    }
+  }, [])
 
   const loadCommunityInsights = async () => {
     const { data: ratings } = await supabase
