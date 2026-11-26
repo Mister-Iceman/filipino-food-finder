@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { displayTitle } from '@/lib/article-title'
+import { retryFetch } from '@/lib/retry-fetch'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export default async function LatestNews() {

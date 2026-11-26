@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const metadata: Metadata = {
   title: 'Why List Your Filipino Business With Us | FilipinoFoodNearMe.org',
@@ -17,7 +18,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: 3600 } }),
+        retryFetch(url, { ...options, next: { revalidate: 3600 } }),
     },
   }
 )

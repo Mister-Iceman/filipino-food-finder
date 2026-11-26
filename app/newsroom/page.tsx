@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { optimizedImageUrl } from '../../lib/optimized-image'
 import { displayTitle } from '@/lib/article-title'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const metadata: Metadata = {
   title: 'Newsroom | FilipinoFoodNearMe.org',
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export const revalidate = 86400

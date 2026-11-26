@@ -9,6 +9,7 @@ import LatestNews from './components/LatestNews'
 import HeroImageCarousel from './components/HeroImageCarousel'
 import FeaturedSlot from './components/FeaturedSlot'
 import { getNetworkStats, latestSaneDate } from '../lib/site-stats'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const revalidate = 86400
 
@@ -34,7 +35,8 @@ export const metadata: Metadata = {
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export default async function HomePage() {

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { retryFetch } from '@/lib/retry-fetch'
 
 // One source of truth for the numbers shown on the home page and the
 // Advertise page, so they always agree with each other and with the database.
@@ -37,7 +38,8 @@ export function latestSaneDate(): string {
 function client() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
   )
 }
 

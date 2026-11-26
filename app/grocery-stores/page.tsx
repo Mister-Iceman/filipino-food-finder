@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import PhoneReveal from '../components/PhoneReveal'
 import { listingPath } from '@/lib/listing-url'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const revalidate = 86400
 
@@ -12,7 +13,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: 3600 } }),
+        retryFetch(url, { ...options, next: { revalidate: 3600 } }),
     },
   }
 )

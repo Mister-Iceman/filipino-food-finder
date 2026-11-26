@@ -3,10 +3,12 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { optimizedImageUrl, optimizeContentImages } from '../../../lib/optimized-image'
 import { displayTitle } from '@/lib/article-title'
+import { retryFetch } from '@/lib/retry-fetch'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export const revalidate = 86400
@@ -14,7 +16,8 @@ export const revalidate = 86400
 export async function generateStaticParams() {
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { global: { fetch: retryFetch } }
   )
   const { data } = await supabaseAdmin
     .from('articles')

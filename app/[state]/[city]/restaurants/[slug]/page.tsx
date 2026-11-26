@@ -13,6 +13,7 @@ import PhoneReveal from '@/app/components/PhoneReveal'
 import ClaimForm from '@/app/components/ClaimForm'
 import LeadLink from '@/app/components/LeadLink'
 import ListingDetailTracker from '@/app/components/analytics/ListingDetailTracker'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const revalidate = 3600
 
@@ -23,7 +24,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: 3600 } }),
+        retryFetch(url, { ...options, next: { revalidate: 3600 } }),
     },
   }
 )
@@ -97,7 +98,8 @@ export default async function ListingPage({ params }: { params: Params }) {
   // Fetch approved photos (service role for signed URLs)
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { global: { fetch: retryFetch } }
   )
   const { data: rawPhotos } = await supabaseAdmin
     .from('listing_photos')
@@ -523,7 +525,7 @@ async function NearbyRestaurants({ city, state, currentListingId, stateSlug, cit
     {
       global: {
         fetch: (url, options = {}) =>
-          fetch(url, { ...options, next: { revalidate: 3600 } }),
+          retryFetch(url, { ...options, next: { revalidate: 3600 } }),
       },
     }
   )

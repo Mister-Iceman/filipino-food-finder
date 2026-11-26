@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Suspense } from 'react'
 import DirectoryContent from './DirectoryContent'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const metadata = {
   title: 'Filipino Restaurant Directory | Filipino Food Near Me',
@@ -23,7 +24,7 @@ const supabase = createClient(
   {
     global: {
       fetch: (url, options = {}) =>
-        fetch(url, { ...options, next: { revalidate: DIRECTORY_REVALIDATE_SECONDS, tags: ['ffnm-directory'] } }),
+        retryFetch(url, { ...options, next: { revalidate: DIRECTORY_REVALIDATE_SECONDS, tags: ['ffnm-directory'] } }),
     },
   }
 )

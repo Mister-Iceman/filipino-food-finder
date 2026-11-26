@@ -3,12 +3,14 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import AdSlot from '../components/AdSlot'
 import { latestSaneDate } from '../../lib/site-stats'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const revalidate = 3600
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export const metadata = {

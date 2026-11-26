@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { permanentRedirect } from 'next/navigation'
 import { listingPath } from '@/lib/listing-url'
+import { retryFetch } from '@/lib/retry-fetch'
 
 // Old address. Every listing now lives at /<state>/<city>/restaurants/<slug>/,
 // so this route only 301-redirects there (keeps old links, emails and
@@ -10,7 +11,8 @@ export const revalidate = 3600
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 export default async function OldListingAddress({

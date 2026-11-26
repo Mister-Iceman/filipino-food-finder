@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import PartnerForm from './PartnerForm'
+import { retryFetch } from '@/lib/retry-fetch'
 
 export const metadata: Metadata = {
   title: 'Community Partners | FilipinoFoodNearMe.org',
@@ -12,7 +13,8 @@ export const revalidate = 3600
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 interface Partner {
