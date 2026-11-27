@@ -151,7 +151,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Browse pages
   const browseUrls = [
     'restaurants', 'bakeries', 'food-trucks', 'grocery-stores', 'quick-bites',
-    'dishes', 'states', 'guides', 'guides/most-memorable-filipino-food-cities-2026',
+    'dishes', 'states', 'guides', 'guides/most-memorable-filipino-food-cities-2026', 'guides/filipino-christmas',
   ].map(path => ({
     url: `${baseUrl}/${path}/`,
     lastModified: new Date(),

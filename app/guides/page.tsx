@@ -77,6 +77,23 @@ export default async function GuidesPage() {
           
           <div className="grid md:grid-cols-1 gap-8 max-w-4xl mx-auto">
             <Link
+              href="/guides/filipino-christmas/"
+              className="group bg-gradient-to-br from-red-50 to-green-50 border-2 border-red-400 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="p-8">
+                <div className="bg-red-600 text-white px-4 py-2 rounded-full inline-block mb-4 font-bold text-sm">
+                  🎄 HOLIDAY GUIDE
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-red-700 transition-colors">
+                  Filipino Christmas Guide: Simbang Gabi, Noche Buena &amp; Parol Events
+                </h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Simbang Gabi masses, parol lantern events, and where to get lechon, bibingka and party
+                  trays for Noche Buena. Updated daily.
+                </p>
+              </div>
+            </Link>
+            <Link
               href="/guides/most-memorable-filipino-food-cities-2026"
               className="group bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
             >
