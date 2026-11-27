@@ -1,3 +1,4 @@
+import { MERGED_LISTING_SLUGS } from '@/lib/merged-listings'
 import { cache } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { permanentRedirect } from 'next/navigation'
@@ -121,7 +122,10 @@ export default async function ListingPage({ params }: { params: Params }) {
     // Legacy WordPress slugs not in DB get a permanent 308 redirect to the
     // directory rather than a 404. App Router page routes intercept before
     // next.config.ts redirects for matching dynamic paths, so this is the
-    // only reliable place to handle it.
+    // only reliable place to handle it. A listing merged into another one
+    // goes to the listing that was kept.
+    const keptSlug = MERGED_LISTING_SLUGS[slug]
+    if (keptSlug) permanentRedirect(`/${stateParam}/${cityParam}/restaurants/${keptSlug}/`)
     permanentRedirect('/directory/')
   }
 

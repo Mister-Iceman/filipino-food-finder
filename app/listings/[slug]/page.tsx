@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { permanentRedirect } from 'next/navigation'
 import { listingPath } from '@/lib/listing-url'
+import { MERGED_LISTING_SLUGS } from '@/lib/merged-listings'
 import { retryFetch } from '@/lib/retry-fetch'
 
 // Old address. Every listing now lives at /<state>/<city>/restaurants/<slug>/,
@@ -31,6 +32,9 @@ export default async function OldListingAddress({
     .maybeSingle()
 
   if (!data || !data.city || !data.state) {
+    // A listing merged into another one goes to the listing that was kept.
+    const keptSlug = MERGED_LISTING_SLUGS[slug]
+    if (keptSlug) permanentRedirect(`/listings/${keptSlug}/`)
     // Legacy WordPress slugs that were never in the database.
     permanentRedirect('/directory/')
   }
