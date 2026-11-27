@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import { retryFetch } from '@/lib/retry-fetch'
 import { listingPath, SITE_URL } from '../../../lib/listing-url'
 
 // Filipino Christmas guide. Every event and business on this page comes
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { global: { fetch: retryFetch } }
 )
 
 type Spot = {
